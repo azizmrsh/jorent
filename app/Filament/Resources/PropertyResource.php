@@ -52,7 +52,7 @@ class PropertyResource extends Resource
                         Forms\Components\TextInput::make('total_area')->label('Total Area (m²)')->numeric(),
                         Forms\Components\Select::make('acc_id')
                             ->label('acc_id')
-                            ->relationship('acc', 'name')
+                            ->relationship('acc', 'firstname')
                             ->required(),
                     ]),
 
