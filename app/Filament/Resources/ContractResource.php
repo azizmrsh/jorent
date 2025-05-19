@@ -285,18 +285,18 @@ class ContractResource extends Resource
     //    return true;
     //}
 
-    public static function canDelete(Model $record): bool
-    {
-        return true;
-    }
-
-    public static function canViewAny(): bool
-    {
-        return true;
-    }
-
-    public static function canView(Model $record): bool
-    {
-        return true;
-    }
+    //public static function canDelete(Model $record): bool
+    //{
+    //    return true;
+    //}
+//
+    //public static function canViewAny(): bool
+    //{
+    //    return true;
+    //}
+//
+    //public static function canView(Model $record): bool
+    //{
+    //    return true;
+    //}
 }
