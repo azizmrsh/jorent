@@ -93,6 +93,24 @@ class PropertyResource extends Resource
         return $data;
     }
 
+    public static function mutateFormDataBeforeFill(array $data, $record): array
+    {
+        if ($record && $record->address) {
+            $data['address'] = [
+                'country' => $record->address->country,
+                'governorate' => $record->address->governorate,
+                'city' => $record->address->city,
+                'district' => $record->address->district,
+                'building_number' => $record->address->building_number,
+                'plot_number' => $record->address->plot_number,
+                'basin_number' => $record->address->basin_number,
+                'property_number' => $record->address->property_number,
+                'street_name' => $record->address->street_name,
+            ];
+        }
+        return $data;
+    }
+
     public static function afterCreate($record, array $data): void
     {
         if (!empty($data['address_data'])) {
