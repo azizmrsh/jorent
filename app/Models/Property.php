@@ -81,15 +81,4 @@ class Property extends Model
     {
         return $this->hasMany(Payment::class);
     }
-    //////////////// 
-    public function getFullAddressAttribute()
-    {
-        return $this->address->full_address;
-    }
-
-    public function getFullAddressWithStreetAttribute()
-    {
-        return $this->address->full_address_with_street;
-    }
-    /////////////////
 }
