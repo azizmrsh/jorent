@@ -280,10 +280,10 @@ class ContractResource extends Resource
         return true; // أو يمكنك وضع شروط معينة هنا
     }
 
-    public static function canEdit(Model $record): bool
-    {
-        return true;
-    }
+    //public static function canEdit(Model $record): bool
+    //{
+    //    return true;
+    //}
 
     public static function canDelete(Model $record): bool
     {
