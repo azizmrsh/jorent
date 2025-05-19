@@ -50,7 +50,10 @@ class PropertyResource extends Resource
                         Forms\Components\TextInput::make('floors_count')->label('Floors Count')->numeric(),
                         Forms\Components\TextInput::make('floor_area')->label('Floor Area (m²)')->numeric(),
                         Forms\Components\TextInput::make('total_area')->label('Total Area (m²)')->numeric(),
-                        Forms\Components\TextInput::make('acc_id')->label('Account ID'),
+                        Forms\Components\Select::make('acc_id')
+                            ->label('acc_id')
+                            ->relationship('acc', 'name')
+                            ->required(),
                     ]),
 
                 // 🗺️ قسم بيانات العنوان المرتبط
@@ -65,8 +68,29 @@ class PropertyResource extends Resource
                         Forms\Components\TextInput::make('address.basin_number')->label('Basin Number'),
                         Forms\Components\TextInput::make('address.property_number')->label('Property Number'),
                         Forms\Components\TextInput::make('address.street_name')->label('Street Name'),
-                    ]),
-            ]);
+                    ])
+                    ->columns(2),
+            ])
+            ->columns(1)
+            ->state(function ($record) {
+                // عند التعديل، جلب بيانات العنوان تلقائياً
+                if ($record && $record->address) {
+                    return [
+                        'address' => [
+                            'country' => $record->address->country,
+                            'governorate' => $record->address->governorate,
+                            'city' => $record->address->city,
+                            'district' => $record->address->district,
+                            'building_number' => $record->address->building_number,
+                            'plot_number' => $record->address->plot_number,
+                            'basin_number' => $record->address->basin_number,
+                            'property_number' => $record->address->property_number,
+                            'street_name' => $record->address->street_name,
+                        ]
+                    ];
+                }
+                return [];
+            });
     }
 
     // 🛠️ عند إنشاء سجل جديد
@@ -74,6 +98,7 @@ class PropertyResource extends Resource
     {
         $data['address_data'] = $data['address'] ?? [];
         unset($data['address']);
+        // سيتم إضافة property_id لاحقاً في afterCreate
         return $data;
     }
 
@@ -82,20 +107,25 @@ class PropertyResource extends Resource
     {
         $data['address_data'] = $data['address'] ?? [];
         unset($data['address']);
+        // سيتم إضافة property_id لاحقاً في afterSave
         return $data;
     }
 
     public static function afterCreate($record, array $data): void
     {
         if (!empty($data['address_data'])) {
-            $record->address()->create($data['address_data']);
+            $addressData = $data['address_data'];
+            $addressData['property_id'] = $record->id;
+            $record->address()->create($addressData);
         }
     }
 
     public static function afterSave($record, array $data): void
     {
         if (!empty($data['address_data'])) {
-            $record->address()->updateOrCreate([], $data['address_data']);
+            $addressData = $data['address_data'];
+            $addressData['property_id'] = $record->id;
+            $record->address()->updateOrCreate(['property_id' => $record->id], $addressData);
         }
     }
 

@@ -20,6 +20,11 @@ class Property extends Model
         'floor_area',
         'total_area',
         'acc_id', // foreign key to accs table
+        'images', // JSON column for images
+        'address_id', // foreign key to addresses table
+        'created_at',
+        'updated_at',
+        
     ];
     protected $attributes = [
         'features' => null,
