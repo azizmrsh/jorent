@@ -72,25 +72,7 @@ class PropertyResource extends Resource
                     ->columns(2),
             ])
             ->columns(1)
-            ->state(function ($record) {
-                // عند التعديل، جلب بيانات العنوان تلقائياً
-                if ($record && $record->address) {
-                    return [
-                        'address' => [
-                            'country' => $record->address->country,
-                            'governorate' => $record->address->governorate,
-                            'city' => $record->address->city,
-                            'district' => $record->address->district,
-                            'building_number' => $record->address->building_number,
-                            'plot_number' => $record->address->plot_number,
-                            'basin_number' => $record->address->basin_number,
-                            'property_number' => $record->address->property_number,
-                            'street_name' => $record->address->street_name,
-                        ]
-                    ];
-                }
-                return [];
-            });
+        ;
     }
 
     // 🛠️ عند إنشاء سجل جديد
