@@ -48,6 +48,7 @@ class Property extends Model
         $this->attributes['features'] = json_encode($value);
     }
 
+
     // relationships with table addresses one to one //osaidhaj03
     public function address()
     {
@@ -80,7 +81,6 @@ class Property extends Model
     {
         return $this->hasMany(Payment::class);
     }
-
     //////////////// 
     public function getFullAddressAttribute()
     {

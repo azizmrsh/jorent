@@ -7,35 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 class Contract extends Model
 {
     protected $fillable = [
+        'landlord_name',
         'tenant_id',
         'unit_id',
+        'property_id',
         'start_date',
         'end_date',
+        'due_date',
         'rent_amount',
-        'payment_frequency',
-        'terms_and_conditions',
         'terms_and_conditions_extra',
         'status',
-        'contract_document',
+        'tenant_signature',
+        'landlord_signature',
+        'witness1_signature',
+        'witness2_signature',
         'hired_date',
         'hired_by',
-        'landlord_name',
-        'tenant_signature',
-        'witness_signature',
-        'landlord_signature',
-        'property_id',
-        'governorate',
-        'city',
-        'district',
-        'building_number',
-        'plot_number',
-        'basin_number',
-        'property_number',
-        'street_name'
+        'created_at',
+        'updated_at',
+
     ];
 
     protected $casts = [
-        
+        'tenant_signature' => 'array',
+        'landlord_signature' => 'array',
+        'witness1_signature' => 'array',
+        'witness2_signature' => 'array',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'due_date' => 'date',
+        'hired_date' => 'date',
     ];
 
     public function tenant()
@@ -51,5 +52,10 @@ class Contract extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+    
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
     }
 }

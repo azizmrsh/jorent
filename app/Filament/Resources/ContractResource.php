@@ -33,13 +33,13 @@ class ContractResource extends Resource
     {
         return $form
             ->schema([
-                // قسم بيانات المالك
-                Forms\Components\Section::make('بيانات المالك')
+                // قسم بيانات المؤجر
+                Forms\Components\Section::make('بيانات المؤجر')
                     ->schema([
                         Forms\Components\TextInput::make('landlord_name')
                             ->required()
                             ->label('Landlord Name'),
-                    ]),
+                    ])->columns(3),
 
                 // قسم بيانات المستأجر
                 Forms\Components\Section::make('بيانات المستأجر')
@@ -48,7 +48,7 @@ class ContractResource extends Resource
                             ->relationship('tenant', 'firstname')
                             ->required()
                             ->label('Tenant Name'),
-                    ]),
+                    ])->columns(3),
 
                 // قسم بيانات الوحدة والعقار
                 Forms\Components\Section::make('بيانات الوحدة والعقار')
@@ -121,7 +121,7 @@ class ContractResource extends Resource
                         Forms\Components\TextInput::make('street_name')
                             ->readOnly()
                             ->label('Street Name'),
-                    ]),
+                    ])->columns(3),
 
                 // قسم تفاصيل العقد
                 Forms\Components\Section::make('تفاصيل العقد')
@@ -130,17 +130,13 @@ class ContractResource extends Resource
                             ->required(),
                         Forms\Components\DatePicker::make('end_date')
                             ->required(),
+                        Forms\Components\DatePicker::make('due_date')
+                            ->nullable()
+                            ->label('Due Date (تاريخ الاستحقاق)'),
                         Forms\Components\TextInput::make('rent_amount')
                             ->numeric()
                             ->required(),
-                        Forms\Components\Select::make('payment_frequency')
-                            ->options([
-                                'daily' => 'Daily',
-                                'weekly' => 'Weekly',
-                                'monthly' => 'Monthly',
-                                'yearly' => 'Yearly',
-                            ])
-                            ->required(),
+
                         Forms\Components\Textarea::make('terms_and_conditions_extra')
                             ->nullable(),
                         Forms\Components\Select::make('status')
@@ -162,7 +158,7 @@ class ContractResource extends Resource
                                     }
                                 }
                             }),
-                    ]),
+                    ])->columns(3),
 
                 // Signatures Section
                 Forms\Components\Section::make('Contract Signatures')
@@ -182,7 +178,7 @@ class ContractResource extends Resource
                             ->confirmable(true)
                             ->required(),
 
-                        SignaturePad::make('witness_signature')
+                        SignaturePad::make('witness1_signature')
                             ->label('Witness Signature')
                             ->backgroundColor('rgba(0,0,0,0)')  // Background color on light mode
                             ->backgroundColorOnDark('#f0a')     // Background color on dark mode (defaults to backgroundColor)
@@ -196,7 +192,7 @@ class ContractResource extends Resource
                             ->confirmable(true)
                             ->required(),
                             
-                        SignaturePad::make('witness_signature')
+                        SignaturePad::make('witness2_signature')
                             ->label('Witness Signature')
                             ->backgroundColor('rgba(0,0,0,0)')  // Background color on light mode
                             ->backgroundColorOnDark('#f0a')     // Background color on dark mode (defaults to backgroundColor)
@@ -236,7 +232,7 @@ class ContractResource extends Resource
                             ->default(Auth::user()->name)
                             ->readOnly()
                             ->label('Hired By'),
-                    ]),
+                    ])->columns(3),
             ]);
     }
 
@@ -276,5 +272,31 @@ class ContractResource extends Resource
             'view' => Pages\ViewContract::route('/{record}'),
             'edit' => Pages\EditContract::route('/{record}/edit'),
         ];
+    }
+    /////////////////////////////
+    //
+    public static function canCreate(): bool
+    {
+        return true; // أو يمكنك وضع شروط معينة هنا
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
     }
 }
