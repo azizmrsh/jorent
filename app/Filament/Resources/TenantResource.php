@@ -266,7 +266,6 @@ class TenantResource extends Resource
             RelationManagers\ContractsRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,
             RelationManagers\InvoicesRelationManager::class,
-            RelationManagers\CustomInvoicesRelationManager::class,
         ];
     }
 
