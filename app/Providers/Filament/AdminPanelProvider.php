@@ -37,13 +37,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                // ترتيب widgets بحيث تكون الإحصائيات والرسوم البيانية في الأعلى
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\StatsOverviewWidget::class,
-                \App\Filament\Widgets\LatestContractsWidget::class,
-                \App\Filament\Widgets\ContractsChartWidget::class,
-                \App\Filament\Widgets\ContractsByStatusWidget::class,
                 \App\Filament\Widgets\PaymentStatsWidget::class,
+                \App\Filament\Widgets\ContractsChartWidget::class,
+                \App\Filament\Widgets\ContractsByStatusWidget::class, 
+                
+                // الجداول في الأسفل
+                \App\Filament\Widgets\LatestContractsWidget::class,
+                \App\Filament\Widgets\TenantsTableWidget::class,
+                
+                // معلومات النظام
+                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
