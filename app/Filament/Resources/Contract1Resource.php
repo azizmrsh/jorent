@@ -112,23 +112,22 @@ class Contract1Resource extends Resource
                 SignaturePad::make('tenant_signature')
                     ->label('Tenant Signature')
                     //->required()
-                     ->downloadable(false)
-                    ->downloadLabel('Download Tenant Signature'),
+                     ->downloadable(false),
+               
                     
                 SignaturePad::make('landlord_signature')
                     ->label('Landlord Signature')
                   
-                    ->downloadable(false)
-                    ->downloadLabel('Download Landlord Signature'),
+                    ->downloadable(false),
                 SignaturePad::make('witness1_signature')
                     ->label('Witness 1 Signature')
                
-                     ->downloadable(false)
-                    ->downloadLabel('Download Witness 1 Signature'),
+                     ->downloadable(false),
+                
                 SignaturePad::make('witness2_signature')
                     ->label('Witness 2 Signature')
-                     ->downloadable(false)
-                    ->downloadLabel('Download Witness 2 Signature'),
+                     ->downloadable(false),
+                  
             ])->columns(4),
 
         // Pen color on export (defaults to penColor)
