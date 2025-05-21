@@ -86,7 +86,10 @@ class Contract1Resource extends Resource
                     ->default('active')
                     ->reactive()
                     ->afterStateHydrated(function (callable $set, callable $get) {
-                        if (now()->between($get('start_date'), $get('end_date'))) {
+                        $startDate = $get('start_date');
+                        $endDate = $get('end_date');
+
+                        if ($startDate && $endDate && now()->between($startDate, $endDate)) {
                             $set('status', 'active');
                         } else {
                             $set('status', 'inactive');
@@ -139,6 +142,7 @@ class Contract1Resource extends Resource
             'index' => Pages\ListContract1s::route('/'),
             'create' => Pages\CreateContract1::route('/create'),
             'edit' => Pages\EditContract1::route('/{record}/edit'),
+            //'view' => Pages\ViewContract1::route('/{record}'),
         ];
     }
 }
