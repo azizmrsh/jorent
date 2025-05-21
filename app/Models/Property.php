@@ -61,6 +61,11 @@ public function address()
 }
 
 
+public function contracts()
+{
+    return $this->hasMany(\App\Models\Contract1::class);
+}
+
     // relationship with table acc one to many //osaidhaj03
     public function acc()
     {
@@ -72,11 +77,7 @@ public function address()
     {
         return $this->hasMany(Unit::class);
     }
-    // relationship with table contracts one to many //osaidhaj03
-    public function contracts()
-    {
-        return $this->hasMany(Contract::class);
-    }
+
     // relationship with table tenants one to many //osaidhaj03
     public function tenants()
     {

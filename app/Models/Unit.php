@@ -30,7 +30,14 @@ class Unit extends Model
     ];
 
     public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
+{
+    return $this->belongsTo(Property::class);
+}
+
+public function contracts()
+{
+    return $this->hasMany(Contract1::class);
+}
+
+
 }
