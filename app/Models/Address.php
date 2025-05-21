@@ -50,10 +50,11 @@ class Address extends Model
     ];
 
     // relationship with table properties one to one //osaidhaj03
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
-    }
+public function property()
+{
+    return $this->belongsTo(Property::class);
+}
+
 
     public function getFullAddressAttribute()
     {

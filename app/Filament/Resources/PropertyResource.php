@@ -6,9 +6,10 @@ use App\Filament\Resources\PropertyResource\Pages;
 use App\Models\Property;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Support\Facades\Filament;
 
 class PropertyResource extends Resource
 {
@@ -23,14 +24,14 @@ class PropertyResource extends Resource
         return $form
             ->schema([
                 // 🏠 قسم بيانات العقار
-                Forms\Components\Section::make('Property Information')
+                Section::make('Property Information')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Property Name') // ✔️ تعديل التسمية لتكون أوضح
+                        TextInput::make('name')
+                            ->label('Property Name')
                             ->required(),
                         Forms\Components\Textarea::make('description')->label('Description'),
                         Forms\Components\Select::make('type1')
-                            ->label('Primary Type') // ✔️ label معبر أكثر
+                            ->label('Primary Type')
                             ->options([
                                 'building' => 'Building',
                                 'villa' => 'Villa',
@@ -39,7 +40,7 @@ class PropertyResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\Select::make('type2')
-                            ->label('Usage Type') // ✔️ label معبر أكثر
+                            ->label('Usage Type')
                             ->options([
                                 'residential' => 'Residential',
                                 'commercial' => 'Commercial',
@@ -47,9 +48,9 @@ class PropertyResource extends Resource
                             ])
                             ->required(),
                         Forms\Components\DatePicker::make('birth_date')->label('Construction Date'),
-                        Forms\Components\TextInput::make('floors_count')->label('Floors Count')->numeric(),
-                        Forms\Components\TextInput::make('floor_area')->label('Floor Area (m²)')->numeric(),
-                        Forms\Components\TextInput::make('total_area')->label('Total Area (m²)')->numeric(),
+                        TextInput::make('floors_count')->label('Floors Count')->numeric(),
+                        TextInput::make('floor_area')->label('Floor Area (m²)')->numeric(),
+                        TextInput::make('total_area')->label('Total Area (m²)')->numeric(),
                         Forms\Components\Select::make('acc_id')
                             ->label('acc_id')
                             ->relationship('acc', 'firstname')
@@ -57,76 +58,22 @@ class PropertyResource extends Resource
                     ]),
 
                 // 🗺️ قسم بيانات العنوان المرتبط
-                Forms\Components\Section::make('Address Information')
+                Section::make('Address Information')
+                    ->relationship('address')
                     ->schema([
-                        Forms\Components\TextInput::make('address.country')->label('Country'),
-                        Forms\Components\TextInput::make('address.governorate')->label('Governorate'),
-                        Forms\Components\TextInput::make('address.city')->label('City'),
-                        Forms\Components\TextInput::make('address.district')->label('District'),
-                        Forms\Components\TextInput::make('address.building_number')->label('Building Number'),
-                        Forms\Components\TextInput::make('address.plot_number')->label('Plot Number'),
-                        Forms\Components\TextInput::make('address.basin_number')->label('Basin Number'),
-                        Forms\Components\TextInput::make('address.property_number')->label('Property Number'),
-                        Forms\Components\TextInput::make('address.street_name')->label('Street Name'),
+                        TextInput::make('country')->label('Country'),
+                        TextInput::make('governorate')->label('Governorate'),
+                        TextInput::make('city')->label('City'),
+                        TextInput::make('district')->label('District'),
+                        TextInput::make('building_number')->label('Building Number'),
+                        TextInput::make('plot_number')->label('Plot Number'),
+                        TextInput::make('basin_number')->label('Basin Number'),
+                        TextInput::make('property_number')->label('Property Number'),
+                        TextInput::make('street_name')->label('Street Name'),
                     ])
                     ->columns(2),
             ])
-            ->columns(1)
-        ;
-    }
-
-    // 🛠️ عند إنشاء سجل جديد
-    public static function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['address_data'] = $data['address'] ?? [];
-        unset($data['address']);
-        // سيتم إضافة property_id لاحقاً في afterCreate
-        return $data;
-    }
-
-    // 🛠️ عند التعديل على السجل
-    public static function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['address_data'] = $data['address'] ?? [];
-        unset($data['address']);
-        // سيتم إضافة property_id لاحقاً في afterSave
-        return $data;
-    }
-
-    public static function mutateFormDataBeforeFill(array $data, $record): array
-    {
-        if ($record && $record->address) {
-            $data['address'] = [
-                'country' => $record->address->country,
-                'governorate' => $record->address->governorate,
-                'city' => $record->address->city,
-                'district' => $record->address->district,
-                'building_number' => $record->address->building_number,
-                'plot_number' => $record->address->plot_number,
-                'basin_number' => $record->address->basin_number,
-                'property_number' => $record->address->property_number,
-                'street_name' => $record->address->street_name,
-            ];
-        }
-        return $data;
-    }
-
-    public static function afterCreate($record, array $data): void
-    {
-        if (!empty($data['address_data'])) {
-            $addressData = $data['address_data'];
-            $addressData['property_id'] = $record->id;
-            $record->address()->create($addressData);
-        }
-    }
-
-    public static function afterSave($record, array $data): void
-    {
-        if (!empty($data['address_data'])) {
-            $addressData = $data['address_data'];
-            $addressData['property_id'] = $record->id;
-            $record->address()->updateOrCreate(['property_id' => $record->id], $addressData);
-        }
+            ->columns(1);
     }
 
     public static function table(Tables\Table $table): Tables\Table
@@ -147,6 +94,7 @@ class PropertyResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+
     public static function getPages(): array
     {
         return [

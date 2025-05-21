@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('acc_id')->nullable();
             $table->foreign('acc_id')->references('id')->on('accs')->onDelete('set null');
             
-            $table->string('birth_date')->nullable(); 
+            $table->date('birth_date')->nullable(); 
             $table->integer('floors_count')->nullable(); 
             $table->decimal('floor_area', 10, 2)->nullable(); 
             $table->decimal('total_area', 10, 2)->nullable(); 
