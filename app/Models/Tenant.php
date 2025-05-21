@@ -50,10 +50,12 @@ class Tenant extends Model
         return $this->morphOne(Address::class, 'addressable');
     }
 
-    public function contracts(): HasMany
-    {
-        return $this->hasMany(Contract::class);
-    }
+    public function contracts()
+{
+    return $this->hasMany(Contract1::class);
+}
+
+
 
     public function payments(): HasMany
     {
@@ -65,10 +67,7 @@ class Tenant extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    public function customInvoices(): HasMany
-    {
-        return $this->hasMany(CustomInvoice::class);
-    }
+
 
     public function getFullNameAttribute(): string
     {
