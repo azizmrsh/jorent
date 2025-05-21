@@ -18,7 +18,7 @@ class TenantResource extends Resource
     protected static ?string $model = Tenant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Staff Management (Adminstration)';
+    protected static ?string $navigationGroup = 'Rental Management';
     protected static ?string $navigationLabel = 'Tenants';
     protected static ?string $label = 'Tenant';
     protected static ?string $pluralLabel = 'Tenants';
