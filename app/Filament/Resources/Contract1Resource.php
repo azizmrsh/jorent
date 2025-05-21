@@ -145,4 +145,9 @@ class Contract1Resource extends Resource
             //'view' => Pages\ViewContract1::route('/{record}'),
         ];
     }
+    public static function canCreate(): bool
+{
+    return true;
+}
+
 }
