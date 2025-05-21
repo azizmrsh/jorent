@@ -13,7 +13,7 @@ use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+//use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 class Contract1Resource extends Resource
 {
@@ -95,14 +95,14 @@ class Contract1Resource extends Resource
                         }
                     }),
             ])->columns(3),
-
-            Forms\Components\Section::make('Signatures')->schema([
-                SignaturePad::make('tenant_signature')->label('Tenant Signature')->required(),
-                SignaturePad::make('landlord_signature')->label('Landlord Signature')->required(),
-                SignaturePad::make('witness1_signature')->label('Witness 1 Signature')->required(),
-                SignaturePad::make('witness2_signature')->label('Witness 2 Signature')->required(),
-            ])->columns(4),
-
+//
+         //   Forms\Components\Section::make('Signatures')->schema([
+         //       SignaturePad::make('tenant_signature')->label('Tenant Signature')->required(),
+         //       SignaturePad::make('landlord_signature')->label('Landlord Signature')->required(),
+         //       SignaturePad::make('witness1_signature')->label('Witness 1 Signature')->required(),
+         //       SignaturePad::make('witness2_signature')->label('Witness 2 Signature')->required(),
+         //   ])->columns(4),
+//
        //     Forms\Components\Section::make('Meta Info')->schema([
        //         Forms\Components\DatePicker::make('hired_date')
        //             ->default(now())->readOnly(),
