@@ -15,9 +15,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
 //use Saade\FilamentAutograph\Forms\Components\SignaturePad;
-use Saade\FilamentAutograph\Forms\Components\SignaturePad;
-use Saade\FilamentAutograph\Forms\Components\Enums\DownloadableFormat;
-
+//use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+//use Saade\FilamentAutograph\Forms\Components\Enums\DownloadableFormat;
+//
 
 
 class Contract1Resource extends Resource
@@ -108,27 +108,7 @@ class Contract1Resource extends Resource
          //       SignaturePad::make('witness2_signature')->label('Witness 2 Signature')->required(),
          //   ])->columns(4),
 
-            Forms\Components\Section::make('Signatures')->schema([
-                SignaturePad::make('tenant_signature')
-                    ->label('Tenant Signature')
-                    //->required()
-                     ->downloadable(false),
-               
-                    
-                SignaturePad::make('landlord_signature')
-                    ->label('Landlord Signature')
-                  
-                    ->downloadable(false),
-                SignaturePad::make('witness1_signature')
-                    ->label('Witness 1 Signature')
-               
-                     ->downloadable(false),
-                
-                SignaturePad::make('witness2_signature')
-                    ->label('Witness 2 Signature')
-                     ->downloadable(false),
-                  
-            ])->columns(4),
+
 
         // Pen color on export (defaults to penColor)
             Forms\Components\Section::make('Meta Info')->schema([
