@@ -142,12 +142,27 @@ class Contract1Resource extends Resource
             'index' => Pages\ListContract1s::route('/'),
             'create' => Pages\CreateContract1::route('/create'),
             'edit' => Pages\EditContract1::route('/{record}/edit'),
-            //'view' => Pages\ViewContract1::route('/{record}'),
+           // 'view' => Pages\ViewContract1::route('/{record}'),
         ];
     }
-    public static function canCreate(): bool
-{
-    return true;
-}
 
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return true;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return true;
+    }
+
+    public static function canView($record): bool
+    {
+        return true;
+    }
 }
