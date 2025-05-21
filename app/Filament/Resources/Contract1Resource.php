@@ -103,13 +103,13 @@ class Contract1Resource extends Resource
                 SignaturePad::make('witness2_signature')->label('Witness 2 Signature')->required(),
             ])->columns(4),
 
-            Forms\Components\Section::make('Meta Info')->schema([
-                Forms\Components\DatePicker::make('hired_date')
-                    ->default(now())->readOnly(),
-                Forms\Components\TextInput::make('hired_by')
-                    ->default(fn () => Auth::user()?->name)
-                    ->readOnly(),
-            ])->columns(2),
+       //     Forms\Components\Section::make('Meta Info')->schema([
+       //         Forms\Components\DatePicker::make('hired_date')
+       //             ->default(now())->readOnly(),
+       //         Forms\Components\TextInput::make('hired_by')
+       //             ->default(fn () => Auth::user()?->name)
+       //             ->readOnly(),
+       //     ])->columns(2),
         ]);
     }
 
