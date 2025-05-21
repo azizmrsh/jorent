@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Auth;
 //use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 //use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 //use Saade\FilamentAutograph\Forms\Components\Enums\DownloadableFormat;
-//
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+
 
 
 class Contract1Resource extends Resource
@@ -100,6 +101,14 @@ class Contract1Resource extends Resource
                         }
                     }),
             ])->columns(3),
+
+Forms\Components\Section::make('توقيع المستأجر')
+    ->schema([
+        SignaturePad::make('tenant_signature')
+            ->label('توقيع المستأجر')
+            ->required()
+            //->downloadable() // نرجع لها لاحقًا!
+    ]),
 //
          //   Forms\Components\Section::make('Signatures')->schema([
          //       SignaturePad::make('tenant_signature')->label('Tenant Signature')->required(),
