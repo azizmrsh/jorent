@@ -26,10 +26,10 @@ return new class extends Migration
             $table->text('terms_and_conditions_extra')->nullable();
 
             // توقيعات
-            $table->longText('tenant_signature')->nullable();
-            $table->longText('landlord_signature')->nullable();
-            $table->longText('witness1_signature')->nullable();
-            $table->longText('witness2_signature')->nullable();
+            $table->string('tenant_signature')->nullable();
+            $table->string('landlord_signature')->nullable();
+            $table->string('witness1_signature')->nullable();
+            $table->string('witness2_signature')->nullable();
 
             // بيانات التوظيف
             $table->date('hired_date')->nullable();
