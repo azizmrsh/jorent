@@ -104,22 +104,38 @@ class Contract1Resource extends Resource
 
 Forms\Components\Section::make('توقيع المستأجر')
     ->schema([
-        SignaturePad::make('tenant_signature')
-            ->label('توقيع المستأجر')
-            ->format('png')
-            ->required(),
-       SignaturePad::make('landlord_signature')
-            ->label('توقيع المؤجر')
-            ->format('png')
-            ->required(),
-        SignaturePad::make('witness1_signature')
-            ->label('توقيع الشاهد 1')
-            ->format('png')
-            ->required(),
-        SignaturePad::make('witness2_signature')
-            ->label('توقيع الشاهد 2')
-            ->format('png')
-            ->required(),
+    SignaturePad::make('tenant_signature')
+    ->label('توقيع المستأجر')
+    ->required()
+    ->dehydrateStateUsing(function ($state, callable $set) {
+        if ($state) {
+            // حذف بادئة base64
+            $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+            
+            // اسم عشوائي للملف
+            $fileName = 'signatures/' . Str::uuid() . '.png';
+
+            // حفظ الملف في storage/app/public/signatures
+            Storage::disk('public')->put($fileName, $imageData);
+
+            // نحفظ فقط المسار
+            $set('tenant_signature_path', $fileName);
+        }
+
+        return null; // لا نخزن base64
+    })
+    //   SignaturePad::make('landlord_signature')
+    //        ->label('توقيع المؤجر')
+    //        ->format('png')
+    //        ->required(),
+    //    SignaturePad::make('witness1_signature')
+    //        ->label('توقيع الشاهد 1')
+    //        ->format('png')
+    //        ->required(),
+    //    SignaturePad::make('witness2_signature')
+    //        ->label('توقيع الشاهد 2')
+    //        ->format('png')
+    //        ->required(),
     ])->columns(4),
             
     
