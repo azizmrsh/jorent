@@ -126,29 +126,50 @@ Forms\Components\Section::make('توقيع المستأجر')
         }
 
         return null; // لا نخزن base64
-    })
-    //   SignaturePad::make('landlord_signature')
-    //        ->label('توقيع المؤجر')
-    //        ->format('png')
-    //        ->required(),
-    //    SignaturePad::make('witness1_signature')
-    //        ->label('توقيع الشاهد 1')
-    //        ->format('png')
-    //        ->required(),
-    //    SignaturePad::make('witness2_signature')
-    //        ->label('توقيع الشاهد 2')
-    //        ->format('png')
-    //        ->required(),
+    }),
+    // توقيع المؤجر
+        SignaturePad::make('landlord_signature')
+            ->label('توقيع المؤجر')
+            ->required()
+            ->dehydrateStateUsing(function ($state, callable $set) {
+                if ($state) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+                    $fileName = 'signatures/' . Str::uuid() . '.png';
+                    Storage::disk('public')->put($fileName, $imageData);
+                    $set('landlord_signature_path', $fileName);
+                }
+                return null;
+            }),
+
+        // توقيع الشاهد الأول
+        SignaturePad::make('witness1_signature')
+            ->label('توقيع الشاهد الأول')
+            ->required()
+            ->dehydrateStateUsing(function ($state, callable $set) {
+                if ($state) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+                    $fileName = 'signatures/' . Str::uuid() . '.png';
+                    Storage::disk('public')->put($fileName, $imageData);
+                    $set('witness1_signature_path', $fileName);
+                }
+                return null;
+            }),
+
+        // توقيع الشاهد الثاني
+        SignaturePad::make('witness2_signature')
+            ->label('توقيع الشاهد الثاني')
+            ->required()
+            ->dehydrateStateUsing(function ($state, callable $set) {
+                if ($state) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+                    $fileName = 'signatures/' . Str::uuid() . '.png';
+                    Storage::disk('public')->put($fileName, $imageData);
+                    $set('witness2_signature_path', $fileName);
+                }
+                return null;
+            }),
     ])->columns(4),
             
-    
-//
-         //   Forms\Components\Section::make('Signatures')->schema([
-         //       SignaturePad::make('tenant_signature')->label('Tenant Signature')->required(),
-         //       SignaturePad::make('landlord_signature')->label('Landlord Signature')->required(),
-         //       SignaturePad::make('witness1_signature')->label('Witness 1 Signature')->required(),
-         //       SignaturePad::make('witness2_signature')->label('Witness 2 Signature')->required(),
-         //   ])->columns(4),
 
 
 
