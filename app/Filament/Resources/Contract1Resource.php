@@ -13,6 +13,9 @@ use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components;
 
 //use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 //use Saade\FilamentAutograph\Forms\Components\SignaturePad;
