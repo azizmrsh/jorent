@@ -106,15 +106,19 @@ Forms\Components\Section::make('توقيع المستأجر')
     ->schema([
         SignaturePad::make('tenant_signature')
             ->label('توقيع المستأجر')
+            ->format('png')
             ->required(),
        SignaturePad::make('landlord_signature')
             ->label('توقيع المؤجر')
+            ->format('png')
             ->required(),
         SignaturePad::make('witness1_signature')
             ->label('توقيع الشاهد 1')
+            ->format('png')
             ->required(),
         SignaturePad::make('witness2_signature')
             ->label('توقيع الشاهد 2')
+            ->format('png')
             ->required(),
     ])->columns(4),
             
