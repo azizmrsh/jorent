@@ -191,7 +191,7 @@ Forms\Components\Section::make('توقيع المستأجر')
             'index' => Pages\ListContract1s::route('/'),
             'create' => Pages\CreateContract1::route('/create'),
             'edit' => Pages\EditContract1::route('/{record}/edit'),
-           // 'view' => Pages\ViewContract1::route('/{record}'),
+           'view' => Pages\ViewContract1::route('/{record}'),
         ];
     }
 
