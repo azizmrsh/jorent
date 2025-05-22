@@ -141,33 +141,33 @@ Forms\Components\Section::make('توقيع المستأجر')
                 return null;
             }),
 
-        // توقيع الشاهد الأول
-        SignaturePad::make('witness1_signature')
-            ->label('توقيع الشاهد الأول')
-            ->required()
-            ->dehydrateStateUsing(function ($state, callable $set) {
-                if ($state) {
-                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
-                    $fileName = 'signatures/' . Str::uuid() . '.png';
-                    Storage::disk('public')->put($fileName, $imageData);
-                    $set('witness1_signature_path', $fileName);
-                }
-                return null;
-            }),
-
-        // توقيع الشاهد الثاني
-        SignaturePad::make('witness2_signature')
-            ->label('توقيع الشاهد الثاني')
-            ->required()
-            ->dehydrateStateUsing(function ($state, callable $set) {
-                if ($state) {
-                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
-                    $fileName = 'signatures/' . Str::uuid() . '.png';
-                    Storage::disk('public')->put($fileName, $imageData);
-                    $set('witness2_signature_path', $fileName);
-                }
-                return null;
-            }),
+//        // توقيع الشاهد الأول
+//        SignaturePad::make('witness1_signature')
+//            ->label('توقيع الشاهد الأول')
+//            ->required()
+//            ->dehydrateStateUsing(function ($state, callable $set) {
+//                if ($state) {
+//                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+//                    $fileName = 'signatures/' . Str::uuid() . '.png';
+//                    Storage::disk('public')->put($fileName, $imageData);
+//                    $set('witness1_signature_path', $fileName);
+//                }
+//                return null;
+//            }),
+//
+//        // توقيع الشاهد الثاني
+//        SignaturePad::make('witness2_signature')
+//            ->label('توقيع الشاهد الثاني')
+//            ->required()
+//            ->dehydrateStateUsing(function ($state, callable $set) {
+//                if ($state) {
+//                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+//                    $fileName = 'signatures/' . Str::uuid() . '.png';
+//                    Storage::disk('public')->put($fileName, $imageData);
+//                    $set('witness2_signature_path', $fileName);
+//                }
+//                return null;
+//            }),
     ])->columns(4),
             
 
