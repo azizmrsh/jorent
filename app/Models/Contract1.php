@@ -39,5 +39,7 @@ class Contract1 extends Model
     {
         return $this->belongsTo(\App\Models\Property::class);
     }
+
+    
 }
 // Compare this snippet from app/Models/Tenant.php:

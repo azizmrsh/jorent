@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PropertiesTableWidget extends BaseWidget
 {
-    protected static ?int $sort = 51; // ترتيب منخفض لإظهاره في أسفل الصفحة
+    protected static ?int $sort = 51;
     protected int|string|array $columnSpan = 'full';
     
     public function table(Table $table): Table
@@ -18,9 +18,7 @@ class PropertiesTableWidget extends BaseWidget
         return $table
             ->query(
                 Property::query()
-                    ->withCount(['units', 'contracts' => function ($query) {
-                        $query->where('status', 'active');
-                    }])
+                    ->withCount(['units'])
                     ->latest()
                     ->limit(10)
             )
@@ -44,9 +42,6 @@ class PropertiesTableWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('units_count')
                     ->label('عدد الوحدات')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('contracts_count')
-                    ->label('العقود النشطة')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاريخ الإضافة')
                     ->dateTime()
@@ -54,8 +49,6 @@ class PropertiesTableWidget extends BaseWidget
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-            ])
-            ->heading('العقارات')
-            ->description('آخر 10 عقارات مضافة إلى النظام');
+            ]);
     }
 }
