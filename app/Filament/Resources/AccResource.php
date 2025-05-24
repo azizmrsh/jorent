@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\Layout\Stack;
 
 class AccResource extends Resource
 {
@@ -82,29 +86,7 @@ class AccResource extends Resource
                         'xl' => 4,
                     ]
             )
-            ->filters([
-                Tables\Filters\Filter::make('firstname'),
-                Tables\Filters\Filter::make('lastname'),
-                Tables\Filters\Filter::make('email'),
-                Tables\Filters\Filter::make('phone'),
-                Tables\Filters\Filter::make('address'),
-                Tables\Filters\Filter::make('birth_date'),
-                Tables\Filters\SelectFilter::make('status')->options([
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                ]),
-                Tables\Filters\SelectFilter::make('document_type')->options([
-                    'passport' => 'Passport',
-                    'id_card' => 'ID Card',
-                    'driver_license' => 'Driver License',
-                    'residency_permit' => 'Residency Permit',
-                    'other' => 'Other',
-                ]),
-                Tables\Filters\Filter::make('document_number'),
-                Tables\Filters\Filter::make('nationality'),
-                Tables\Filters\Filter::make('hired_date'),
-                Tables\Filters\Filter::make('hired_by'),
-            ])
+            ->filters([])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
@@ -133,20 +115,20 @@ class AccResource extends Resource
     public static function getGridTableColumns(): array
     {
         return [
-            Tables\Columns\ImageColumn::make('profile_photo')
-                ->label('Photo')
-                ->size(60)
-                ->circular(),
+            Grid::make()
+                ->schema([
+                    ImageColumn::make('profile_photo')
+                        ->label('')
+                        ->size(60)
+                        ->circular(),
 
-            Tables\Columns\TextColumn::make('firstname')
-                ->label('First Name')
-                ->weight('bold'),
-
-            Tables\Columns\TextColumn::make('email')
-                ->label('Email'),
-
-            Tables\Columns\TextColumn::make('phone')
-                ->label('Phone'),
+                    Stack::make([
+                        TextColumn::make('firstname')->weight('bold'),
+                        TextColumn::make('email')->size('sm')->color('gray'),
+                        TextColumn::make('phone')->size('sm')->color('gray'),
+                    ]),
+                ])
+                ->extraAttributes(['class' => 'bg-white p-4 rounded-lg shadow border'])
         ];
     }
 
