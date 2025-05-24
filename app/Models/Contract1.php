@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contract1 extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'landlord_name',
         'tenant_id',
@@ -46,4 +49,3 @@ class Contract1 extends Model
 
     
 }
-// Compare this snippet from app/Models/Tenant.php:
