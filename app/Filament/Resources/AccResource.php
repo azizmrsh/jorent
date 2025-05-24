@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
+use Filament\Tables\Columns\Layout\Card;
 
 class AccResource extends Resource
 {
@@ -133,9 +134,12 @@ class AccResource extends Resource
     public static function getGridTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('firstname')->label('First Name')->toggleable(),
-            Tables\Columns\TextColumn::make('email')->label('Email')->toggleable(),
-            Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(60)->circular()->toggleable(),
+            Card::make([
+                Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(60)->circular(),
+                Tables\Columns\TextColumn::make('firstname')->label('First Name')->weight('bold'),
+                Tables\Columns\TextColumn::make('email')->label('Email'),
+                Tables\Columns\TextColumn::make('phone')->label('Phone'),
+            ])->columns(1),
         ];
     }
 
