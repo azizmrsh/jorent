@@ -26,41 +26,40 @@ class AccResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Fieldset::make('Personal Information')->schema([
-                    Forms\Components\TextInput::make('firstname')->required()->label('First Name')->maxLength(255),
-                    Forms\Components\TextInput::make('midname')->label('Middle Name')->maxLength(255),
-                    Forms\Components\TextInput::make('lastname')->label('Last Name')->maxLength(255),
-                    Forms\Components\DatePicker::make('birth_date')->label('Birth Date'),
-                    Forms\Components\TextInput::make('nationality')->label('Nationality')->maxLength(255),
-                ]),
-                Forms\Components\Fieldset::make('Contact Information')->schema([
-                    Forms\Components\TextInput::make('email')->label('Email')->email()->maxLength(255),
-                    Forms\Components\TextInput::make('phone')->label('Phone')->maxLength(255),
-                    Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
-                ]),
-                Forms\Components\Fieldset::make('Profile Information')->schema([
-                    Forms\Components\FileUpload::make('profile_photo')->label('Profile Photo')->image()->directory('uploads/images')->maxSize(1024),
-                    Forms\Components\TextInput::make('password')->required()->label('Password')->password()->maxLength(255)->dehydrated(fn ($state) => filled($state))->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
-                    Forms\Components\TextInput::make('status')->required()->label('Status')->maxLength(255)->default('active'),
-                ]),
-                Forms\Components\Fieldset::make('Document Information')->schema([
-                    Forms\Components\Select::make('document_type')->label('Document Type')->options([
-                        'passport' => 'Passport',
-                        'id_card' => 'ID Card',
-                        'driver_license' => 'Driver License',
-                        'residency_permit' => 'Residency Permit',
-                        'other' => 'Other',
-                    ])->default('passport'),
-                    Forms\Components\TextInput::make('document_number')->label('Document Number')->maxLength(255),
-                    Forms\Components\FileUpload::make('document_photo')->label('Document Photo')->image()->directory('uploads/images')->maxSize(1024),
-                ]),
-                Forms\Components\Fieldset::make('Employment Information')->schema([
-                    Forms\Components\DatePicker::make('hired_date')->default(now())->label('Hired Date')->disabled(),
-                    Forms\Components\TextInput::make('hired_by')->default(\Illuminate\Support\Facades\Auth::user()?->name)->label('Hired By')->maxLength(255)->disabled(),
-                ]),
-            ]);
+        return $form->schema([
+            Forms\Components\Fieldset::make('Personal Information')->schema([
+                Forms\Components\TextInput::make('firstname')->label('First Name')->required()->maxLength(255),
+                Forms\Components\TextInput::make('midname')->label('Middle Name')->maxLength(255),
+                Forms\Components\TextInput::make('lastname')->label('Last Name')->maxLength(255),
+                Forms\Components\DatePicker::make('birth_date')->label('Birth Date'),
+                Forms\Components\TextInput::make('nationality')->label('Nationality')->maxLength(255),
+            ]),
+            Forms\Components\Fieldset::make('Contact Information')->schema([
+                Forms\Components\TextInput::make('email')->label('Email')->email()->maxLength(255),
+                Forms\Components\TextInput::make('phone')->label('Phone')->maxLength(255),
+                Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
+            ]),
+            Forms\Components\Fieldset::make('Profile Information')->schema([
+                Forms\Components\FileUpload::make('profile_photo')->label('Profile Photo')->image()->directory('uploads/images')->maxSize(1024),
+                Forms\Components\TextInput::make('password')->label('Password')->password()->maxLength(255)->required()->dehydrated(fn ($state) => filled($state))->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
+                Forms\Components\TextInput::make('status')->label('Status')->required()->maxLength(255)->default('active'),
+            ]),
+            Forms\Components\Fieldset::make('Document Information')->schema([
+                Forms\Components\Select::make('document_type')->label('Document Type')->options([
+                    'passport' => 'Passport',
+                    'id_card' => 'ID Card',
+                    'driver_license' => 'Driver License',
+                    'residency_permit' => 'Residency Permit',
+                    'other' => 'Other',
+                ])->default('passport'),
+                Forms\Components\TextInput::make('document_number')->label('Document Number')->maxLength(255),
+                Forms\Components\FileUpload::make('document_photo')->label('Document Photo')->image()->directory('uploads/images')->maxSize(1024),
+            ]),
+            Forms\Components\Fieldset::make('Employment Information')->schema([
+                Forms\Components\DatePicker::make('hired_date')->default(now())->label('Hired Date')->disabled(),
+                Forms\Components\TextInput::make('hired_by')->default(\Illuminate\Support\Facades\Auth::user()?->name)->label('Hired By')->maxLength(255)->disabled(),
+            ]),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -87,17 +86,14 @@ class AccResource extends Resource
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
                     ->fileName('accounts-export')
-                    ->defaultFormat('xlsx') // xlsx, csv, pdf
+                    ->defaultFormat('xlsx') // pdf | csv
                     ->defaultPageOrientation('landscape')
                     ->disablePreview(),
-            ])
-            ->filters([
-                // Filters as before
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make()
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
