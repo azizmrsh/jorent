@@ -65,11 +65,23 @@ class AccResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->contentGrid([
-                'md' => 2,
-                'xl' => 3,
-            ])
+        $livewire = $table->getLivewire();
+
+    return $table
+        ->columns(
+            $livewire->isGridLayout()
+                ? static::getGridTableColumns()
+                : static::getListTableColumns()
+        )
+        ->contentGrid(
+            fn () => $livewire->isListLayout()
+                ? null
+                : [
+                    'md' => 2,
+                    'lg' => 3,
+                    'xl' => 4,
+                ]
+        )
             ->columns([
                 Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable()->columnSpan(1),
                 Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable()->columnSpan(1),
