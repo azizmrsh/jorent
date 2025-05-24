@@ -53,8 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugins([
-                TableLayoutTogglePlugin::class, // ✅ تم التعديل هنا
-            ]);
+          ->plugins([
+    TableLayoutTogglePlugin::make(),
+          ]);
+
+
     }
 }
