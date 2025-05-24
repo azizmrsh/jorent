@@ -12,8 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use Filament\Tables\Filters\TextFilter;
-use Filament\Tables\Filters\SelectFilter;
+
 
 class AccResource extends Resource
 {
@@ -84,29 +83,30 @@ class AccResource extends Resource
                 Tables\Columns\TextColumn::make('hired_date')->label('Hired Date')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('hired_by')->label('Hired By')->searchable()->sortable()->toggleable(),
             ])
-            ->filters([
-                TextFilter::make('firstname'),
-                TextFilter::make('lastname'),
-                TextFilter::make('email'),
-                TextFilter::make('phone'),
-                TextFilter::make('address'),
-                TextFilter::make('birth_date'),
-                SelectFilter::make('status')->options([
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                ]),
-                SelectFilter::make('document_type')->options([
-                    'passport' => 'Passport',
-                    'id_card' => 'ID Card',
-                    'driver_license' => 'Driver License',
-                    'residency_permit' => 'Residency Permit',
-                    'other' => 'Other',
-                ]),
-                TextFilter::make('document_number'),
-                TextFilter::make('nationality'),
-                TextFilter::make('hired_date'),
-                TextFilter::make('hired_by'),
-            ])
+->filters([
+    Tables\Filters\Filter::make('firstname'),
+    Tables\Filters\Filter::make('lastname'),
+    Tables\Filters\Filter::make('email'),
+    Tables\Filters\Filter::make('phone'),
+    Tables\Filters\Filter::make('address'),
+    Tables\Filters\Filter::make('birth_date'),
+    Tables\Filters\SelectFilter::make('status')->options([
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+    ]),
+    Tables\Filters\SelectFilter::make('document_type')->options([
+        'passport' => 'Passport',
+        'id_card' => 'ID Card',
+        'driver_license' => 'Driver License',
+        'residency_permit' => 'Residency Permit',
+        'other' => 'Other',
+    ]),
+    Tables\Filters\Filter::make('document_number'),
+    Tables\Filters\Filter::make('nationality'),
+    Tables\Filters\Filter::make('hired_date'),
+    Tables\Filters\Filter::make('hired_by'),
+])
+
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
