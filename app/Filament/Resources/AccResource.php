@@ -83,7 +83,7 @@ class AccResource extends Resource
                     : [
                         'md' => 2,
                         'lg' => 3,
-                        'xl' => 4,
+                        'xl' => 3,
                     ]
             )
             ->filters([])
