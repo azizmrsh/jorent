@@ -85,6 +85,7 @@ class AccResource extends Resource
             ])
 ->filters([
     Tables\Filters\Filter::make('firstname'),
+    Tables\Filters\Filter::make('midname'),
     Tables\Filters\Filter::make('lastname'),
     Tables\Filters\Filter::make('email'),
     Tables\Filters\Filter::make('phone'),
@@ -103,6 +104,23 @@ class AccResource extends Resource
     ]),
     Tables\Filters\Filter::make('document_number'),
     Tables\Filters\Filter::make('nationality'),
+    Tables\Filters\TernaryFilter::make('profile_photo')
+        ->label('Has Profile Photo')
+        ->trueLabel('With Photo')
+        ->falseLabel('Without Photo')
+        ->queries(
+            true: fn (Builder $query) => $query->whereNotNull('profile_photo')->where('profile_photo', '!=', ''),
+            false: fn (Builder $query) => $query->whereNull('profile_photo')->orWhere('profile_photo', ''),
+        ),
+    Tables\Filters\TernaryFilter::make('document_photo')
+        ->label('Has Document Photo')
+        ->trueLabel('With Photo')
+        ->falseLabel('Without Photo')
+        ->queries(
+            true: fn (Builder $query) => $query->whereNotNull('document_photo')->where('document_photo', '!=', ''),
+            false: fn (Builder $query) => $query->whereNull('document_photo')->orWhere('document_photo', ''),
+        ),
+        
     Tables\Filters\Filter::make('hired_date'),
     Tables\Filters\Filter::make('hired_by'),
 ])
