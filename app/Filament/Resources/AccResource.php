@@ -70,24 +70,24 @@ class AccResource extends Resource
     public static function table(Table $table): Table
     {
         $livewire = $table->getLivewire();
+        $isGrid = $livewire->isGridLayout();
 
         return $table
             ->columns(
-                $livewire->isGridLayout()
+                $isGrid
                     ? static::getGridTableColumns()
                     : static::getListTableColumns()
             )
             ->contentGrid(
-                fn () => $livewire->isListLayout()
-                    ? null
-                    : [
-                        'md' => 2,
-                        'lg' => 3,
-                        'xl' => 3,
-                    ]
+                fn () => $isGrid
+                    ? [ 'md' => 1, 'lg' => 1, 'xl' => 3 ]
+                    : null
             )
-            ->filters([])
-            ->headerActions([
+            ->filters($isGrid ? [] : [
+                Tables\Filters\Filter::make('firstname'),
+                Tables\Filters\Filter::make('email'),
+            ])
+            ->headerActions($isGrid ? [] : [
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
                     ->fileName('accounts-export')
@@ -100,7 +100,7 @@ class AccResource extends Resource
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
+            ->bulkActions($isGrid ? [] : [
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     FilamentExportBulkAction::make('export-selected')
@@ -123,12 +123,12 @@ class AccResource extends Resource
                         ->circular(),
 
                     Stack::make([
-                        TextColumn::make('firstname')->weight('bold'),
+                        TextColumn::make('firstname')->weight('bold')->size('lg'),
                         TextColumn::make('email')->size('sm')->color('gray'),
                         TextColumn::make('phone')->size('sm')->color('gray'),
                     ]),
                 ])
-                ->extraAttributes(['class' => 'bg-white p-4 rounded-lg shadow border'])
+                ->extraAttributes(['class' => 'bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-all'])
         ];
     }
 
