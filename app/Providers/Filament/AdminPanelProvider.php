@@ -50,6 +50,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+             ->plugins([
+            TableLayoutTogglePlugin::make()
+                ->defaultLayout('grid') // تعيين العرض الافتراضي إلى الشبكة
+                ->persistLayoutInLocalStorage(true), // حفظ تفضيل المستخدم في التخزين المحلي
+        ]);
     }
 }

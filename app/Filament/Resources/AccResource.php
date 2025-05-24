@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 
 class AccResource extends Resource
 {
@@ -66,65 +66,50 @@ class AccResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('address')->label('Address')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('birth_date')->label('Birth Date')->searchable()->sortable()->toggleable(),
-                Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('status')->label('Status')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('document_type')->label('Document Type')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('document_number')->label('Document Number')->searchable()->sortable()->toggleable(),
-                Tables\Columns\ImageColumn::make('document_photo')->label('Document Photo')->circular()->size(40)->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('nationality')->label('Nationality')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('hired_date')->label('Hired Date')->searchable()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('hired_by')->label('Hired By')->searchable()->sortable()->toggleable(),
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
             ])
-->filters([
-    Tables\Filters\Filter::make('firstname'),
-    Tables\Filters\Filter::make('midname'),
-    Tables\Filters\Filter::make('lastname'),
-    Tables\Filters\Filter::make('email'),
-    Tables\Filters\Filter::make('phone'),
-    Tables\Filters\Filter::make('address'),
-    Tables\Filters\Filter::make('birth_date'),
-    Tables\Filters\SelectFilter::make('status')->options([
-        'active' => 'Active',
-        'inactive' => 'Inactive',
-    ]),
-    Tables\Filters\SelectFilter::make('document_type')->options([
-        'passport' => 'Passport',
-        'id_card' => 'ID Card',
-        'driver_license' => 'Driver License',
-        'residency_permit' => 'Residency Permit',
-        'other' => 'Other',
-    ]),
-    Tables\Filters\Filter::make('document_number'),
-    Tables\Filters\Filter::make('nationality'),
-    Tables\Filters\TernaryFilter::make('profile_photo')
-        ->label('Has Profile Photo')
-        ->trueLabel('With Photo')
-        ->falseLabel('Without Photo')
-        ->queries(
-            true: fn (Builder $query) => $query->whereNotNull('profile_photo')->where('profile_photo', '!=', ''),
-            false: fn (Builder $query) => $query->whereNull('profile_photo')->orWhere('profile_photo', ''),
-        ),
-    Tables\Filters\TernaryFilter::make('document_photo')
-        ->label('Has Document Photo')
-        ->trueLabel('With Photo')
-        ->falseLabel('Without Photo')
-        ->queries(
-            true: fn (Builder $query) => $query->whereNotNull('document_photo')->where('document_photo', '!=', ''),
-            false: fn (Builder $query) => $query->whereNull('document_photo')->orWhere('document_photo', ''),
-        ),
-        
-    Tables\Filters\Filter::make('hired_date'),
-    Tables\Filters\Filter::make('hired_by'),
-])
-
+            ->columns([
+                Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('address')->label('Address')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('birth_date')->label('Birth Date')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('status')->label('Status')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('document_type')->label('Document Type')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('document_number')->label('Document Number')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\ImageColumn::make('document_photo')->label('Document Photo')->circular()->size(40)->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('nationality')->label('Nationality')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('hired_date')->label('Hired Date')->searchable()->sortable()->toggleable()->columnSpan(1),
+                Tables\Columns\TextColumn::make('hired_by')->label('Hired By')->searchable()->sortable()->toggleable()->columnSpan(1),
+            ])
+            ->filters([
+                Tables\Filters\Filter::make('firstname'),
+                Tables\Filters\Filter::make('lastname'),
+                Tables\Filters\Filter::make('email'),
+                Tables\Filters\Filter::make('phone'),
+                Tables\Filters\Filter::make('address'),
+                Tables\Filters\Filter::make('birth_date'),
+                Tables\Filters\SelectFilter::make('status')->options([
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                ]),
+                Tables\Filters\SelectFilter::make('document_type')->options([
+                    'passport' => 'Passport',
+                    'id_card' => 'ID Card',
+                    'driver_license' => 'Driver License',
+                    'residency_permit' => 'Residency Permit',
+                    'other' => 'Other',
+                ]),
+                Tables\Filters\Filter::make('document_number'),
+                Tables\Filters\Filter::make('nationality'),
+                Tables\Filters\Filter::make('hired_date'),
+                Tables\Filters\Filter::make('hired_by'),
+            ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
