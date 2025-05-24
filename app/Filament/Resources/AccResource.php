@@ -161,4 +161,25 @@ class AccResource extends Resource
             'edit' => Pages\EditAcc::route('/{record}/edit'),
         ];
     }
+
+    public static function getGridTableColumns(): array
+{
+    return [
+        Tables\Columns\TextColumn::make('firstname')->label('First Name')->toggleable(),
+        Tables\Columns\TextColumn::make('email')->label('Email')->toggleable(),
+        Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(50)->circular()->toggleable(),
+    ];
+}
+
+public static function getListTableColumns(): array
+{
+    return [
+        Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
+        Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
+        Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable(),
+        Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable(),
+        Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(40)->circular()->toggleable(),
+    ];
+}
+
 }
