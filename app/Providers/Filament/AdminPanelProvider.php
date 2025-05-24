@@ -18,6 +18,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+// 👇 هذا هو السطر المهم
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -36,7 +39,6 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -51,10 +53,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-             ->plugins([
-            TableLayoutTogglePlugin::make()
-                ->defaultLayout('grid') // تعيين العرض الافتراضي إلى الشبكة
-                ->persistLayoutInLocalStorage(true), // حفظ تفضيل المستخدم في التخزين المحلي
-        ]);
+            ->plugins([
+                TableLayoutTogglePlugin::class, // ✅ تم التعديل هنا
+            ]);
     }
 }
