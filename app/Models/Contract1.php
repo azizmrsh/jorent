@@ -39,5 +39,11 @@ class Contract1 extends Model
     {
         return $this->belongsTo(\App\Models\Property::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\Payment::class);
+    }
+
+    
 }
 // Compare this snippet from app/Models/Tenant.php:
