@@ -67,38 +67,21 @@ class AccResource extends Resource
     {
         $livewire = $table->getLivewire();
 
-    return $table
-        ->columns(
-            $livewire->isGridLayout()
-                ? static::getGridTableColumns()
-                : static::getListTableColumns()
-        )
-        ->contentGrid(
-            fn () => $livewire->isListLayout()
-                ? null
-                : [
-                    'md' => 2,
-                    'lg' => 3,
-                    'xl' => 4,
-                ]
-        )
-            ->columns([
-                Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('address')->label('Address')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('birth_date')->label('Birth Date')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('status')->label('Status')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('document_type')->label('Document Type')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('document_number')->label('Document Number')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\ImageColumn::make('document_photo')->label('Document Photo')->circular()->size(40)->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('nationality')->label('Nationality')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('hired_date')->label('Hired Date')->searchable()->sortable()->toggleable()->columnSpan(1),
-                Tables\Columns\TextColumn::make('hired_by')->label('Hired By')->searchable()->sortable()->toggleable()->columnSpan(1),
-            ])
+        return $table
+            ->columns(
+                $livewire->isGridLayout()
+                    ? static::getGridTableColumns()
+                    : static::getListTableColumns()
+            )
+            ->contentGrid(
+                fn () => $livewire->isListLayout()
+                    ? null
+                    : [
+                        'md' => 2,
+                        'lg' => 3,
+                        'xl' => 4,
+                    ]
+            )
             ->filters([
                 Tables\Filters\Filter::make('firstname'),
                 Tables\Filters\Filter::make('lastname'),
@@ -147,6 +130,28 @@ class AccResource extends Resource
             ]);
     }
 
+    public static function getGridTableColumns(): array
+    {
+        return [
+            Tables\Columns\TextColumn::make('firstname')->label('First Name')->toggleable(),
+            Tables\Columns\TextColumn::make('email')->label('Email')->toggleable(),
+            Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(60)->circular()->toggleable(),
+        ];
+    }
+
+    public static function getListTableColumns(): array
+    {
+        return [
+            Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
+            Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable(),
+            Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
+            Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable(),
+            Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable(),
+            Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable(),
+            Tables\Columns\TextColumn::make('status')->label('Status')->searchable()->sortable()->toggleable(),
+        ];
+    }
+
     public static function getRelations(): array
     {
         return [];
@@ -161,25 +166,4 @@ class AccResource extends Resource
             'edit' => Pages\EditAcc::route('/{record}/edit'),
         ];
     }
-
-    public static function getGridTableColumns(): array
-{
-    return [
-        Tables\Columns\TextColumn::make('firstname')->label('First Name')->toggleable(),
-        Tables\Columns\TextColumn::make('email')->label('Email')->toggleable(),
-        Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(50)->circular()->toggleable(),
-    ];
-}
-
-public static function getListTableColumns(): array
-{
-    return [
-        Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
-        Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
-        Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable()->toggleable(),
-        Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable(),
-        Tables\Columns\ImageColumn::make('profile_photo')->label('Photo')->size(40)->circular()->toggleable(),
-    ];
-}
-
 }
