@@ -83,25 +83,25 @@ class AccResource extends Resource
                 Tables\Columns\TextColumn::make('hired_date')->label('Hired Date')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('hired_by')->label('Hired By')->searchable()->sortable()->toggleable(),
             ])
-->filters([
-    Tables\Filters\Filter::make('firstname'),
-    Tables\Filters\Filter::make('midname'),
-    Tables\Filters\Filter::make('lastname'),
-    Tables\Filters\Filter::make('email'),
-    Tables\Filters\Filter::make('phone'),
-    Tables\Filters\Filter::make('address'),
-    Tables\Filters\Filter::make('birth_date'),
-    Tables\Filters\SelectFilter::make('status')->options([
-        'active' => 'Active',
-        'inactive' => 'Inactive',
-    ]),
-    Tables\Filters\SelectFilter::make('document_type')->options([
-        'passport' => 'Passport',
-        'id_card' => 'ID Card',
-        'driver_license' => 'Driver License',
-        'residency_permit' => 'Residency Permit',
-        'other' => 'Other',
-    ]),
+    ->filters([
+        Tables\Filters\Filter::make('firstname'),
+        Tables\Filters\Filter::make('midname'),
+        Tables\Filters\Filter::make('lastname'),
+        Tables\Filters\Filter::make('email'),
+        Tables\Filters\Filter::make('phone'),
+        Tables\Filters\Filter::make('address'),
+        Tables\Filters\Filter::make('birth_date'),
+        Tables\Filters\SelectFilter::make('status')->options([
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+        ]),
+        Tables\Filters\SelectFilter::make('document_type')->options([
+            'passport' => 'Passport',
+            'id_card' => 'ID Card',
+            'driver_license' => 'Driver License',
+            'residency_permit' => 'Residency Permit',
+            'other' => 'Other',
+        ]),
     Tables\Filters\Filter::make('document_number'),
     Tables\Filters\Filter::make('nationality'),
     Tables\Filters\TernaryFilter::make('profile_photo')

@@ -81,7 +81,13 @@ class UserResource extends Resource
                 Tables\Filters\Filter::make('midname')->query(fn (Builder $query): Builder => $query->where('midname', '!=', ''))->label('Middle Name'),
                 Tables\Filters\Filter::make('lastname')->query(fn (Builder $query): Builder => $query->where('lastname', '!=', ''))->label('Last Name'),
                 Tables\Filters\Filter::make('role')->query(fn (Builder $query): Builder => $query->where('role', '!=', ''))->label('Role'),
-                Tables\Filters\Filter::make('status')->query(fn (Builder $query): Builder => $query->where('status', '!=', ''))->label('Status'),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    
+                    ]),
                 Tables\Filters\Filter::make('email')->query(fn (Builder $query): Builder => $query->where('email', '!=', ''))->label('Email'),
                 Tables\Filters\Filter::make('phone')->query(fn (Builder $query): Builder => $query->where('phone', '!=', ''))->label('Phone'),
                 Tables\Filters\Filter::make('address')->query(fn (Builder $query): Builder => $query->where('address', '!=', ''))->label('Address'),
