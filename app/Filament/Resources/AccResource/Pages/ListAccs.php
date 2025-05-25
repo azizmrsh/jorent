@@ -4,9 +4,9 @@ namespace App\Filament\Resources\AccResource\Pages;
 
 use App\Filament\Resources\AccResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
-use Filament\Tables\Actions\Action;
 
 class ListAccs extends ListRecords
 {
@@ -18,12 +18,11 @@ class ListAccs extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            Action::make('Toggle View')
+            Action::make('toggleLayout')
                 ->label('↔ Toggle Layout')
                 ->icon('heroicon-o-view-columns')
                 ->color('gray')
-                ->action(fn () => $this->toggleTableLayout())
-                ->visible(fn () => true),
+                ->action(fn () => $this->toggleTableLayout()),
         ];
     }
 
@@ -33,3 +32,4 @@ class ListAccs extends ListRecords
         $this->setTableLayout($layout === 'grid' ? 'list' : 'grid');
     }
 }
+// osaid
