@@ -37,10 +37,10 @@ class ListAccs extends ListRecords
     protected function getSeparatorBlock(string $label = ''): Stack
     {
         return Stack::make([
-            TextColumn::make('separator')
-                ->label($label)
+            TextColumn::make('label')
+                ->label('')
+                ->default('────────────────────────────── ' . $label)
                 ->color('gray')
-                ->formatStateUsing(fn () => '──────────────────────────────')
                 ->size('sm'),
         ]);
     }
