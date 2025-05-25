@@ -7,6 +7,8 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\Layout\Stack;
 
 class ListAccs extends ListRecords
 {
@@ -31,5 +33,15 @@ class ListAccs extends ListRecords
         $layout = $this->getTableLayout();
         $this->setTableLayout($layout === 'grid' ? 'list' : 'grid');
     }
+
+    protected function getSeparatorBlock(string $label = ''): Stack
+    {
+        return Stack::make([
+            TextColumn::make('separator')
+                ->label($label)
+                ->color('gray')
+                ->formatStateUsing(fn () => '──────────────────────────────')
+                ->size('sm'),
+        ]);
+    }
 }
-// osaid
