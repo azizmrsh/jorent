@@ -19,7 +19,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationGroup = 'Staff Management (Adminstration)';
-    protected static ?string $navigationLabel = 'onwer and managers' ;
+    protected static ?string $navigationLabel = 'managers' ;
     protected static ?string $label = 'onwer and managers ';
     protected static ?string $pluralLabel = 'Onwer and Managers Information';
     protected static ?string $slug = 'managers'; 
