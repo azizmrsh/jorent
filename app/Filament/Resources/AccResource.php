@@ -14,10 +14,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\Grid;
-use Filament\Tables\Actions\Action;
-use Filament\Notifications\Notification;
-use App\Filament\Resources\AccResource\Pages;
-
 
 class AccResource extends Resource
 {
@@ -57,7 +53,11 @@ class AccResource extends Resource
             ->contentGrid(fn () => $isGrid ? ['md' => 1, 'lg' => 1, 'xl' => 3] : null)
             ->filters([])
             ->headerActions([])
-            ->actions([])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
             ->bulkActions([])
             ->paginated(true)
             ->paginationPageOptions([9])
@@ -85,26 +85,6 @@ class AccResource extends Resource
                         TextColumn::make('address')->icon('heroicon-o-map-pin')->color('gray'),
 
                         TextColumn::make('status')->badge()->color(fn ($state) => $state === 'active' ? 'success' : 'danger'),
-
-                        // Separate stacked actions without ->columns()
-                        Stack::make([
-                            Action::make('Send Email')
-                                ->label('✉️ Send Email')
-                                ->icon('heroicon-o-envelope')
-                                ->color('primary')
-                                ->url(fn ($record) => 'mailto:' . $record->email, true)
-                                ->openUrlInNewTab(),
-
-                            Action::make('WhatsApp')
-                                ->label('💬 WhatsApp')
-                                ->icon('heroicon-o-chat-bubble-left-right')
-                                ->color('success')
-                                ->requiresConfirmation()
-                                ->modalHeading('Send WhatsApp Message?')
-                                ->modalDescription('You will be redirected to WhatsApp Web or App.')
-                                ->action(fn ($record) => Notification::make()->title('Opening WhatsApp')->success()->send())
-                                ->url(fn ($record) => 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->phone), true),
-                        ])
                     ])
                 ])
         ];
