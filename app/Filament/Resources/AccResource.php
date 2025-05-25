@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AccResource\Pages\ListAccs;
+use App\Filament\Resources\AccResource\Pages;
 use App\Models\Acc;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,8 +14,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\Grid;
-use App\Filament\Resources\AccResource\Pages;
-
 
 class AccResource extends Resource
 {
@@ -82,7 +80,7 @@ class AccResource extends Resource
                         TextColumn::make('phone')->icon('heroicon-o-phone')->color('gray'),
                         TextColumn::make('nationality')->icon('heroicon-o-globe-alt')->color('gray'),
 
-                        ListAccs::getSeparatorBlock(),
+                        \App\Filament\Resources\AccResource\Pages\ListAccs::getSeparatorBlock(),
 
                         TextColumn::make('address')->icon('heroicon-o-map-pin')->color('gray'),
 
