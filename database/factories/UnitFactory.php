@@ -51,6 +51,7 @@ class UnitFactory extends Factory
             'features' => $unitFeatures,
             'status' => $this->faker->randomElement(['available', 'occupied', 'maintenance', 'reserved']),
             'unit_type' => $this->faker->randomElement($unitTypes),
+            'rental_price' => $this->faker->randomFloat(2, 500, 5000),
         ];
     }
     
