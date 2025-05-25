@@ -1313,7 +1313,7 @@
             <!-- Team Member 3 -->
             <div class="col-lg-4 col-md-6">
                 <div class="team-card">
-                    <img src="public//kh.jpg" 
+                    <img src="public/kh.jpg" 
                          alt="Khaleel Ibrahim Saeed Birjas" 
                          class="team-photo">
                     
