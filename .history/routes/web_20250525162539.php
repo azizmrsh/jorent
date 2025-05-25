@@ -8,9 +8,9 @@ Route::get('/', function () {
     return view('home', ['title' => 'jhome - Property Management Solution']);
 })->name('home');
 
-// Route::get('/admin', function (){
-//     return redirect('/admin');
-// });
+Route::get('/admin', function () {
+    return redirect('/admin');
+});
 
 // Property Grid routes
 Route::get('property-grid', [PropertyGridController::class, 'index'])->name('property.grid');
