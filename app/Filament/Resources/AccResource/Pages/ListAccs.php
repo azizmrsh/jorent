@@ -34,7 +34,7 @@ class ListAccs extends ListRecords
         $this->setTableLayout($layout === 'grid' ? 'list' : 'grid');
     }
 
-    protected function getSeparatorBlock(string $label = ''): Stack
+    public static function getSeparatorBlock(string $label = ''): Stack
     {
         return Stack::make([
             TextColumn::make('label')
