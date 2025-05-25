@@ -55,7 +55,13 @@ class TenantResource extends Resource
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
                             ->email()
-                            ->maxLength(255),
+                            ->required()
+                            ->maxLength(255)
+                            ->rule('email')
+                            ->validationMessages([
+                                'email' => 'Please enter a valid email address.',
+                                'required' => 'The email field is required.',
+                            ]),
                       Forms\Components\TextInput::make('password')
                             ->required()
                             ->label('Password')
