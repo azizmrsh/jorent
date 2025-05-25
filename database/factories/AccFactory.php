@@ -3,31 +3,40 @@
 namespace Database\Factories;
 
 use App\Models\Acc;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Acc>
+ */
 class AccFactory extends Factory
 {
     protected $model = Acc::class;
-
-    public function definition()
+    
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'firstname' => $this->faker->firstName,
-            'midname' => $this->faker->lastName,
-            'lastname' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
-            'phone' => $this->faker->phoneNumber,
-            'address' => $this->faker->address,
-            'birth_date' => $this->faker->date,
-            'profile_photo' => $this->faker->imageUrl,
-            'password' => bcrypt('password'),
-            'status' => 'active',
-            'document_type' => $this->faker->randomElement(['ID', 'passport', 'driver_license', 'residency_permit', 'other']),
-            'document_number' => $this->faker->randomNumber(8),
-            'document_photo' => $this->faker->imageUrl,
-            'nationality' => $this->faker->country,
-            'hired_date' => $this->faker->date,
-            'hired_by' => $this->faker->name,
+            'firstname' => $this->faker->firstName(),
+            'midname' => $this->faker->optional()->firstName(),
+            'lastname' => $this->faker->lastName(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
+            'address' => $this->faker->address(),
+            'birth_date' => $this->faker->date('Y-m-d', '-18 years'),
+            'profile_photo' => null,
+            'password' => Hash::make('password'),
+            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'document_type' => $this->faker->randomElement(['passport', 'id', 'driver_license']),
+            'document_number' => $this->faker->numerify('DOC-#######'),
+            'document_photo' => null,
+            'nationality' => $this->faker->country(),
+            'hired_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
+            'hired_by' => $this->faker->name(),
         ];
     }
 }

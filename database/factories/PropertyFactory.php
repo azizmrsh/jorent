@@ -2,26 +2,55 @@
 
 namespace Database\Factories;
 
+use App\Models\Acc;
+use App\Models\Address;
 use App\Models\Property;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Property>
+ */
 class PropertyFactory extends Factory
 {
     protected $model = Property::class;
-
-    public function definition()
+    
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
+        // Create features array with random amenities
+        $features = [
+            'parking' => $this->faker->boolean(70),
+            'security' => $this->faker->boolean(60),
+            'gym' => $this->faker->boolean(40),
+            'swimming_pool' => $this->faker->boolean(30),
+            'elevator' => $this->faker->boolean(80),
+            'garden' => $this->faker->boolean(50),
+        ];
+        
         return [
-            'name' => $this->faker->company,
-            'description' => $this->faker->text,
+            'name' => 'Property ' . $this->faker->word() . ' ' . $this->faker->randomNumber(3),
+            'description' => $this->faker->paragraph(),
             'type1' => $this->faker->randomElement(['building', 'villa', 'house', 'warehouse']),
-            'type2' => $this->faker->randomElement(['Commercial', 'Residential', 'Industrial']),
-            'acc_id' => \App\Models\Acc::factory(),
-            'birth_date' => $this->faker->date,
-            'floors_count' => $this->faker->numberBetween(1, 10),
-            'floor_area' => $this->faker->randomFloat(2, 50, 500),
-            'total_area' => $this->faker->randomFloat(2, 100, 1000),
-            'features' => json_encode(['pool', 'garden', 'garage']),
+            'type2' => $this->faker->randomElement(['residential', 'commercial', 'industrial']),
+            'features' => $features,
+            'birth_date' => $this->faker->dateTimeBetween('-30 years', '-1 year'),
+            'floors_count' => $this->faker->numberBetween(1, 20),
+            'floor_area' => $this->faker->randomFloat(2, 100, 1000),
+            'total_area' => $this->faker->randomFloat(2, 1000, 10000),
+            'acc_id' => function () {
+                return Acc::factory()->create()->id;
+            },
+            'images' => json_encode([
+                $this->faker->imageUrl(640, 480, 'property'),
+                $this->faker->imageUrl(640, 480, 'property'),
+            ]),
+            'address_id' => function () {
+                return Address::factory()->create()->id;
+            },
         ];
     }
 }
