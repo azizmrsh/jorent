@@ -1,3 +1,4 @@
+// ✅ إضافة دعم التصدير بثلاث صيغ: Excel, CSV, PDF
 <?php
 
 namespace App\Filament\Resources;
@@ -92,7 +93,7 @@ class UserResource extends Resource
                     ->label('Export')
                     ->fileName('users-export')
                     ->defaultFormat('xlsx')
-                    ->formatOptions(['xlsx', 'csv'])
+                    
                     ->defaultPageOrientation('landscape')
                     ->disablePreview(),
             ])
@@ -108,7 +109,7 @@ class UserResource extends Resource
                         ->label('Export Selected')
                         ->fileName('users-selected')
                         ->defaultFormat('pdf')
-                        ->formatOptions(['pdf', 'xlsx', 'csv'])
+                        
                         ->disablePreview(),
                 ]),
             ]);
