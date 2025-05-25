@@ -5,7 +5,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PropertyGridController;
 
 Route::get('/', function () {
-    return view('home', ['title' => 'jhome - Property Management Solution']);
+    return view('home');
 })->name('home');
 
 Route::get('/admin', function () {
