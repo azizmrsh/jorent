@@ -14,6 +14,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\Grid;
+use App\Filament\Resources\AccResource\Pages;
+
 
 class AccResource extends Resource
 {
