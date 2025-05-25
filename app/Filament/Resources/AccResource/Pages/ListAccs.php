@@ -24,11 +24,4 @@ class ListAccs extends ListRecords
         ];
     }
 
-    protected function toggleTableLayout(): void
-    {
-        $layout = $this->tableLayout;
-        $this->tableLayout = $layout === 'grid' ? 'list' : 'grid';
-    }
-
-
 }
