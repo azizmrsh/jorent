@@ -12,6 +12,7 @@ use Filament\Tables\Columns\Layout\Stack;
 
 class ListAccs extends ListRecords
 {
+    protected string $tableLayout = 'grid';
     
     protected static string $resource = AccResource::class;
 
@@ -23,5 +24,11 @@ class ListAccs extends ListRecords
         ];
     }
 
-  
+    protected function toggleTableLayout(): void
+    {
+        $layout = $this->tableLayout;
+        $this->tableLayout = $layout === 'grid' ? 'list' : 'grid';
+    }
+
+
 }
