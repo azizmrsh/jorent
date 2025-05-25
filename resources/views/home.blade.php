@@ -18,8 +18,8 @@
     }
 
     .hero-section {
-        background: linear-gradient(135deg, var(--background-light) 0%, #e2e8f0 100%);
-        min-height: 100vh;
+        background: linear-gradient(135deg, var(--background-light) 0%, #ffffff 100%);
+        min-height: 90vh;
         display: flex;
         align-items: center;
     }
