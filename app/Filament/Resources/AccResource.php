@@ -16,6 +16,8 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
+use App\Filament\Resources\AccResource\Pages;
+
 
 class AccResource extends Resource
 {
