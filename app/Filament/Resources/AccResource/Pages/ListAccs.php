@@ -16,6 +16,11 @@ class ListAccs extends ListRecords
 
     protected static string $resource = AccResource::class;
 
-  
-    
+    protected function getHeaderActions(): array
+    {
+        return [
+           
+        ];
+    }
+
 }
