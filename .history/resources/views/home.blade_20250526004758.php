@@ -1237,7 +1237,7 @@
             <!-- Team Member 1 -->
             <div class="col-lg-4 col-md-6">
                 <div class="team-card">
-                    <img src="public//aziz.jpg"
+                    <img src="https://via.placeholder.com/150/2563eb/ffffff?text=A.H" 
                          alt="Abedal-Aziz Mohammad Rabah Hashlamoun" 
                          class="team-photo">
                     
@@ -1248,7 +1248,7 @@
                         Lead Developer & Co-Founder
                     </div>
                     
-                    <p class="team-major">Computer Science</p>
+                    <p class="team-major">Computer Science </p>
                     
                     <p class="team-bio">
                         Passionate full-stack developer with expertise in Laravel and modern web technologies. 
@@ -1286,7 +1286,7 @@
                         Software Engineer & Co-Founder
                     </div>
                     
-                    <p class="team-major">Software Engineering</p>
+                    <p class="team-major">Software Engineering Student</p>
                     
                     <p class="team-bio">
                         Expert in software architecture and development methodologies with a focus on scalable solutions. 
@@ -1324,7 +1324,7 @@
                         Network Security & Co-Founder
                     </div>
                     
-                    <p class="team-major">Computer Network Systems</p>
+                    <p class="team-major">Computer Network Systems Student</p>
                     
                     <p class="team-bio">
                         Specialist in network infrastructure, cybersecurity, and system administration. 

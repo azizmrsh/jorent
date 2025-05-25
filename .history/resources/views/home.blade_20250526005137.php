@@ -1237,7 +1237,7 @@
             <!-- Team Member 1 -->
             <div class="col-lg-4 col-md-6">
                 <div class="team-card">
-                    <img src="public//aziz.jpg"
+                    <img src="C:\Users\mzyz2\Desktop\الجامعة\last\FinalProject\project\jorentV2\public\images\WhatsApp Image 2025-05-25 at 23.44.09_5b467d0f.jpg"
                          alt="Abedal-Aziz Mohammad Rabah Hashlamoun" 
                          class="team-photo">
                     

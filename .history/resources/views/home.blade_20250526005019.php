@@ -1237,7 +1237,7 @@
             <!-- Team Member 1 -->
             <div class="col-lg-4 col-md-6">
                 <div class="team-card">
-                    <img src="public//aziz.jpg"
+                    <img src="public/team/Abedal-Aziz_Mohammad_Rabah_Hashlamoun.jpg" 
                          alt="Abedal-Aziz Mohammad Rabah Hashlamoun" 
                          class="team-photo">
                     
