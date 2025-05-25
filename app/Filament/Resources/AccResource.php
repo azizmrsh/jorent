@@ -1,5 +1,7 @@
 <?php
 
+// ✅ Grid view now includes popup confirmation and toast notifications on actions
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AccResource\Pages;
@@ -17,6 +19,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Notifications\Notification;
 
 class AccResource extends Resource
 {
@@ -32,38 +39,15 @@ class AccResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Fieldset::make('Personal Information')->schema([
-                Forms\Components\TextInput::make('firstname')->label('First Name')->required()->maxLength(255),
-                Forms\Components\TextInput::make('midname')->label('Middle Name')->maxLength(255),
-                Forms\Components\TextInput::make('lastname')->label('Last Name')->maxLength(255),
-                Forms\Components\DatePicker::make('birth_date')->label('Birth Date'),
-                Forms\Components\TextInput::make('nationality')->label('Nationality')->maxLength(255),
-            ]),
-            Forms\Components\Fieldset::make('Contact Information')->schema([
-                Forms\Components\TextInput::make('email')->label('Email')->email()->maxLength(255),
-                Forms\Components\TextInput::make('phone')->label('Phone')->maxLength(255),
-                Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
-            ]),
-            Forms\Components\Fieldset::make('Profile Information')->schema([
-                Forms\Components\FileUpload::make('profile_photo')->label('Profile Photo')->image()->directory('uploads/images')->maxSize(1024),
-                Forms\Components\TextInput::make('password')->label('Password')->password()->maxLength(255)->required()->dehydrated(fn ($state) => filled($state))->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
-                Forms\Components\TextInput::make('status')->label('Status')->required()->maxLength(255)->default('active'),
-            ]),
-            Forms\Components\Fieldset::make('Document Information')->schema([
-                Forms\Components\Select::make('document_type')->label('Document Type')->options([
-                    'passport' => 'Passport',
-                    'id_card' => 'ID Card',
-                    'driver_license' => 'Driver License',
-                    'residency_permit' => 'Residency Permit',
-                    'other' => 'Other',
-                ])->default('passport'),
-                Forms\Components\TextInput::make('document_number')->label('Document Number')->maxLength(255),
-                Forms\Components\FileUpload::make('document_photo')->label('Document Photo')->image()->directory('uploads/images')->maxSize(1024),
-            ]),
-            Forms\Components\Fieldset::make('Employment Information')->schema([
-                Forms\Components\DatePicker::make('hired_date')->default(now())->label('Hired Date')->disabled(),
-                Forms\Components\TextInput::make('hired_by')->default(\Illuminate\Support\Facades\Auth::user()?->name)->label('Hired By')->maxLength(255)->disabled(),
-            ]),
+            Forms\Components\TextInput::make('firstname')->label('First Name')->required()->maxLength(255),
+            Forms\Components\TextInput::make('midname')->label('Middle Name')->maxLength(255),
+            Forms\Components\TextInput::make('lastname')->label('Last Name')->maxLength(255),
+            Forms\Components\TextInput::make('email')->label('Email')->email(),
+            Forms\Components\TextInput::make('phone')->label('Phone'),
+            Forms\Components\TextInput::make('address')->label('Address'),
+            Forms\Components\TextInput::make('nationality')->label('Nationality'),
+            Forms\Components\TextInput::make('status')->label('Status'),
+            Forms\Components\FileUpload::make('profile_photo')->image(),
         ]);
     }
 
@@ -74,42 +58,27 @@ class AccResource extends Resource
 
         return $table
             ->columns(
-                $isGrid
-                    ? static::getGridTableColumns()
-                    : static::getListTableColumns()
+                $isGrid ? static::getGridTableColumns() : static::getListTableColumns()
             )
             ->contentGrid(
-                fn () => $isGrid
-                    ? [ 'md' => 1, 'lg' => 1, 'xl' => 3 ]
-                    : null
+                fn () => $isGrid ? ['md' => 1, 'lg' => 1, 'xl' => 3] : null
             )
             ->filters($isGrid ? [] : [
                 Tables\Filters\Filter::make('firstname'),
                 Tables\Filters\Filter::make('email'),
             ])
-            ->headerActions($isGrid ? [] : [
-                FilamentExportHeaderAction::make('export')
-                    ->label('Export')
-                    ->fileName('accounts-export')
-                    ->defaultFormat('xlsx')
-                    ->defaultPageOrientation('landscape')
-                    ->disablePreview(),
+            ->headerActions([
+                \Hydrat\TableLayoutToggle\Actions\ToggleTableLayoutAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions($isGrid ? [] : [
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    FilamentExportBulkAction::make('export-selected')
-                        ->label('Export Selected')
-                        ->fileName('accounts-selected')
-                        ->defaultFormat('pdf')
-                        ->disablePreview(),
-                ]),
-            ]);
+            ->bulkActions([])
+            ->paginated(true)
+            ->paginationPageOptions([9])
+            ->defaultPaginationPageOption(9);
     }
 
     public static function getGridTableColumns(): array
@@ -119,16 +88,62 @@ class AccResource extends Resource
                 ->schema([
                     ImageColumn::make('profile_photo')
                         ->label('')
-                        ->size(60)
-                        ->circular(),
+                        ->square()
+                        ->size(60),
 
                     Stack::make([
-                        TextColumn::make('firstname')->weight('bold')->size('lg'),
-                        TextColumn::make('email')->size('sm')->color('gray'),
-                        TextColumn::make('phone')->size('sm')->color('gray'),
-                    ]),
+                        TextColumn::make('firstname')
+                            ->weight('bold')
+                            ->size('lg'),
+                        TextColumn::make('email')
+                            ->size('sm')
+                            ->color('gray'),
+                        TextColumn::make('phone')
+                            ->size('sm')
+                            ->color('gray'),
+                        TextColumn::make('nationality')
+                            ->size('sm')
+                            ->color('gray'),
+
+                        TextColumn::make('address')
+                            ->icon('heroicon-o-map-pin')
+                            ->color('gray')
+                            ->size('sm')
+                            ->separatorAbove(),
+
+                        TextColumn::make('status')
+                            ->badge()
+                            ->color(fn ($state) => $state === 'active' ? 'success' : 'danger'),
+
+                        Stack::make([
+                            Action::make('Send Email')
+                                ->label('✉️ Send Email')
+                                ->icon('heroicon-o-envelope')
+                                ->color('primary')
+                                ->action(fn ($record) => Notification::make()
+                                    ->title('Opening Email')
+                                    ->body('Redirecting to email client...')
+                                    ->success()
+                                    ->send())
+                                ->url(fn ($record) => 'mailto:' . $record->email, true),
+
+                            Action::make('WhatsApp')
+                                ->label('💬 WhatsApp')
+                                ->icon('heroicon-o-chat-bubble-left-right')
+                                ->color('success')
+                                ->requiresConfirmation()
+                                ->modalHeading('Send WhatsApp Message?')
+                                ->modalDescription('You will be redirected to WhatsApp Web or App.')
+                                ->action(fn ($record) => Notification::make()
+                                    ->title('Opening WhatsApp')
+                                    ->body('Redirecting to WhatsApp...')
+                                    ->success()
+                                    ->send())
+                                ->url(fn ($record) => 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->phone), true),
+                        ])->separatorAbove(),
+                    ])
                 ])
-                ->extraAttributes(['class' => 'bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-all'])
+                ->extraAttributes(['class' => 'bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-all relative'])
         ];
     }
 
