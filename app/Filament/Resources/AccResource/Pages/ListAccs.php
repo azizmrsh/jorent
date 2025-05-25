@@ -6,6 +6,7 @@ use App\Filament\Resources\AccResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
+use Filament\Tables\Actions\Action;
 
 class ListAccs extends ListRecords
 {
@@ -17,6 +18,18 @@ class ListAccs extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Action::make('Toggle View')
+                ->label('↔ Toggle Layout')
+                ->icon('heroicon-o-view-columns')
+                ->color('gray')
+                ->action(fn () => $this->toggleTableLayout())
+                ->visible(fn () => true),
         ];
+    }
+
+    protected function toggleTableLayout(): void
+    {
+        $layout = $this->getTableLayout();
+        $this->setTableLayout($layout === 'grid' ? 'list' : 'grid');
     }
 }

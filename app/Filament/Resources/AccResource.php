@@ -67,9 +67,9 @@ class AccResource extends Resource
                 Tables\Filters\Filter::make('firstname'),
                 Tables\Filters\Filter::make('email'),
             ])
-            ->headerActions([
-                \Hydrat\TableLayoutToggle\Actions\ToggleTableLayoutAction::make(),
-            ])
+ //           ->headerActions([
+ //               \Hydrat\TableLayoutToggle\Actions\ToggleTableLayoutAction::make(),
+ //           ])
             ->actions([
                 ViewAction::make(),
                 EditAction::make(),
