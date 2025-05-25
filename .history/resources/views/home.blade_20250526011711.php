@@ -1275,7 +1275,7 @@
             <!-- Team Member 2 -->
             <div class="col-lg-4 col-md-6">
                 <div class="team-card">
-                    <img src="public//os.jpg" 
+                    <img src="public/os.jpg" 
                          alt="Osaid Salah Abu Al Haj" 
                          class="team-photo">
                     
