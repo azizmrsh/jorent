@@ -16,8 +16,6 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\AccResource\Pages;
-
 
 class AccResource extends Resource
 {
@@ -86,6 +84,7 @@ class AccResource extends Resource
 
                         TextColumn::make('status')->badge()->color(fn ($state) => $state === 'active' ? 'success' : 'danger'),
 
+                        // Separate stacked actions without ->columns()
                         Stack::make([
                             Action::make('Send Email')
                                 ->label('✉️ Send Email')
@@ -103,7 +102,7 @@ class AccResource extends Resource
                                 ->modalDescription('You will be redirected to WhatsApp Web or App.')
                                 ->action(fn ($record) => Notification::make()->title('Opening WhatsApp')->success()->send())
                                 ->url(fn ($record) => 'https://wa.me/' . preg_replace('/[^0-9]/', '', $record->phone), true),
-                        ])->columns(2),
+                        ])
                     ])
                 ])
         ];
