@@ -1641,7 +1641,7 @@
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="copyright">
                             <p class="mb-0">
-                                &copy; 2025 <span class="brand-highlight">Jorent</span>. All rights reserved.
+                                &copy; 2025 <span class="brand-highlight">jhome</span>. All rights reserved.
                             </p>
                         </div>
                     </div>

@@ -1360,7 +1360,7 @@
                     Ready to Get Started?
                 </h2>
                 <p class="text-muted mb-4 fs-5">
-                    Join hundreds of property owners who trust Jorent to manage their portfolios. 
+                    Join hundreds of property owners who trust jhome to manage their portfolios. 
                     Contact us today for a personalized demo.
                 </p>
                 
@@ -1383,7 +1383,7 @@
                             </div>
                             <div>
                                 <h6 class="fw-bold mb-1">Email Support</h6>
-                                <p class="text-muted mb-0">support@jorent.jo</p>
+                                <p class="text-muted mb-0">support@jhome.jo</p>
                             </div>
                         </div>
                     </div>
@@ -1471,7 +1471,7 @@
                             <div class="logo-icon">
                                 <i class="ri-home-4-fill"></i>
                             </div>
-                            <h3 class="brand-name">Jorent</h3>
+                            <h3 class="brand-name">jhome</h3>
                         </div>
                         <p class="brand-description">
                             Revolutionizing property management with cutting-edge technology. 
@@ -1589,7 +1589,7 @@
                                 <i class="ri-mail-line"></i>
                                 <div>
                                     <span class="contact-label">Email</span>
-                                    <a href="mailto:support@jorent.jo">support@jorent.jo</a>
+                                    <a href="mailto:support@jhome.jo">support@jhome.jo</a>
                                 </div>
                             </div>
                             
@@ -1641,7 +1641,7 @@
                     <div class="col-md-6 mb-3 mb-md-0">
                         <div class="copyright">
                             <p class="mb-0">
-                                &copy; 2025 <span class="brand-highlight">Jorent</span>. All rights reserved.
+                                &copy; 2025 <span class="brand-highlight">jhome</span>. All rights reserved.
                             </p>
                         </div>
                     </div>
