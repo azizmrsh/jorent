@@ -30,8 +30,8 @@ class ListAccs extends ListRecords
 
     protected function toggleTableLayout(): void
     {
-        $layout = $this->getTableLayout();
-        $this->setTableLayout($layout === 'grid' ? 'list' : 'grid');
+        $layout = $this->tableLayout;
+        $this->tableLayout = $layout === 'grid' ? 'list' : 'grid';
     }
 
     public static function getSeparatorBlock(string $label = ''): Stack
