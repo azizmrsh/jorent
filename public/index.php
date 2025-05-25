@@ -17,4 +17,13 @@ require __DIR__.'/../vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$app->handleRequest(Request::capture());
+try {
+    $app->handleRequest(Request::capture());
+} catch (\Illuminate\Database\QueryException $e) {
+    if (str_contains($e->getMessage(), 'max_connections_per_hour')) {
+        http_response_code(503);
+        echo 'Service temporarily unavailable due to database connection limits. Please try again later.';
+        exit;
+    }
+    throw $e;
+}
