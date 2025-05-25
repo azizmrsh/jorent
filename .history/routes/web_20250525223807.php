@@ -15,3 +15,8 @@ Route::post('property-grid/filter', [PropertyGridController::class, 'filter'])->
 
 // Contracts routes
 Route::resource('contracts', ContractController::class);
+
+// Admin login redirect - redirect to Filament admin login
+Route::get('/admin/login', function () {
+    return redirect('/admin/login');
+})->name('admin.login');

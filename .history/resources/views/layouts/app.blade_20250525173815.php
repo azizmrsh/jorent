@@ -109,7 +109,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link" href="/">
                             <iconify-icon icon="solar:home-bold-duotone" class="me-1"></iconify-icon>
                             Dashboard
                         </a>
@@ -121,9 +121,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}" href="{{ route('contracts.index') }}">
+                        <a class="nav-link" href="/contracts">
                             <iconify-icon icon="solar:document-text-bold-duotone" class="me-1"></iconify-icon>
                             Contracts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tenants">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="me-1"></iconify-icon>
+                            Tenants
                         </a>
                     </li>
                     <li class="nav-item">
@@ -135,7 +141,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
+                        <a class="nav-link" href="/admin/login">
                             <iconify-icon icon="solar:login-3-bold" class="me-1"></iconify-icon>
                             Login
                         </a>

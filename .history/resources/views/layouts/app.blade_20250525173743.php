@@ -54,45 +54,6 @@
             align-items: center;
             justify-content: center;
         }
-        
-        /* Navigation improvements */
-        .navbar-nav.mx-auto {
-            text-align: center;
-        }
-        
-        .navbar-nav .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-            border-radius: 0.375rem;
-            margin: 0 0.25rem;
-        }
-        
-        .navbar-nav .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .navbar-nav .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            font-weight: 600;
-        }
-        
-        .navbar-nav .nav-link iconify-icon {
-            font-size: 1.1rem;
-        }
-        
-        @media (max-width: 991.98px) {
-            .navbar-nav.mx-auto {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
-            }
-            
-            .navbar-nav .nav-link {
-                margin: 0.25rem 0;
-            }
-        }
     </style>
 </head>
 <body class="bg-light">
@@ -109,7 +70,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link" href="/">
                             <iconify-icon icon="solar:home-bold-duotone" class="me-1"></iconify-icon>
                             Dashboard
                         </a>
@@ -121,9 +82,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}" href="{{ route('contracts.index') }}">
+                        <a class="nav-link" href="/contracts">
                             <iconify-icon icon="solar:document-text-bold-duotone" class="me-1"></iconify-icon>
                             Contracts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tenants">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="me-1"></iconify-icon>
+                            Tenants
                         </a>
                     </li>
                     <li class="nav-item">
@@ -135,7 +102,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
+                        <a class="nav-link" href="/admin/login">
                             <iconify-icon icon="solar:login-3-bold" class="me-1"></iconify-icon>
                             Login
                         </a>

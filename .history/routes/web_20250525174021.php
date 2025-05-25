@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PropertyGridController;
 
-// Home route
 Route::get('/', function () {
     return view('home', ['title' => 'Home - Property Management Solution']);
 })->name('home');
@@ -15,3 +14,13 @@ Route::post('property-grid/filter', [PropertyGridController::class, 'filter'])->
 
 // Contracts routes
 Route::resource('contracts', ContractController::class);
+
+// Tenants routes
+Route::get('/tenants', function () {
+    return view('tenants', ['title' => 'Tenants', 'subTitle' => 'Manage Tenants']);
+})->name('tenants');
+
+// Admin routes
+Route::get('/admin/login', function () {
+    return redirect('/admin');
+})->name('admin.login');

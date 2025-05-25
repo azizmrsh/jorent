@@ -127,6 +127,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('tenants') ? 'active' : '' }}" href="{{ route('tenants') }}">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="me-1"></iconify-icon>
+                            Tenants
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/admin">
                             <iconify-icon icon="solar:settings-bold-duotone" class="me-1"></iconify-icon>
                             Admin Panel
@@ -135,7 +141,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
+                        <a class="nav-link" href="/admin/login">
                             <iconify-icon icon="solar:login-3-bold" class="me-1"></iconify-icon>
                             Login
                         </a>

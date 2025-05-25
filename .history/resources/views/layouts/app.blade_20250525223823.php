@@ -135,7 +135,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin">
+                        <a class="nav-link" href="/admin/login">
                             <iconify-icon icon="solar:login-3-bold" class="me-1"></iconify-icon>
                             Login
                         </a>
