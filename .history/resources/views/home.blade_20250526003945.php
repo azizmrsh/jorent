@@ -134,7 +134,6 @@
     .stats-section {
         background: var(--primary-color);
         color: white;
-        margin-top: 1.5rem; /* Add simple space above stats section for all screen sizes */
     }
 
     .stat-item {
@@ -303,7 +302,7 @@
     }
     
     .footer-main {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
     
     /* Brand Section */
@@ -902,10 +901,6 @@
             min-height: 70vh;
             text-align: center;
             padding-bottom: 1rem !important; /* Add bottom padding to hero section */
-        }
-        
-        .hero-section .col-lg-6.text-center {
-            margin-top: 2rem; /* Add simple space above the image on mobile */
         }
         
         .pricing-card.featured {

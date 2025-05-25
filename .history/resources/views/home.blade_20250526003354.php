@@ -134,7 +134,6 @@
     .stats-section {
         background: var(--primary-color);
         color: white;
-        margin-top: 1.5rem; /* Add simple space above stats section for all screen sizes */
     }
 
     .stat-item {
@@ -303,7 +302,7 @@
     }
     
     .footer-main {
-        margin-bottom: 1rem;
+        margin-bottom: 3rem;
     }
     
     /* Brand Section */
@@ -904,10 +903,6 @@
             padding-bottom: 1rem !important; /* Add bottom padding to hero section */
         }
         
-        .hero-section .col-lg-6.text-center {
-            margin-top: 2rem; /* Add simple space above the image on mobile */
-        }
-        
         .pricing-card.featured {
             transform: none;
         }
@@ -915,7 +910,7 @@
         /* Fix stats section spacing on mobile */
         .stats-section {
             padding: 1.5rem 0 !important; /* Further reduce from 2rem to 1.5rem */
-            margin-top: 2rem; /* Increase top margin for better separation from hero */
+            margin-top: 1rem; /* Add top margin for better separation from hero */
             margin-bottom: 1rem; /* Add bottom margin for better separation to about */
         }
         

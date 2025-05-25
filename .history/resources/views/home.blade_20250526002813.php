@@ -134,7 +134,6 @@
     .stats-section {
         background: var(--primary-color);
         color: white;
-        margin-top: 1.5rem; /* Add simple space above stats section for all screen sizes */
     }
 
     .stat-item {
@@ -303,7 +302,7 @@
     }
     
     .footer-main {
-        margin-bottom: 1rem;
+        margin-bottom: 3rem;
     }
     
     /* Brand Section */
@@ -901,11 +900,6 @@
         .hero-section {
             min-height: 70vh;
             text-align: center;
-            padding-bottom: 1rem !important; /* Add bottom padding to hero section */
-        }
-        
-        .hero-section .col-lg-6.text-center {
-            margin-top: 2rem; /* Add simple space above the image on mobile */
         }
         
         .pricing-card.featured {
@@ -914,13 +908,11 @@
         
         /* Fix stats section spacing on mobile */
         .stats-section {
-            padding: 1.5rem 0 !important; /* Further reduce from 2rem to 1.5rem */
-            margin-top: 2rem; /* Increase top margin for better separation from hero */
-            margin-bottom: 1rem; /* Add bottom margin for better separation to about */
+            padding: 2rem 0 !important; /* Reduce from py-5 (3rem) to 2rem */
         }
         
         .stat-item {
-            padding: 1rem 0.75rem; /* Further reduce padding inside stat items */
+            padding: 1.25rem 0.75rem; /* Reduce padding inside stat items */
             margin-bottom: 1rem; /* Add some separation between rows */
         }
         
@@ -930,22 +922,7 @@
         
         /* Adjust display text size on mobile */
         .stat-item .display-6 {
-            font-size: 2.25rem; /* Further reduce font size for better mobile experience */
-        }
-        
-        /* Reduce About section padding on mobile for better balance */
-        .section-padding {
-            padding: 3rem 0 !important; /* Reduce from 5rem to 3rem */
-        }
-        
-        /* Adjust team section padding */
-        .team-section {
-            padding: 3rem 0 !important;
-        }
-        
-        /* Adjust contact section padding */
-        .contact-section {
-            padding: 3rem 0 !important;
+            font-size: 2.5rem; /* Slightly smaller than default display-6 */
         }
     }
 </style>

@@ -303,7 +303,7 @@
     }
     
     .footer-main {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
     
     /* Brand Section */
