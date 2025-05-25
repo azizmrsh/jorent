@@ -55,7 +55,20 @@ class TenantResource extends Resource
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
                             ->email()
-                            ->maxLength(255),
+                            ->required()
+                            ->maxLength(255)
+                            ->rule('email')
+                            ->validationMessages([
+                                'email' => 'Please enter a valid email address.',
+                                'required' => 'The email field is required.',
+                            ]),
+                      Forms\Components\TextInput::make('password')
+                            ->required()
+                            ->label('Password')
+                            ->password()
+                            ->maxLength(255)
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
                         Forms\Components\TextInput::make('phone')
                             ->label('Phone')
                             ->maxLength(255),
@@ -72,18 +85,15 @@ class TenantResource extends Resource
                             ->image()
                             ->directory('uploads/images')
                             ->maxSize(1024),
-                        Forms\Components\TextInput::make('password')
-                            ->required()
-                            ->label('Password')
-                            ->password()
-                            ->maxLength(255)
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
-                        Forms\Components\TextInput::make('status')  
+
+                        Forms\Components\Select::make('status')
                             ->required()
                             ->label('Status')
-                            ->maxLength(255)
-                            ->default('active'),
+                            ->options([
+                                'active' => 'Active',
+                                'unactive' => 'Unactive',
+                            ])
+                            ->default('unactive'),
                     ]),
 
                 // Document Information
@@ -117,7 +127,7 @@ class TenantResource extends Resource
                             ->label('Hired Date')
                             ->disabled(),
                         Forms\Components\TextInput::make('hired_by')
-                            ->default(optional(auth()->user())->name)
+                            ->default(optional(\Illuminate\Support\Facades\Auth::user())->name)
                             ->label('Tented by')
                             ->maxLength(255)
                             ->disabled(),

@@ -27,15 +27,7 @@ class Tenant extends Model
         'document_photo',
         'nationality',
         'hired_date',
-        'hired_by',
-        'occupation',
-        'employer',
-        'employer_phone',
-        'emergency_contact_name',
-        'emergency_contact_phone',
-        'notes',
-        'tenant_signature',
-        'landlord_signature'
+        'hired_by'
     ];
 
     protected $casts = [
@@ -45,24 +37,16 @@ class Tenant extends Model
         'hired_date' => 'date',
     ];
 
-    public function address(): MorphOne
-    {
-        return $this->morphOne(Address::class, 'addressable');
-    }
 
     public function contracts()
 {
     return $this->hasMany(Contract1::class);
 }
 
-
-
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
-
-
 
 
     public function getFullNameAttribute(): string

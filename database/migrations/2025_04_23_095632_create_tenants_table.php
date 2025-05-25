@@ -15,28 +15,22 @@ return new class extends Migration
             $table->id();
             $table->string('firstname');
             $table->string('midname')->nullable();
-            $table->string('lastname');
+            $table->string('lastname')->nullable();
             $table->string('email')->unique();
-            $table->string('phone');
+            $table->string('password');
+            $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('profile_photo')->nullable();
-            $table->string('password');
-            $table->string('status')->default('active');
+            $table->enum('status', ['active', 'unactive'])->default('unactive');
             $table->string('document_type')->nullable();
             $table->string('document_number')->nullable();
             $table->string('document_photo')->nullable();
             $table->string('nationality')->nullable();
             $table->date('hired_date')->nullable();
             $table->string('hired_by')->nullable();
-            $table->string('occupation')->nullable();
-            $table->string('employer')->nullable();
-            $table->string('employer_phone')->nullable();
-            $table->string('emergency_contact_name')->nullable();
-            $table->string('emergency_contact_phone')->nullable();
-            $table->text('notes')->nullable();
+            
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
