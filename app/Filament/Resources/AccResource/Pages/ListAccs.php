@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AccResource\Pages;
 
 use App\Filament\Resources\AccResource;
+use App\Filament\Resources\AccResource\Widgets\AccStatsOverview;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
@@ -21,6 +22,13 @@ class ListAccs extends ListRecords
         return [
             Actions\CreateAction::make(),
             
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            AccStatsOverview::class,
         ];
     }
 
