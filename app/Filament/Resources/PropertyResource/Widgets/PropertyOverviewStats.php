@@ -114,5 +114,5 @@ class PropertyOverviewStats extends BaseWidget
     /**
      * عنوان الويدجت
      */
-    protected static ?string $heading = 'Property Usage Statistics';
+    protected ?string $heading = 'Property Usage Statistics';
 }

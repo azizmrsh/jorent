@@ -110,10 +110,8 @@ class PropertyTypesStats extends BaseWidget
     /**
      * تخصيص الارتفاع
      */
-    protected static ?string $maxHeight = '300px';
-
-    /**
+    protected static ?string $maxHeight = '300px';    /**
      * عنوان الويدجت
      */
-    protected static ?string $heading = 'Property Types Distribution';
+    protected ?string $heading = 'Property Types Distribution';
 }
