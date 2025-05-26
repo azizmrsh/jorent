@@ -30,11 +30,10 @@ class UserStatsOverview extends BaseWidget
         
         $newManagersChange = $this->calculatePercentageChange($newThisMonth, $lastMonthTotal);
 
-        return [
-            // 1. إجمالي المديرين
+        return [            // 1. إجمالي المديرين
             Stat::make('Total Managers', $totalManagers)
                 ->description('العدد الكلي للمديرين المسجلين في النظام')
-                ->descriptionIcon('heroicon-m-briefcase')
+                ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
                 ->chart([7, 12, 8, 15, 11, 18, $totalManagers])
                 ->extraAttributes([
@@ -44,7 +43,7 @@ class UserStatsOverview extends BaseWidget
             // 2. المديرين النشطين
             Stat::make('Active Managers', $activeManagers)
                 ->description("{$activePercentage}% من إجمالي المديرين")
-                ->descriptionIcon('heroicon-m-user-check')
+                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success')
                 ->chart([5, 8, 12, 15, 18, 22, $activeManagers])
                 ->extraAttributes([
@@ -54,7 +53,7 @@ class UserStatsOverview extends BaseWidget
             // 3. المديرين غير النشطين/المعلقين
             Stat::make('Inactive/Pending', $inactiveManagers)
                 ->description("{$inactivePercentage}% من إجمالي المديرين")
-                ->descriptionIcon('heroicon-m-user-slash')
+                ->descriptionIcon('heroicon-m-x-circle')
                 ->color('warning')
                 ->chart([2, 3, 1, 4, 2, 1, $inactiveManagers])
                 ->extraAttributes([
@@ -75,8 +74,7 @@ class UserStatsOverview extends BaseWidget
 
     /**
      * حساب نسبة التغيير مع الوصف والأيقونة المناسبة
-     */
-    private function calculatePercentageChange(int $current, int $previous): array
+     */    private function calculatePercentageChange(int $current, int $previous): array
     {
         if ($previous == 0) {
             if ($current > 0) {
@@ -87,7 +85,7 @@ class UserStatsOverview extends BaseWidget
             }
             return [
                 'description' => 'لا توجد إضافات جديدة',
-                'icon' => 'heroicon-m-minus'
+                'icon' => 'heroicon-m-minus-circle'
             ];
         }
 
@@ -106,7 +104,7 @@ class UserStatsOverview extends BaseWidget
         } else {
             return [
                 'description' => 'نفس عدد الشهر الماضي',
-                'icon' => 'heroicon-m-minus'
+                'icon' => 'heroicon-m-minus-circle'
             ];
         }
     }

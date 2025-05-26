@@ -75,8 +75,7 @@ class AccStatsOverview extends BaseWidget
     }
 
     private function calculatePercentageChange($current, $previous): array
-    {
-        if ($previous == 0) {
+    {        if ($previous == 0) {
             if ($current > 0) {
                 return [
                     'description' => '100% increase from last period',
@@ -86,7 +85,7 @@ class AccStatsOverview extends BaseWidget
             }
             return [
                 'description' => 'No change from last period',
-                'icon' => 'heroicon-o-minus',
+                'icon' => 'heroicon-o-minus-circle',
                 'color' => 'gray'
             ];
         }
@@ -108,7 +107,7 @@ class AccStatsOverview extends BaseWidget
         } else {
             return [
                 'description' => 'No change from last period',
-                'icon' => 'heroicon-o-minus',
+                'icon' => 'heroicon-o-minus-circle',
                 'color' => 'gray'
             ];
         }
