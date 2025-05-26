@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
@@ -55,7 +56,7 @@ class PropertyResource extends Resource
                         TextInput::make('floor_area')->label('Floor Area (m²)')->numeric(),
                         TextInput::make('total_area')->label('Total Area (m²)')->numeric(),
                         Forms\Components\Select::make('acc_id')
-                            ->label('acc_id')
+                            ->label('Account Manager')
                             ->relationship('acc', 'firstname')
                             ->required(),
                     ]),
@@ -79,7 +80,7 @@ class PropertyResource extends Resource
             ->columns(1);
     }
 
-    public static function table(Tables\Table $table): Tables\Table
+    public static function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -160,8 +161,8 @@ class PropertyResource extends Resource
                 Tables\Filters\Filter::make('birth_date')
                     ->query(fn (Builder $query): Builder => $query->where('birth_date', '!=', ''))
                     ->label('Construction Date'),
-                Tables\Filters\Filter::make('acc_id')
-                    ->query(fn (Builder $query): Builder => $query->where('acc_id', '!=', ''))
+                Tables\Filters\SelectFilter::make('acc_id')
+                    ->relationship('acc', 'firstname')
                     ->label('Account Manager'),
             ])
             ->headerActions([
