@@ -126,12 +126,12 @@ class AccResource extends Resource
 ])
 
             ->headerActions([
-            //    FilamentExportHeaderAction::make('export')
-            //        ->label('Export')
-            //        ->fileName('accounts-export')
-            //        ->defaultFormat('xlsx')
-            //        ->defaultPageOrientation('landscape')
-            //        ->disablePreview(),
+                FilamentExportHeaderAction::make('export')
+                    ->label('Export')
+                    ->fileName('accounts-export')
+                    ->defaultFormat('xlsx')
+                    ->defaultPageOrientation('landscape')
+                    ->disablePreview(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
