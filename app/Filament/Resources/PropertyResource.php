@@ -122,8 +122,8 @@ class PropertyResource extends Resource
                     ->date()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('full_address')
-                    ->label('Full Address')
+                Tables\Columns\TextColumn::make('address.city')
+                    ->label('City')
                     ->limit(50)
                     ->searchable()
                     ->toggleable(),

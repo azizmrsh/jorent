@@ -79,15 +79,12 @@ class UnitResource extends Resource
                                     ->required()
                                     ->label('Detail Name')
                                     ->options([
-                                        'Area' => 'Area (sqm)',
-                                        
                                         'kitchen' => 'Number of Kitchens',
                                         'bedrooms' => 'Number of Bedrooms',
                                         'bathrooms' => 'Number of Bathrooms',
                                         'balconies' => 'Number of Balconies',
                                         'parking_spaces' => 'Number of Parking Spaces',
                                         'floor' => 'Floor Number',
-                                        
                                     ]),
                                 Forms\Components\TextInput::make('detail_value')
                                     ->required()
@@ -96,7 +93,7 @@ class UnitResource extends Resource
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                         $detailName = $get('detail_name');
-                                        if (in_array($detailName, ['bedrooms', 'bathrooms', 'balconies', 'parking_spaces', 'floor', 'kitchen', 'area'])) {    
+                                        if (in_array($detailName, ['bedrooms', 'bathrooms', 'balconies', 'parking_spaces', 'floor', 'kitchen'])) {    
                                             $set('detail_value', (int) $state);
                                         }
                                     }),
