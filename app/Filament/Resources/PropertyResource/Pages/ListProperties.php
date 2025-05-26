@@ -4,6 +4,10 @@ namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
 use App\Filament\Resources\PropertyResource\Widgets\PropertyStatsOverview;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyOverviewStats;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyTypeDistributionChart;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyMonthlyTrendsChart;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyAdvancedStats;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -21,7 +25,10 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            PropertyStatsOverview::class,
+            PropertyOverviewStats::class,
+            PropertyTypeDistributionChart::class,
+            PropertyMonthlyTrendsChart::class,
+            PropertyAdvancedStats::class,
         ];
     }
 }
