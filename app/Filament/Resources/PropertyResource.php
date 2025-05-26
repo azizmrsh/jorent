@@ -125,7 +125,6 @@ class PropertyResource extends Resource
                 Tables\Columns\TextColumn::make('address.city')
                     ->label('City')
                     ->limit(50)
-                    ->searchable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
@@ -166,9 +165,9 @@ class PropertyResource extends Resource
                     ->label('Account Manager'),
             ])
             ->headerActions([
-                
+
                 FilamentExportHeaderAction::make('export')
-                    ->label('Export Properties')
+                    ->label('Export')
                     ->fileName('properties-export')
                     ->defaultFormat('xlsx')
                     ->defaultPageOrientation('landscape')
