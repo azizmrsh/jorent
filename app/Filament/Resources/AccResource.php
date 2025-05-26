@@ -36,7 +36,17 @@ class AccResource extends Resource
                 Forms\Components\TextInput::make('nationality')->label('Nationality')->maxLength(255),
             ]),
             Forms\Components\Fieldset::make('Contact Information')->schema([
-                Forms\Components\TextInput::make('email')->label('Email')->email()->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->label('Email')
+                    ->email()
+                    ->maxLength(255)
+                    ->required()
+                    ->unique(table: 'accs', column: 'email', ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'هذا البريد الإلكتروني مستخدم مسبقاً. يرجى اختيار بريد آخر.',
+                        'email' => 'يرجى إدخال بريد إلكتروني صحيح.',
+                        'required' => 'البريد الإلكتروني مطلوب.',
+                    ]),
                 Forms\Components\TextInput::make('phone')->label('Phone')->maxLength(255),
                 Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
             ]),
