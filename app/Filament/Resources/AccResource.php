@@ -43,9 +43,9 @@ class AccResource extends Resource
                     ->required()
                     ->unique(table: 'accs', column: 'email', ignoreRecord: true)
                     ->validationMessages([
-                        'unique' => 'هذا البريد الإلكتروني مستخدم مسبقاً. يرجى اختيار بريد آخر.',
-                        'email' => 'يرجى إدخال بريد إلكتروني صحيح.',
-                        'required' => 'البريد الإلكتروني مطلوب.',
+                        'unique' => 'This email address is already in use. Please choose another one',
+                        'email' => 'Please enter a valid email address',
+                        'required' => 'Email is required',
                     ]),
                 Forms\Components\TextInput::make('phone')->label('Phone')->maxLength(255),
                 Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
@@ -77,6 +77,7 @@ class AccResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
@@ -84,7 +85,6 @@ class AccResource extends Resource
                 Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('address')->label('Address')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('birth_date')->label('Birth Date')->searchable()->sortable()->toggleable(),
-                //Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('status')->label('Status')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('document_type')->label('Document Type')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('document_number')->label('Document Number')->searchable()->sortable()->toggleable(),
