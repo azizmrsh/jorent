@@ -77,7 +77,15 @@ class AccResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('profile_photo')->label('Profile Photo')->circular()->size(40)->sortable()->toggleable(),
+                Tables\Columns\ImageColumn::make('profile_photo')
+                    ->label('Profile Photo')
+                    ->circular()
+                    ->size(50)
+                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->disk('public')
+                    ->visibility('public')
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
