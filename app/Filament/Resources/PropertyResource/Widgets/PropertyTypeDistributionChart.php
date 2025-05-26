@@ -8,11 +8,9 @@ use Carbon\Carbon;
 
 class PropertyTypeDistributionChart extends ChartWidget
 {
-    protected static ?string $heading = '📊 Property Type Distribution';
+    protected static ?string $heading = '📊 Property Type Distribution';    protected static ?int $sort = 4;
 
-    protected static ?int $sort = 3;
-
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 6;
 
     protected static ?string $maxHeight = '400px';
 
@@ -88,8 +86,7 @@ class PropertyTypeDistributionChart extends ChartWidget
             'cutout' => '60%',
             'elements' => [
                 'arc' => [
-                    'borderWidth' => 3,
-                ],
+                    'borderWidth' => 3,                ],
             ],
         ];
     }

@@ -29,8 +29,7 @@ class PropertyTypesStats extends BaseWidget
         $apartmentPercentage = $totalProperties > 0 ? round(($apartmentCount / $totalProperties) * 100, 1) : 0;
         $shopPercentage = $totalProperties > 0 ? round(($shopCount / $totalProperties) * 100, 1) : 0;
 
-        return [
-            // 1. الفلل - بنفسجي
+        return [            // 1. الفلل - بنفسجي
             Stat::make('🏰 Villas', number_format($villaCount))
                 ->description("{$villaPercentage}% - فلل فاخرة")
                 ->descriptionIcon('heroicon-m-star')
@@ -100,18 +99,13 @@ class PropertyTypesStats extends BaseWidget
     /**
      * عدد الأعمدة في الشبكة
      */
-    protected int | string | array $columnSpan = 'full';
-
-    /**
+    protected int | string | array $columnSpan = 'full';    /**
      * ترتيب الويدجت
      */
     protected static ?int $sort = 3;
 
     /**
-     * تخصيص الارتفاع
-     */
-    protected static ?string $maxHeight = '300px';    /**
      * عنوان الويدجت
      */
-    protected ?string $heading = 'Property Types Distribution';
+    protected ?string $heading = 'Property Types Breakdown';
 }

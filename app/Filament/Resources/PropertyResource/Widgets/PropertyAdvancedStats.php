@@ -108,10 +108,13 @@ class PropertyAdvancedStats extends BaseWidget
     /**
      * عدد الأعمدة في الشبكة
      */
-    protected int | string | array $columnSpan = 'full';
-
-    /**
+    protected int | string | array $columnSpan = 'full';    /**
      * ترتيب الويدجت
      */
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 6;
+
+    /**
+     * عنوان الويدجت
+     */
+    protected ?string $heading = 'Advanced Analytics';
 }

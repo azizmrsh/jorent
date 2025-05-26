@@ -8,15 +8,9 @@ use Carbon\Carbon;
 
 class PropertyMonthlyTrendsChart extends ChartWidget
 {
-    protected static ?string $heading = '📈 Properties Added - Monthly Trends';
+    protected static ?string $heading = '📈 Properties Added - Monthly Trends';    protected static ?int $sort = 5;
 
-    protected static ?int $sort = 4;
-
-    protected int | string | array $columnSpan = [
-        'sm' => 2,
-        'md' => 6,
-        'lg' => 8,
-    ];
+    protected int | string | array $columnSpan = 6;
 
     protected static ?string $maxHeight = '350px';
 
@@ -102,8 +96,7 @@ class PropertyMonthlyTrendsChart extends ChartWidget
                     'borderWidth' => 1,
                     'cornerRadius' => 8,
                 ],
-            ],
-            'elements' => [
+            ],            'elements' => [
                 'point' => [
                     'hoverBorderWidth' => 3,
                 ],
