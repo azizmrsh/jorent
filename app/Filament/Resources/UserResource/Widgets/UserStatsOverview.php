@@ -32,7 +32,7 @@ class UserStatsOverview extends BaseWidget
 
         return [            // 1. إجمالي المديرين
             Stat::make('Total Managers', $totalManagers)
-                ->description('العدد الكلي للمديرين المسجلين في النظام')
+                ->description('Total number of managers registered in the system')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary')
                 ->chart([7, 12, 8, 15, 11, 18, $totalManagers])
@@ -42,7 +42,7 @@ class UserStatsOverview extends BaseWidget
 
             // 2. المديرين النشطين
             Stat::make('Active Managers', $activeManagers)
-                ->description("{$activePercentage}% من إجمالي المديرين")
+                ->description("{$activePercentage}%  of Total Managers")
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success')
                 ->chart([5, 8, 12, 15, 18, 22, $activeManagers])
@@ -52,7 +52,7 @@ class UserStatsOverview extends BaseWidget
 
             // 3. المديرين غير النشطين/المعلقين
             Stat::make('Inactive/Pending', $inactiveManagers)
-                ->description("{$inactivePercentage}% من إجمالي المديرين")
+                ->description("{$inactivePercentage}% of Total Managers")
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('warning')
                 ->chart([2, 3, 1, 4, 2, 1, $inactiveManagers])
