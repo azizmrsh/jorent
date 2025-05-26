@@ -89,15 +89,15 @@ class AccResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('profile_photo')
-                    ->label('Profile Photo')
-                    ->circular()
-                    ->size(50)
-                    ->defaultImageUrl('data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#e5e7eb"><circle cx="50" cy="50" r="50"/><circle cx="50" cy="35" r="15" fill="#9ca3af"/><ellipse cx="50" cy="75" rx="20" ry="15" fill="#9ca3af"/></svg>'))
-                    ->disk('public')
-                    ->visibility('public')
-                    ->sortable()
-                    ->toggleable(),
+            //    Tables\Columns\ImageColumn::make('profile_photo')
+            //        ->label('Profile Photo')
+            //        ->circular()
+            //        ->size(50)
+            //        ->defaultImageUrl('data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#e5e7eb"><circle cx="50" cy="50" r="50"/><circle cx="50" cy="35" r="15" fill="#9ca3af"/><ellipse cx="50" cy="75" rx="20" ry="15" fill="#9ca3af"/></svg>'))
+            //        ->disk('public')
+            //        ->visibility('public')
+            //        ->sortable()
+            //        ->toggleable(),
                 Tables\Columns\TextColumn::make('firstname')->label('First Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('midname')->label('Middle Name')->searchable()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('lastname')->label('Last Name')->searchable()->sortable()->toggleable(),
