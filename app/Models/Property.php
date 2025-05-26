@@ -53,11 +53,19 @@ class Property extends Model
         $this->attributes['features'] = json_encode($value);
     }
 
+    /**
+     * Get the full address attribute
+     */
+    public function getFullAddressAttribute(): string
+    {
+        return $this->address?->full_address ?? 'No address';
+    }
+
 
     // relationships with table addresses one to one //osaidhaj03
 public function address()
 {
-    return $this->hasOne(Address::class);
+    return $this->belongsTo(Address::class, 'address_id');
 }
 
 
