@@ -51,7 +51,19 @@ class AccResource extends Resource
                 Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
             ]),
             Forms\Components\Fieldset::make('Profile Information')->schema([
-                Forms\Components\FileUpload::make('profile_photo')->label('Profile Photo')->image()->directory('uploads/images')->maxSize(1024),
+                Forms\Components\FileUpload::make('profile_photo')
+                    ->label('Profile Photo')
+                    ->image()
+                    ->directory('profile_photos')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('1:1')
+                    ->imageResizeTargetWidth('300')
+                    ->imageResizeTargetHeight('300')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('password')->label('Password')->password()->maxLength(255)->required()->dehydrated(fn ($state) => filled($state))->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
                 Forms\Components\TextInput::make('status')->label('Status')->required()->maxLength(255)->default('active'),
             ]),
@@ -81,7 +93,7 @@ class AccResource extends Resource
                     ->label('Profile Photo')
                     ->circular()
                     ->size(50)
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl('data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#e5e7eb"><circle cx="50" cy="50" r="50"/><circle cx="50" cy="35" r="15" fill="#9ca3af"/><ellipse cx="50" cy="75" rx="20" ry="15" fill="#9ca3af"/></svg>'))
                     ->disk('public')
                     ->visibility('public')
                     ->sortable()
