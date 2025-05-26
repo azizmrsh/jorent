@@ -8,19 +8,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Carbon\Carbon;
 
 class PropertyOverviewStats extends BaseWidget
-{
-    protected function getStats(): array
+{    protected function getStats(): array
     {
         // إحصائيات Usage Type (الاستخدام)
         $residentialCount = Property::where('type2', 'residential')->count();
         $commercialCount = Property::where('type2', 'commercial')->count();
         $industrialCount = Property::where('type2', 'industrial')->count();
-        
-        // إحصائيات Primary Type (النوع الأساسي)
-        $villaCount = Property::where('type1', 'villa')->count();
-        $houseCount = Property::where('type1', 'house')->count();
-        $warehouseCount = Property::where('type1', 'warehouse')->count();
-        $buildingCount = Property::where('type1', 'building')->count();
         
         // إجمالي العقارات
         $totalProperties = Property::count();
@@ -34,12 +27,10 @@ class PropertyOverviewStats extends BaseWidget
                                ->whereYear('created_at', Carbon::now()->year)
                                ->count();
         
-        // حساب النسب المئوية
+        // حساب النسب المئوية لنوع الاستخدام
         $residentialPercentage = $totalProperties > 0 ? round(($residentialCount / $totalProperties) * 100, 1) : 0;
         $commercialPercentage = $totalProperties > 0 ? round(($commercialCount / $totalProperties) * 100, 1) : 0;
-        $industrialPercentage = $totalProperties > 0 ? round(($industrialCount / $totalProperties) * 100, 1) : 0;
-
-        return [
+        $industrialPercentage = $totalProperties > 0 ? round(($industrialCount / $totalProperties) * 100, 1) : 0;        return [
             // 1. العقارات السكنية - أزرق
             Stat::make('🏠 Residential Properties', number_format($residentialCount))
                 ->description("{$residentialPercentage}% من إجمالي العقارات")
@@ -70,37 +61,17 @@ class PropertyOverviewStats extends BaseWidget
                     'class' => 'bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-l-4 border-orange-500',
                 ]),
 
-            // 4. الفلل - بنفسجي
-            Stat::make('🏰 Villas', number_format($villaCount))
-                ->description('فلل فاخرة')
-                ->descriptionIcon('heroicon-m-star')
-                ->color('purple')
-                ->chart([3, 5, 7, 6, 9, 12, $villaCount])
+            // 4. إجمالي العقارات - أزرق داكن
+            Stat::make('🏘️ Total Properties', number_format($totalProperties))
+                ->description('إجمالي العقارات المسجلة')
+                ->descriptionIcon('heroicon-m-building-storefront')
+                ->color('info')
+                ->chart([15, 20, 25, 23, 30, 35, $totalProperties])
                 ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-l-4 border-purple-500',
+                    'class' => 'bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-800/20 border-l-4 border-indigo-500',
                 ]),
 
-            // 5. المنازل - وردي
-            Stat::make('🏡 Houses', number_format($houseCount))
-                ->description('بيوت سكنية')
-                ->descriptionIcon('heroicon-m-home-modern')
-                ->color('pink')
-                ->chart([4, 6, 8, 7, 10, 13, $houseCount])
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 border-l-4 border-pink-500',
-                ]),
-
-            // 6. المستودعات - رمادي
-            Stat::make('🏪 Warehouses', number_format($warehouseCount))
-                ->description('مستودعات تخزين')
-                ->descriptionIcon('heroicon-m-cube')
-                ->color('gray')
-                ->chart([1, 3, 4, 3, 5, 7, $warehouseCount])
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/20 dark:to-gray-800/20 border-l-4 border-gray-500',
-                ]),
-
-            // 7. إجمالي المساحة - سماوي
+            // 5. إجمالي المساحة - سماوي
             Stat::make('📐 Total Area', number_format($totalArea) . ' m²')
                 ->description('إجمالي مساحة العقارات')
                 ->descriptionIcon('heroicon-m-square-3-stack-3d')
@@ -110,7 +81,7 @@ class PropertyOverviewStats extends BaseWidget
                     'class' => 'bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-sky-800/20 border-l-4 border-sky-500',
                 ]),
 
-            // 8. العقارات الجديدة - أخضر زمردي
+            // 6. العقارات الجديدة - أخضر زمردي
             Stat::make('✨ New This Month', number_format($newThisMonth))
                 ->description('عقارات مضافة هذا الشهر')
                 ->descriptionIcon('heroicon-m-plus-circle')
@@ -135,10 +106,13 @@ class PropertyOverviewStats extends BaseWidget
     /**
      * ترتيب الويدجت
      */
-    protected static ?int $sort = 2;
-
-    /**
+    protected static ?int $sort = 2;    /**
      * تخصيص الارتفاع
      */
     protected static ?string $maxHeight = '300px';
+
+    /**
+     * عنوان الويدجت
+     */
+    protected static ?string $heading = 'Property Usage Statistics';
 }
