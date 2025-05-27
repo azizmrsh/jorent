@@ -47,5 +47,36 @@ class Contract1 extends Model
         return $this->hasMany(\App\Models\Payment::class);
     }
 
+    // Export accessor methods for relationships
+    public function getTenantNameAttribute()
+    {
+        return $this->tenant ? $this->tenant->firstname . ' ' . $this->tenant->lastname : 'N/A';
+    }
+
+    public function getTenantPhoneAttribute()
+    {
+        return $this->tenant?->phone ?? 'N/A';
+    }
+
+    public function getTenantEmailAttribute()
+    {
+        return $this->tenant?->email ?? 'N/A';
+    }
+
+    public function getPropertyNameAttribute()
+    {
+        return $this->property?->name ?? 'N/A';
+    }
+
+    public function getUnitNameAttribute()
+    {
+        return $this->unit?->name ?? 'N/A';
+    }
+
+    public function getRentalPriceAttribute()
+    {
+        return $this->unit?->rental_price ?? 0;
+    }
+
     
 }
