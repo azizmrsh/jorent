@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class PropertiesUnitsOverview extends BaseWidget
 {
-    protected static ?string $heading = '🏢 Properties & Units Overview';
+    protected ?string $heading = '🏢 Properties & Units Overview';
     protected static ?int $sort = 4;
     protected int | string | array $columnSpan = 'full';
 
