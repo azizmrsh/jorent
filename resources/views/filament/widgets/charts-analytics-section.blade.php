@@ -1,9 +1,3 @@
-@php
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyTypeDistributionChart;
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyMonthlyTrendsChart;
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyAdvancedStats;
-@endphp
-
 <div 
     x-data="{ 
         collapsed: true,
@@ -57,37 +51,35 @@
         x-transition:leave-start="opacity-100 transform translate-y-0"
         x-transition:leave-end="opacity-0 transform -translate-y-2"
         class="space-y-6"
-    >
-        <!-- الرسوم البيانية -->
+    >        <!-- الرسوم البيانية -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="widget-container">
-                @livewire(PropertyTypeDistributionChart::class)
+                @livewire('app.filament.resources.property-resource.widgets.property-type-distribution-chart')
             </div>
             
             <div class="widget-container">
-                @livewire(PropertyMonthlyTrendsChart::class)
+                @livewire('app.filament.resources.property-resource.widgets.property-monthly-trends-chart')
             </div>
         </div>
-        
-        <!-- التحليلات المتقدمة -->
+          <!-- التحليلات المتقدمة -->
         <div class="widget-container">
-            @livewire(PropertyAdvancedStats::class)
+            @livewire('app.filament.resources.property-resource.widgets.property-advanced-stats')
         </div>
     </div>
+
+    <style>
+    .widget-container {
+        @apply transform transition-all duration-200 hover:scale-105;
+    }
+
+    .widget-container .fi-wi-chart,
+    .widget-container .fi-wi-stats-overview {
+        @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md;
+    }
+
+    /* تحسين عرض الرسوم البيانية */
+    .widget-container [class*="chart"] {
+        min-height: 350px;
+    }
+    </style>
 </div>
-
-<style>
-.widget-container {
-    @apply transform transition-all duration-200 hover:scale-105;
-}
-
-.widget-container .fi-wi-chart,
-.widget-container .fi-wi-stats-overview {
-    @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md;
-}
-
-/* تحسين عرض الرسوم البيانية */
-.widget-container [class*="chart"] {
-    min-height: 350px;
-}
-</style>

@@ -1,8 +1,3 @@
-@php
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyOverviewStats;
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyQuickStats;
-@endphp
-
 <div 
     x-data="{ 
         collapsed: false,
@@ -56,27 +51,25 @@
         x-transition:leave-start="opacity-100 transform translate-y-0"
         x-transition:leave-end="opacity-0 transform -translate-y-2"
         class="grid gap-4 md:gap-6"
-    >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    >        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- الإحصائيات العامة -->
             <div class="widget-container">
-                @livewire(PropertyOverviewStats::class)
+                @livewire('app.filament.resources.property-resource.widgets.property-overview-stats')
             </div>
             
             <!-- الإحصائيات التفصيلية -->
             <div class="widget-container">
-                @livewire(PropertyQuickStats::class)
-            </div>
-        </div>
+                @livewire('app.filament.resources.property-resource.widgets.property-quick-stats')
+            </div>        </div>
     </div>
+
+    <style>
+    .widget-container {
+        @apply transform transition-all duration-200 hover:scale-105;
+    }
+
+    .widget-container .fi-wi-stats-overview {
+        @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md;
+    }
+    </style>
 </div>
-
-<style>
-.widget-container {
-    @apply transform transition-all duration-200 hover:scale-105;
-}
-
-.widget-container .fi-wi-stats-overview {
-    @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md;
-}
-</style>

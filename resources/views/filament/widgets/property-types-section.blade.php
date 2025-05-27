@@ -1,7 +1,3 @@
-@php
-    use App\Filament\Resources\PropertyResource\Widgets\PropertyTypesStats;
-@endphp
-
 <div 
     x-data="{ 
         collapsed: true,
@@ -54,18 +50,17 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 transform translate-y-0"
         x-transition:leave-end="opacity-0 transform -translate-y-2"
-        class="widget-container"
-    >
-        @livewire(PropertyTypesStats::class)
+        class="widget-container"    >
+        @livewire('app.filament.resources.property-resource.widgets.property-types-stats')
     </div>
+
+    <style>
+    .widget-container {
+        @apply transform transition-all duration-200;
+    }
+
+    .widget-container .fi-wi-stats-overview {
+        @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm;
+    }
+    </style>
 </div>
-
-<style>
-.widget-container {
-    @apply transform transition-all duration-200;
-}
-
-.widget-container .fi-wi-stats-overview {
-    @apply bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm;
-}
-</style>
