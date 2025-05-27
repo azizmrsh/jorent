@@ -10,35 +10,31 @@ use Illuminate\Support\Facades\DB;
 class RevenueStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 'full';
-
-    protected function getStats(): array
+    protected int | string | array $columnSpan = 'full';    protected function getStats(): array
     {
         // Get total revenue from active contracts
         $totalRevenue = Contract1::whereHas('unit')
-            ->where('status', 'active')
+            ->where('contract1s.status', 'active')
             ->join('units', 'contract1s.unit_id', '=', 'units.id')
             ->sum('units.rental_price');
-            
-        // Get this month's revenue
+              // Get this month's revenue
         $thisMonthRevenue = Contract1::whereHas('unit')
-            ->where('status', 'active')
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where('contract1s.status', 'active')
+            ->where('contract1s.start_date', '<=', now())
+            ->where('contract1s.end_date', '>=', now())
             ->join('units', 'contract1s.unit_id', '=', 'units.id')
             ->sum('units.rental_price');
             
         // Get average rental price
         $averageRent = Contract1::whereHas('unit')
-            ->where('status', 'active')
+            ->where('contract1s.status', 'active')
             ->join('units', 'contract1s.unit_id', '=', 'units.id')
             ->avg('units.rental_price');
-            
-        // Calculate growth percentage
+              // Calculate growth percentage
         $lastMonthRevenue = Contract1::whereHas('unit')
-            ->where('status', 'active')
-            ->where('start_date', '<=', now()->subMonth())
-            ->where('end_date', '>=', now()->subMonth())
+            ->where('contract1s.status', 'active')
+            ->where('contract1s.start_date', '<=', now()->subMonth())
+            ->where('contract1s.end_date', '>=', now()->subMonth())
             ->join('units', 'contract1s.unit_id', '=', 'units.id')
             ->sum('units.rental_price');
             
