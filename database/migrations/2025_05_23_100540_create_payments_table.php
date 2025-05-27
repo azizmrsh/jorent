@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('payment_method', ['cash', 'bank_transfer', 'wallet', 'cliq'])->default('cash');
             $table->string('reference_number')->nullable(); // رقم مرجعي اختياري
             $table->text('notes')->nullable(); // ملاحظات
-            $table->timestamps();
+            $table->timestamps();//type 
         });
     }
 
