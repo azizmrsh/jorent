@@ -18,7 +18,7 @@ class CollapsibleWidgetGroup extends Widget
     public function __construct()
     {
         // Default constructor for Filament auto-discovery
-        parent::__construct();
+        // No parent::__construct() call needed for Filament widgets
     }
 
     /**
