@@ -3,9 +3,10 @@
 namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
-use App\Filament\Resources\PropertyResource\Widgets\QuickStatsSection;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyTypesSection;
-use App\Filament\Resources\PropertyResource\Widgets\ChartsAnalyticsSection;
+use App\Filament\Resources\PropertyResource\Widgets\TotalPropertiesWidget;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyTypeStatsWidget;
+use App\Filament\Resources\PropertyResource\Widgets\UsageTypeStatsWidget;
+use App\Filament\Resources\PropertyResource\Widgets\UnitsCounterWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -23,14 +24,17 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 القسم الأول: الإحصائيات السريعة (مفتوح افتراضياً)
-            QuickStatsSection::class,
+            // 📊 إجمالي العقارات ومعدل النمو
+            TotalPropertiesWidget::class,
             
-            // 🏘️ القسم الثاني: تفصيل أنواع العقارات (مطوي افتراضياً)
-            PropertyTypesSection::class,
+            // 🏘️ إحصائيات أنواع العقارات مع النسب المئوية
+            PropertyTypeStatsWidget::class,
             
-            // 📈 القسم الثالث: الرسوم البيانية والتحليلات (مطوي افتراضياً)
-            ChartsAnalyticsSection::class,
+            // 🏢 إحصائيات نوع الاستخدام مع النسب المئوية
+            UsageTypeStatsWidget::class,
+            
+            // 🔢 عداد الوحدات ومتوسط الوحدات لكل عقار
+            UnitsCounterWidget::class,
         ];
     }
 }
