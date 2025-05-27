@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components;
-
-//use Saade\FilamentAutograph\Forms\Components\SignaturePad;
-//use Saade\FilamentAutograph\Forms\Components\SignaturePad;
-//use Saade\FilamentAutograph\Forms\Components\Enums\DownloadableFormat;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+
+// Export functionality imports
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 
 
@@ -225,22 +225,348 @@ Forms\Components\Section::make('توقيع المستأجر')
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('landlord_name')->searchable(),
-                Tables\Columns\TextColumn::make('tenant.firstname')->label('Tenant'),
-                Tables\Columns\TextColumn::make('unit.name')->label('Unit'),
-                Tables\Columns\TextColumn::make('property.name')->label('Property'),
-                Tables\Columns\TextColumn::make('start_date'),
-                Tables\Columns\TextColumn::make('end_date'),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('landlord_name')
+                    ->label('المؤجر')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('تم نسخ اسم المؤجر!')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('tenant.firstname')
+                    ->label('المستأجر')
+                    ->searchable(['firstname', 'lastname'])
+                    ->sortable()
+                    ->formatStateUsing(fn ($record) => $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : 'غير محدد')
+                    ->copyable()
+                    ->copyMessage('تم نسخ اسم المستأجر!')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('tenant.phone')
+                    ->label('هاتف المستأجر')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('تم نسخ رقم الهاتف!')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('property.name')
+                    ->label('العقار')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('تم نسخ اسم العقار!')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('unit.name')
+                    ->label('الوحدة')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->copyable()
+                    ->copyMessage('تم نسخ اسم الوحدة!')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('unit.rental_price')
+                    ->label('سعر الإيجار')
+                    ->sortable()
+                    ->money('JOD')
+                    ->alignEnd()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('start_date')
+                    ->label('تاريخ البداية')
+                    ->date('Y-m-d')
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('end_date')
+                    ->label('تاريخ النهاية')
+                    ->date('Y-m-d')
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('contract_duration')
+                    ->label('مدة العقد')
+                    ->getStateUsing(function ($record) {
+                        if ($record->start_date && $record->end_date) {
+                            $start = \Carbon\Carbon::parse($record->start_date);
+                            $end = \Carbon\Carbon::parse($record->end_date);
+                            $months = $start->diffInMonths($end);
+                            return $months . ' شهر';
+                        }
+                        return 'غير محدد';
+                    })
+                    ->badge()
+                    ->color('secondary')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('status')
+                    ->label('الحالة')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                        'expired' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'active' => 'نشط',
+                        'inactive' => 'غير نشط',
+                        'expired' => 'منتهي الصلاحية',
+                        default => $state,
+                    })
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('days_remaining')
+                    ->label('الأيام المتبقية')
+                    ->getStateUsing(function ($record) {
+                        if ($record->end_date) {
+                            $end = \Carbon\Carbon::parse($record->end_date);
+                            $now = \Carbon\Carbon::now();
+                            if ($end->isFuture()) {
+                                return $now->diffInDays($end) . ' يوم';
+                            }
+                            return 'منتهي';
+                        }
+                        return 'غير محدد';
+                    })
+                    ->badge()
+                    ->color(function ($record) {
+                        if ($record->end_date) {
+                            $end = \Carbon\Carbon::parse($record->end_date);
+                            $now = \Carbon\Carbon::now();
+                            if ($end->isFuture()) {
+                                $days = $now->diffInDays($end);
+                                if ($days <= 30) return 'danger';
+                                if ($days <= 90) return 'warning';
+                                return 'success';
+                            }
+                        }
+                        return 'gray';
+                    })
+                    ->toggleable(),
+                    
+                Tables\Columns\IconColumn::make('has_signatures')
+                    ->label('التوقيعات')
+                    ->boolean()
+                    ->getStateUsing(fn ($record) => !empty($record->tenant_signature_path) && !empty($record->landlord_signature_path))
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('hired_by')
+                    ->label('تم الإنشاء بواسطة')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('hired_date')
+                    ->label('تاريخ الإنشاء')
+                    ->date('Y-m-d')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإضافة')
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                Tables\Filters\SelectFilter::make('property_id')
+                    ->label('العقار')
+                    ->relationship('property', 'name')
+                    ->searchable()
+                    ->preload(),
+                    
+                Tables\Filters\SelectFilter::make('unit_id')
+                    ->label('الوحدة')
+                    ->relationship('unit', 'name')
+                    ->searchable()
+                    ->preload(),
+                    
+                Tables\Filters\SelectFilter::make('tenant_id')
+                    ->label('المستأجر')
+                    ->relationship('tenant', 'firstname')
+                    ->searchable()
+                    ->preload(),
+                    
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('الحالة')
+                    ->options([
+                        'active' => 'نشط',
+                        'inactive' => 'غير نشط',
+                        'expired' => 'منتهي الصلاحية',
+                    ])
+                    ->multiple(),
+                    
+                Tables\Filters\Filter::make('contract_dates')
+                    ->label('تواريخ العقد')
+                    ->form([
+                        Forms\Components\DatePicker::make('start_date_from')
+                            ->label('تاريخ البداية من'),
+                        Forms\Components\DatePicker::make('start_date_until')
+                            ->label('تاريخ البداية إلى'),
+                        Forms\Components\DatePicker::make('end_date_from')
+                            ->label('تاريخ النهاية من'),
+                        Forms\Components\DatePicker::make('end_date_until')
+                            ->label('تاريخ النهاية إلى'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['start_date_from'], fn ($q, $date) => $q->where('start_date', '>=', $date))
+                            ->when($data['start_date_until'], fn ($q, $date) => $q->where('start_date', '<=', $date))
+                            ->when($data['end_date_from'], fn ($q, $date) => $q->where('end_date', '>=', $date))
+                            ->when($data['end_date_until'], fn ($q, $date) => $q->where('end_date', '<=', $date));
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['start_date_from'] ?? null) {
+                            $indicators['start_date_from'] = 'تاريخ البداية من: ' . \Carbon\Carbon::parse($data['start_date_from'])->format('Y-m-d');
+                        }
+                        if ($data['start_date_until'] ?? null) {
+                            $indicators['start_date_until'] = 'تاريخ البداية إلى: ' . \Carbon\Carbon::parse($data['start_date_until'])->format('Y-m-d');
+                        }
+                        if ($data['end_date_from'] ?? null) {
+                            $indicators['end_date_from'] = 'تاريخ النهاية من: ' . \Carbon\Carbon::parse($data['end_date_from'])->format('Y-m-d');
+                        }
+                        if ($data['end_date_until'] ?? null) {
+                            $indicators['end_date_until'] = 'تاريخ النهاية إلى: ' . \Carbon\Carbon::parse($data['end_date_until'])->format('Y-m-d');
+                        }
+                        return $indicators;
+                    }),
+                    
+                Tables\Filters\Filter::make('rental_price_range')
+                    ->label('نطاق سعر الإيجار')
+                    ->form([
+                        Forms\Components\TextInput::make('min_price')
+                            ->label('الحد الأدنى')
+                            ->numeric()
+                            ->suffix('JOD'),
+                        Forms\Components\TextInput::make('max_price')
+                            ->label('الحد الأقصى')
+                            ->numeric()
+                            ->suffix('JOD'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['min_price'], function ($q, $price) {
+                                return $q->whereHas('unit', fn ($query) => $query->where('rental_price', '>=', $price));
+                            })
+                            ->when($data['max_price'], function ($q, $price) {
+                                return $q->whereHas('unit', fn ($query) => $query->where('rental_price', '<=', $price));
+                            });
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['min_price'] ?? null) {
+                            $indicators['min_price'] = 'الحد الأدنى للسعر: ' . number_format($data['min_price']) . ' JOD';
+                        }
+                        if ($data['max_price'] ?? null) {
+                            $indicators['max_price'] = 'الحد الأقصى للسعر: ' . number_format($data['max_price']) . ' JOD';
+                        }
+                        return $indicators;
+                    }),
+                    
+                Tables\Filters\Filter::make('expiring_soon')
+                    ->label('العقود المنتهية قريباً')
+                    ->query(function ($query) {
+                        return $query->where('end_date', '>=', now())
+                                    ->where('end_date', '<=', now()->addDays(30));
+                    })
+                    ->toggle(),
+                    
+                Tables\Filters\Filter::make('with_signatures')
+                    ->label('العقود مع التوقيعات')
+                    ->query(function ($query) {
+                        return $query->whereNotNull('tenant_signature_path')
+                                    ->whereNotNull('landlord_signature_path');
+                    })
+                    ->toggle(),
+                    
+                Tables\Filters\Filter::make('created_this_month')
+                    ->label('تم إنشاؤها هذا الشهر')
+                    ->query(function ($query) {
+                        return $query->whereBetween('created_at', [
+                            now()->startOfMonth(),
+                            now()->endOfMonth()
+                        ]);
+                    })
+                    ->toggle(),
+            ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('تصدير العقود')
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->fileName('contracts_' . date('Y-m-d'))
+                    ->withColumns([
+                        'id' => 'رقم العقد',
+                        'landlord_name' => 'المؤجر',
+                        'tenant.firstname' => 'اسم المستأجر الأول',
+                        'tenant.lastname' => 'اسم المستأجر الأخير',
+                        'tenant.phone' => 'هاتف المستأجر',
+                        'tenant.email' => 'بريد المستأجر',
+                        'property.name' => 'العقار',
+                        'unit.name' => 'الوحدة',
+                        'unit.rental_price' => 'سعر الإيجار',
+                        'start_date' => 'تاريخ البداية',
+                        'end_date' => 'تاريخ النهاية',
+                        'status' => 'الحالة',
+                        'hired_by' => 'تم الإنشاء بواسطة',
+                        'hired_date' => 'تاريخ الإنشاء',
+                        'created_at' => 'تاريخ الإضافة',
+                    ]),
+            ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('عرض')
+                    ->color('info'),
+                Tables\Actions\EditAction::make()
+                    ->label('تعديل')
+                    ->color('warning'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('حذف')
+                    ->color('danger'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('حذف المحددة')
+                        ->color('danger'),
+                    FilamentExportBulkAction::make('export-selected')
+                        ->label('تصدير المحددة')
+                        ->color('success')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->fileName('selected_contracts_' . date('Y-m-d'))
+                        ->withColumns([
+                            'id' => 'رقم العقد',
+                            'landlord_name' => 'المؤجر',
+                            'tenant.firstname' => 'اسم المستأجر الأول',
+                            'tenant.lastname' => 'اسم المستأجر الأخير',
+                            'tenant.phone' => 'هاتف المستأجر',
+                            'property.name' => 'العقار',
+                            'unit.name' => 'الوحدة',
+                            'unit.rental_price' => 'سعر الإيجار',
+                            'start_date' => 'تاريخ البداية',
+                            'end_date' => 'تاريخ النهاية',
+                            'status' => 'الحالة',
+                            'created_at' => 'تاريخ الإضافة',
+                        ]),
+                ]),
+            ])
+            ->emptyStateHeading('لا توجد عقود')
+            ->emptyStateDescription('ابدأ بإنشاء عقد جديد.')
+            ->emptyStateIcon('heroicon-o-document-text');
     }
 
     public static function getPages(): array

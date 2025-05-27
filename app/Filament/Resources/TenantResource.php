@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class TenantResource extends Resource
 {
@@ -139,124 +141,191 @@ class TenantResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('firstname')
-                    ->label('First Name')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('midname')
-                    ->label('Middle Name')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('lastname')
-                    ->label('Last Name')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->label('Phone')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->label('Address')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                Tables\Columns\TextColumn::make('birth_date')
-                    ->label('Birth Date')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\ImageColumn::make('profile_photo')
-                    ->label('Profile Photo')
+                    ->label('الصورة')
                     ->circular()
                     ->size(40)
-                    ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
+                    
+                Tables\Columns\TextColumn::make('firstname')
+                    ->label('الاسم الأول')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('document_type')
-                    ->label('Document Type')
+                    
+                Tables\Columns\TextColumn::make('midname')
+                    ->label('الاسم الأوسط')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('lastname')
+                    ->label('الاسم الأخير')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('document_number')
-                    ->label('Document Number')
+                    
+                Tables\Columns\TextColumn::make('email')
+                    ->label('البريد الإلكتروني')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\ImageColumn::make('document_photo')
-                    ->label('Document Photo')
-                    ->circular()
-                    ->size(40)
+                    
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('رقم الهاتف')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('nationality')
-                    ->label('Nationality')
+                    ->label('الجنسية')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('birth_date')
+                    ->label('تاريخ الميلاد')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('address')
+                    ->label('العنوان')
+                    ->searchable()
+                    ->limit(30)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('status')
+                    ->label('الحالة')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                        'pending' => 'warning',
+                        default => 'gray',
+                    })
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('document_type')
+                    ->label('نوع الوثيقة')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'passport' => 'primary',
+                        'id_card' => 'success',
+                        'driver_license' => 'warning',
+                        'residency_permit' => 'info',
+                        'other' => 'gray',
+                        default => 'gray',
+                    })
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('document_number')
+                    ->label('رقم الوثيقة')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('hired_date')
-                    ->label('Hired Date')
-                    ->searchable()
+                    ->label('تاريخ التوظيف')
+                    ->date()
                     ->sortable()
                     ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('hired_by')
-                    ->label('Hired By')
+                    ->label('تم التوظيف بواسطة')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\Filter::make('firstname')
-                    ->query(fn (Builder $query): Builder => $query->where('firstname', '!=', ''))
-                    ->label('First Name'),
-                Tables\Filters\Filter::make('midname')
-                    ->query(fn (Builder $query): Builder => $query->where('midname', '!=', ''))
-                    ->label('Middle Name'),
-                Tables\Filters\Filter::make('lastname')
-                    ->query(fn (Builder $query): Builder => $query->where('lastname', '!=', ''))
-                    ->label('Last Name'),
-                Tables\Filters\Filter::make('email')
-                    ->query(fn (Builder $query): Builder => $query->where('email', '!=', ''))
-                    ->label('Email'),
-                Tables\Filters\Filter::make('phone')
-                    ->query(fn (Builder $query): Builder => $query->where('phone', '!=', ''))
-                    ->label('Phone'),
-                Tables\Filters\Filter::make('address')
-                    ->query(fn (Builder $query): Builder => $query->where('address', '!=', ''))
-                    ->label('Address'),
-                Tables\Filters\Filter::make('birth_date')
-                    ->query(fn (Builder $query): Builder => $query->where('birth_date', '!=', ''))
-                    ->label('Birth Date'),
-                Tables\Filters\Filter::make('status')
-                    ->query(fn (Builder $query): Builder => $query->where('status', '!=', ''))
-                    ->label('Status'),
-                Tables\Filters\Filter::make('document_type')
-                    ->query(fn (Builder $query): Builder => $query->where('document_type', '!=', ''))
-                    ->label('Document Type'),
-                Tables\Filters\Filter::make('document_number')
-                    ->query(fn (Builder $query): Builder => $query->where('document_number', '!=', ''))
-                    ->label('Document Number'),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('الحالة')
+                    ->options([
+                        'active' => 'نشط',
+                        'inactive' => 'غير نشط',
+                        'pending' => 'في الانتظار',
+                    ]),
+                    
+                Tables\Filters\SelectFilter::make('document_type')
+                    ->label('نوع الوثيقة')
+                    ->options([
+                        'passport' => 'جواز سفر',
+                        'id_card' => 'بطاقة هوية',
+                        'driver_license' => 'رخصة قيادة',
+                        'residency_permit' => 'إقامة',
+                        'other' => 'أخرى',
+                    ]),
+                    
                 Tables\Filters\Filter::make('nationality')
-                    ->query(fn (Builder $query): Builder => $query->where('nationality', '!=', ''))
-                    ->label('Nationality'),
-                Tables\Filters\Filter::make('hired_date')
-                    ->query(fn (Builder $query): Builder => $query->where('hired_date', '!=', ''))
-                    ->label('Hired Date'),
-                Tables\Filters\Filter::make('hired_by')
-                    ->query(fn (Builder $query): Builder => $query->where('hired_by', '!=', ''))
-                    ->label('Hired By'),
+                    ->label('الجنسية')
+                    ->form([
+                        Forms\Components\TextInput::make('nationality')
+                            ->label('الجنسية'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['nationality'], fn ($query, $nationality) => 
+                            $query->where('nationality', 'like', "%{$nationality}%"));
+                    }),
+                    
+                Tables\Filters\Filter::make('birth_date_range')
+                    ->label('نطاق تاريخ الميلاد')
+                    ->form([
+                        Forms\Components\DatePicker::make('birth_from')
+                            ->label('من تاريخ'),
+                        Forms\Components\DatePicker::make('birth_until')
+                            ->label('إلى تاريخ'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['birth_from'], fn ($query, $date) => $query->whereDate('birth_date', '>=', $date))
+                            ->when($data['birth_until'], fn ($query, $date) => $query->whereDate('birth_date', '<=', $date));
+                    }),
+                    
+                Tables\Filters\Filter::make('hired_date_range')
+                    ->label('نطاق تاريخ التوظيف')
+                    ->form([
+                        Forms\Components\DatePicker::make('hired_from')
+                            ->label('من تاريخ'),
+                        Forms\Components\DatePicker::make('hired_until')
+                            ->label('إلى تاريخ'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['hired_from'], fn ($query, $date) => $query->whereDate('hired_date', '>=', $date))
+                            ->when($data['hired_until'], fn ($query, $date) => $query->whereDate('hired_date', '<=', $date));
+                    }),
+                    
+                Tables\Filters\Filter::make('has_email')
+                    ->label('لديه بريد إلكتروني')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('email')->where('email', '!=', '')),
+                    
+                Tables\Filters\Filter::make('has_phone')
+                    ->label('لديه رقم هاتف')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('phone')->where('phone', '!=', '')),
+                    
+                Tables\Filters\Filter::make('has_profile_photo')
+                    ->label('لديه صورة شخصية')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('profile_photo')),
+            ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('تصدير البيانات')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -266,8 +335,13 @@ class TenantResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    FilamentExportBulkAction::make('export')
+                        ->label('تصدير المحدد'),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->striped()
+            ->paginated([10, 25, 50, 100]);
     }
 
     public static function getRelations(): array

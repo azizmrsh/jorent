@@ -133,36 +133,139 @@ class PropertyResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                // 🔍 فلتر النص
                 Tables\Filters\Filter::make('name')
-                    ->query(fn (Builder $query): Builder => $query->where('name', '!=', ''))
-                    ->label('Property Name'),
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Property Name')
+                            ->placeholder('Search by property name...')
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['name'],
+                            fn (Builder $query, $name): Builder => $query->where('name', 'like', '%' . $name . '%')
+                        );
+                    })
+                    ->label('🏠 Property Name'),
+
+                // 🏢 فلتر النوع الأساسي
                 Tables\Filters\SelectFilter::make('type1')
-                    ->label('Primary Type')
+                    ->label('🏗️ Primary Type')
                     ->options([
-                        'building' => 'Building',
-                        'villa' => 'Villa',
-                        'house' => 'House',
-                        'warehouse' => 'Warehouse',
-                    ]),
+                        'building' => '🏢 Building',
+                        'villa' => '🏰 Villa',
+                        'house' => '🏡 House',
+                        'warehouse' => '🏪 Warehouse',
+                    ])
+                    ->multiple()
+                    ->placeholder('Select property types'),
+
+                // 🎯 فلتر نوع الاستخدام
                 Tables\Filters\SelectFilter::make('type2')
-                    ->label('Usage Type')
+                    ->label('🎯 Usage Type')
                     ->options([
-                        'residential' => 'Residential',
-                        'commercial' => 'Commercial',
-                        'industrial' => 'Industrial',
-                    ]),
-                Tables\Filters\Filter::make('floors_count')
-                    ->query(fn (Builder $query): Builder => $query->where('floors_count', '!=', ''))
-                    ->label('Floors Count'),
-                Tables\Filters\Filter::make('total_area')
-                    ->query(fn (Builder $query): Builder => $query->where('total_area', '!=', ''))
-                    ->label('Total Area'),
-                Tables\Filters\Filter::make('birth_date')
-                    ->query(fn (Builder $query): Builder => $query->where('birth_date', '!=', ''))
-                    ->label('Construction Date'),
+                        'residential' => '🏠 Residential',
+                        'commercial' => '🏢 Commercial',
+                        'industrial' => '🏭 Industrial',
+                    ])
+                    ->multiple()
+                    ->placeholder('Select usage types'),
+
+                // 🏗️ فلتر عدد الطوابق
+                Tables\Filters\Filter::make('floors_range')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('floors_from')
+                                    ->label('Floors From')
+                                    ->numeric()
+                                    ->placeholder('Min floors'),
+                                Forms\Components\TextInput::make('floors_to')
+                                    ->label('Floors To')
+                                    ->numeric()
+                                    ->placeholder('Max floors'),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['floors_from'],
+                                fn (Builder $query, $floors): Builder => $query->where('floors_count', '>=', $floors)
+                            )
+                            ->when(
+                                $data['floors_to'],
+                                fn (Builder $query, $floors): Builder => $query->where('floors_count', '<=', $floors)
+                            );
+                    })
+                    ->label('🏗️ Floors Count'),
+
+                // 📐 فلتر المساحة
+                Tables\Filters\Filter::make('area_range')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('area_from')
+                                    ->label('Area From (m²)')
+                                    ->numeric()
+                                    ->placeholder('Min area'),
+                                Forms\Components\TextInput::make('area_to')
+                                    ->label('Area To (m²)')
+                                    ->numeric()
+                                    ->placeholder('Max area'),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['area_from'],
+                                fn (Builder $query, $area): Builder => $query->where('total_area', '>=', $area)
+                            )
+                            ->when(
+                                $data['area_to'],
+                                fn (Builder $query, $area): Builder => $query->where('total_area', '<=', $area)
+                            );
+                    })
+                    ->label('📐 Total Area'),
+
+                // 📅 فلتر تاريخ البناء
+                Tables\Filters\Filter::make('construction_date')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\DatePicker::make('date_from')
+                                    ->label('Construction From')
+                                    ->placeholder('Start date'),
+                                Forms\Components\DatePicker::make('date_to')
+                                    ->label('Construction To')
+                                    ->placeholder('End date'),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['date_from'],
+                                fn (Builder $query, $date): Builder => $query->where('birth_date', '>=', $date)
+                            )
+                            ->when(
+                                $data['date_to'],
+                                fn (Builder $query, $date): Builder => $query->where('birth_date', '<=', $date)
+                            );
+                    })
+                    ->label('📅 Construction Date'),
+
+                // 👤 فلتر مدير الحساب
                 Tables\Filters\SelectFilter::make('acc_id')
                     ->relationship('acc', 'firstname')
-                    ->label('Account Manager'),
+                    ->label('👤 Account Manager')
+                    ->multiple()
+                    ->placeholder('Select account managers'),
+
+                // 📍 فلتر المدينة
+                Tables\Filters\SelectFilter::make('city')
+                    ->relationship('address', 'city')
+                    ->label('📍 City')
+                    ->multiple()
+                    ->placeholder('Select cities'),
             ])
             ->headerActions([
 

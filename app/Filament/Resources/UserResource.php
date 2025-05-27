@@ -65,33 +65,179 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('First Name')->sortable()->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('midname')->label('Middle Name')->sortable()->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('lastname')->label('Last Name')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('role')->label('Role')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('status')->label('Status')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('phone')->label('Phone')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('address')->label('Address')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('birth_date')->label('Birth Date')->sortable()->toggleable()->searchable(),
-                Tables\Columns\TextColumn::make('profile_photo')->label('Profile Photo')->sortable()->toggleable()->searchable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('👤 First Name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('midname')
+                    ->label('👤 Middle Name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('lastname')
+                    ->label('👤 Last Name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('role')
+                    ->label('🏷️ Role')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'admin' => 'danger',
+                        'manager' => 'warning',
+                        'owner' => 'success',
+                        'user' => 'primary',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('✅ Status')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('📧 Email')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable()
+                    ->copyable()
+                    ->copyMessage('Email copied!')
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('📞 Phone')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable()
+                    ->copyable()
+                    ->copyMessage('Phone copied!')
+                    ->placeholder('No phone'),
+                Tables\Columns\TextColumn::make('address')
+                    ->label('📍 Address')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable()
+                    ->limit(50)
+                    ->placeholder('No address'),
+                Tables\Columns\TextColumn::make('birth_date')
+                    ->label('🎂 Birth Date')
+                    ->date()
+                    ->sortable()
+                    ->toggleable()
+                    ->placeholder('No birth date'),
+                Tables\Columns\ImageColumn::make('profile_photo')
+                    ->label('🖼️ Profile Photo')
+                    ->circular()
+                    ->size(40)
+                    ->toggleable()
+                    ->defaultImageUrl('data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#e5e7eb"><circle cx="50" cy="50" r="50"/><circle cx="50" cy="35" r="15" fill="#9ca3af"/><ellipse cx="50" cy="75" rx="20" ry="15" fill="#9ca3af"/></svg>')),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('📅 Created')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\Filter::make('name')->query(fn (Builder $query): Builder => $query->where('name', '!=', ''))->label('First Name'),
-                Tables\Filters\Filter::make('midname')->query(fn (Builder $query): Builder => $query->where('midname', '!=', ''))->label('Middle Name'),
-                Tables\Filters\Filter::make('lastname')->query(fn (Builder $query): Builder => $query->where('lastname', '!=', ''))->label('Last Name'),
-                Tables\Filters\Filter::make('role')->query(fn (Builder $query): Builder => $query->where('role', '!=', ''))->label('Role'),
-                Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
+                // 🔍 فلتر النص الموحد
+                Tables\Filters\Filter::make('search')
+                    ->form([
+                        Forms\Components\TextInput::make('search')
+                            ->label('🔍 Search')
+                            ->placeholder('Search by name, email, phone...')
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['search'],
+                            fn (Builder $query, $search): Builder => $query->where(function (Builder $query) use ($search) {
+                                $query->where('name', 'like', '%' . $search . '%')
+                                    ->orWhere('midname', 'like', '%' . $search . '%')
+                                    ->orWhere('lastname', 'like', '%' . $search . '%')
+                                    ->orWhere('email', 'like', '%' . $search . '%')
+                                    ->orWhere('phone', 'like', '%' . $search . '%');
+                            })
+                        );
+                    })
+                    ->label('🔍 Global Search'),
+
+                // 👤 فلتر الأدوار
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('👤 Role')
                     ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    
-                    ]),
-                Tables\Filters\Filter::make('email')->query(fn (Builder $query): Builder => $query->where('email', '!=', ''))->label('Email'),
-                Tables\Filters\Filter::make('phone')->query(fn (Builder $query): Builder => $query->where('phone', '!=', ''))->label('Phone'),
-                Tables\Filters\Filter::make('address')->query(fn (Builder $query): Builder => $query->where('address', '!=', ''))->label('Address'),
-                Tables\Filters\Filter::make('birth_date')->query(fn (Builder $query): Builder => $query->where('birth_date', '!=', ''))->label('Birth Date')
+                        'admin' => '👑 Admin',
+                        'manager' => '🏢 Manager',
+                        'user' => '👤 User',
+                        'owner' => '🏠 Owner',
+                    ])
+                    ->multiple()
+                    ->placeholder('Select roles'),
+
+                // ✅ فلتر الحالة
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('✅ Status')
+                    ->options([
+                        'active' => '✅ Active',
+                        'inactive' => '❌ Inactive',
+                    ])
+                    ->placeholder('Select status'),
+
+                // 📅 فلتر تاريخ الميلاد
+                Tables\Filters\Filter::make('birth_date_range')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\DatePicker::make('birth_from')
+                                    ->label('Birth Date From')
+                                    ->placeholder('From date'),
+                                Forms\Components\DatePicker::make('birth_to')
+                                    ->label('Birth Date To')
+                                    ->placeholder('To date'),
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['birth_from'],
+                                fn (Builder $query, $date): Builder => $query->where('birth_date', '>=', $date)
+                            )
+                            ->when(
+                                $data['birth_to'],
+                                fn (Builder $query, $date): Builder => $query->where('birth_date', '<=', $date)
+                            );
+                    })
+                    ->label('📅 Birth Date Range'),
+
+                // 📞 فلتر وجود الهاتف
+                Tables\Filters\TernaryFilter::make('has_phone')
+                    ->label('📞 Has Phone')
+                    ->trueLabel('With Phone')
+                    ->falseLabel('Without Phone')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('phone')->where('phone', '!=', ''),
+                        false: fn (Builder $query) => $query->whereNull('phone')->orWhere('phone', '=', ''),
+                    ),
+
+                // 🖼️ فلتر وجود الصورة الشخصية
+                Tables\Filters\TernaryFilter::make('has_profile_photo')
+                    ->label('🖼️ Has Profile Photo')
+                    ->trueLabel('With Photo')
+                    ->falseLabel('Without Photo')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('profile_photo')->where('profile_photo', '!=', ''),
+                        false: fn (Builder $query) => $query->whereNull('profile_photo')->orWhere('profile_photo', '=', ''),
+                    ),
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')

@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+
 
 class UnitResource extends Resource
 {
@@ -183,28 +186,178 @@ class UnitResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Unit Name')
+                    ->label('اسم الوحدة')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('unit_number')
-                    ->label('Unit Number')
+                    ->label('رقم الوحدة')
                     ->sortable()
-                    ->searchable(),
-                // Add table columns here
+                    ->searchable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('property.name')
+                    ->label('العقار')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('unit_type')
+                    ->label('نوع الوحدة')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'apartment' => 'primary',
+                        'villa' => 'success',
+                        'warehouse' => 'warning',
+                        'house' => 'info',
+                        'building' => 'secondary',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('area')
+                    ->label('المساحة (م²)')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('rental_price')
+                    ->label('سعر الإيجار')
+                    ->money('SAR')
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('status')
+                    ->label('الحالة')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'available' => 'success',
+                        'rented' => 'warning',
+                        'under_maintenance' => 'danger',
+                        'unavailable' => 'gray',
+                        'reserved' => 'info',
+                        'not_confirmed' => 'secondary',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('تاريخ آخر تحديث')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('notes')
+                    ->label('ملاحظات')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Add table filters here
+                Tables\Filters\SelectFilter::make('property_id')
+                    ->label('العقار')
+                    ->relationship('property', 'name')
+                    ->searchable()
+                    ->preload(),
+                    
+                Tables\Filters\SelectFilter::make('unit_type')
+                    ->label('نوع الوحدة')
+                    ->options([
+                        'apartment' => 'شقة',
+                        'villa' => 'فيلا',
+                        'warehouse' => 'مستودع',
+                        'house' => 'منزل',
+                        'building' => 'مبنى',
+                    ]),
+                    
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('الحالة')
+                    ->options([
+                        'available' => 'متاحة',
+                        'rented' => 'مؤجرة',
+                        'under_maintenance' => 'تحت الصيانة',
+                        'unavailable' => 'غير متاحة',
+                        'reserved' => 'محجوزة',
+                        'not_confirmed' => 'غير مؤكدة',
+                    ]),
+                    
+                Tables\Filters\Filter::make('area_range')
+                    ->label('نطاق المساحة')
+                    ->form([
+                        Forms\Components\TextInput::make('area_from')
+                            ->label('من (م²)')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('area_to')
+                            ->label('إلى (م²)')
+                            ->numeric(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['area_from'], fn ($query, $area) => $query->where('area', '>=', $area))
+                            ->when($data['area_to'], fn ($query, $area) => $query->where('area', '<=', $area));
+                    }),
+                    
+                Tables\Filters\Filter::make('price_range')
+                    ->label('نطاق السعر')
+                    ->form([
+                        Forms\Components\TextInput::make('price_from')
+                            ->label('من (ريال)')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('price_to')
+                            ->label('إلى (ريال)')
+                            ->numeric(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['price_from'], fn ($query, $price) => $query->where('rental_price', '>=', $price))
+                            ->when($data['price_to'], fn ($query, $price) => $query->where('rental_price', '<=', $price));
+                    }),
+                    
+                Tables\Filters\Filter::make('created_at')
+                    ->label('تاريخ الإنشاء')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->label('من تاريخ'),
+                        Forms\Components\DatePicker::make('created_until')
+                            ->label('إلى تاريخ'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['created_from'], fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['created_until'], fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                    }),
+            ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('تصدير البيانات')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    FilamentExportBulkAction::make('export')
+                        ->label('تصدير المحدد'),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->striped()
+            ->paginated([10, 25, 50, 100]);
     }
 
     public static function getRelations(): array
