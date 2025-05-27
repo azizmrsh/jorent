@@ -4,35 +4,34 @@
     $groupId = 'widget-group-' . uniqid();
 @endphp
 
-<div class="fi-wi-collapsible-group bg-white shadow rounded-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10"
+<div class="bg-white shadow rounded-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10"
      x-data="{ 
         collapsed: @js($isCollapsed),
         toggle() {
             this.collapsed = !this.collapsed;
         }
      }">
-    
-    {{-- Header --}}
-    <div class="fi-wi-collapsible-header p-6 border-b border-gray-200 dark:border-gray-700"
+      {{-- Header --}}
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700 
+               @if($isCollapsible) cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors @endif"
          @if($isCollapsible)
          role="button"
          aria-expanded="false"
          :aria-expanded="!collapsed"
          aria-controls="{{ $groupId }}"
          @click="toggle()"
-         class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
          @endif>
         
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 @if($icon)
                     <div class="flex-shrink-0">
-                        @svg($icon, 'h-5 w-5 text-gray-600 dark:text-gray-400')
+                        <x-heroicon-o-cube class="h-5 w-5 text-gray-600 dark:text-gray-400" />
                     </div>
                 @endif
                 
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    {{ $title }}
+                    {{ $title ?: 'Widget Group' }}
                 </h3>
             </div>
             
@@ -56,85 +55,51 @@
                 </button>
             @endif
         </div>
-    </div>
-
-    {{-- Content --}}
+    </div>    {{-- Content --}}
     <div id="{{ $groupId }}"
-         class="fi-wi-collapsible-content"
+         class="overflow-hidden"
          x-show="!collapsed"
          x-collapse.duration.300ms
          role="region"
          :aria-hidden="collapsed">
         
         <div class="p-6 space-y-6">
-            @if(!empty($widgets))
+            @if(!empty($widgets) && is_array($widgets))
                 @foreach($widgets as $widget)
-                    <div class="fi-wi-item">
-                        @if(is_string($widget))
-                            {{-- If widget is a class name, try to instantiate it --}}
-                            @if(class_exists($widget))
-                                @php
+                    <div class="widget-item">
+                        @if(is_string($widget) && class_exists($widget))
+                            {{-- Render widget class --}}
+                            @php
+                                try {
                                     $widgetInstance = app($widget);
-                                @endphp
-                                @if(method_exists($widgetInstance, 'render'))
-                                    {!! $widgetInstance->render() !!}
-                                @else
-                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            Widget: {{ $widget }}
-                                        </p>
-                                    </div>
-                                @endif
-                            @else
-                                {{-- Treat as plain content --}}
-                                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <p class="text-sm text-gray-900 dark:text-white">
-                                        {{ $widget }}
-                                    </p>
-                                </div>
-                            @endif
-                        @elseif(is_object($widget))
-                            {{-- If widget is an object, try to render it --}}
-                            @if(method_exists($widget, 'render'))
-                                {!! $widget->render() !!}
-                            @elseif(method_exists($widget, '__toString'))
-                                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <p class="text-sm text-gray-900 dark:text-white">
-                                        {!! $widget !!}
-                                    </p>
-                                </div>
-                            @else
-                                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Object: {{ get_class($widget) }}
-                                    </p>
-                                </div>
-                            @endif
-                        @elseif(is_array($widget))
-                            {{-- Handle array of widget data --}}
-                            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                @if(isset($widget['content']))
-                                    {!! $widget['content'] !!}
-                                @elseif(isset($widget['title']) || isset($widget['description']))
-                                    @if(isset($widget['title']))
-                                        <h4 class="font-medium text-gray-900 dark:text-white mb-2">
-                                            {{ $widget['title'] }}
-                                        </h4>
-                                    @endif
-                                    @if(isset($widget['description']))
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ $widget['description'] }}
-                                        </p>
-                                    @endif
-                                @else
-                                    <pre class="text-xs text-gray-600 dark:text-gray-400 overflow-x-auto">{{ json_encode($widget, JSON_PRETTY_PRINT) }}</pre>
-                                @endif
-                            </div>
+                                    if (method_exists($widgetInstance, 'render')) {
+                                        echo $widgetInstance->render();
+                                    } else {
+                                        echo '<div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"><p class="text-sm text-gray-600 dark:text-gray-400">Widget: ' . $widget . '</p></div>';
+                                    }
+                                } catch (Exception $e) {
+                                    echo '<div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800"><p class="text-sm text-red-600 dark:text-red-400">Error loading widget: ' . $widget . '</p></div>';
+                                }
+                            @endphp
+                        @elseif(is_object($widget) && method_exists($widget, 'render'))
+                            {{-- Render widget object --}}
+                            {!! $widget->render() !!}
                         @else
-                            {{-- Handle other types (strings, numbers, etc.) --}}
+                            {{-- Fallback content --}}
                             <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                 <p class="text-sm text-gray-900 dark:text-white">
-                                    {{ $widget }}
+                                    @if(is_string($widget))
+                                        {{ $widget }}
+                                    @elseif(is_array($widget))
+                                        @if(isset($widget['title']))
+                                            <strong>{{ $widget['title'] }}</strong>
+                                        @endif
+                                        @if(isset($widget['content']))
+                                            <br>{{ $widget['content'] }}
+                                        @endif
+                                    @else
+                                        Content: {{ json_encode($widget) }}
+                                    @endif
                                 </p>
                             </div>
                         @endif
@@ -160,25 +125,5 @@
             @endif
         </div>
     </div>
+
 </div>
-
-{{-- Additional styles for the collapsible animation if not already included --}}
-@pushOnce('styles')
-<style>
-    [x-cloak] { 
-        display: none !important; 
-    }
-    
-    .fi-wi-collapsible-header[role="button"]:hover {
-        background-color: rgb(249 250 251 / 1);
-    }
-    
-    .dark .fi-wi-collapsible-header[role="button"]:hover {
-        background-color: rgb(31 41 55 / 1);
-    }
-
-    .fi-wi-collapsible-content {
-        overflow: hidden;
-    }
-</style>
-@endPushOnce

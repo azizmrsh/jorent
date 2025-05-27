@@ -7,7 +7,10 @@ use Illuminate\Contracts\View\View;
 
 class CollapsibleWidgetGroup extends Widget
 {
-    protected static string $view = 'filament.widgets.collapsible-widget-group';
+    protected static string $view = 'filament.widgets.collapsible-widget-group-minimal';
+    
+    // إخفاء هذا الـ widget من الداشبورد الافتراضي
+    protected static bool $isDiscovered = false;
 
     public string $title = '';
     public bool $collapsible = true;
