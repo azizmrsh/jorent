@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class RevenueAnalyticsChart extends ChartWidget
 {
-    protected ?string $heading = '💰 Revenue Analytics (Last 6 Months)';
+    protected static ?string $heading = '💰 Revenue Analytics (Last 6 Months)';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
 
