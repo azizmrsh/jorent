@@ -3,13 +3,9 @@
 namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyStatsOverview;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyOverviewStats;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyQuickStats;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyTypesStats;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyTypeDistributionChart;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyMonthlyTrendsChart;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyAdvancedStats;
+use App\Filament\Resources\PropertyResource\Widgets\QuickStatsSection;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyTypesSection;
+use App\Filament\Resources\PropertyResource\Widgets\ChartsAnalyticsSection;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -27,21 +23,14 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // الصف الأول: إحصائيات سريعة (نوع الاستخدام)
-            PropertyOverviewStats::class,
+            // 📊 القسم الأول: الإحصائيات السريعة (مفتوح افتراضياً)
+            QuickStatsSection::class,
             
-            // الصف الثاني: معلومات إضافية سريعة  
-            PropertyQuickStats::class,
+            // 🏘️ القسم الثاني: تفصيل أنواع العقارات (مطوي افتراضياً)
+            PropertyTypesSection::class,
             
-            // الصف الثالث: تفصيل أنواع العقارات
-            PropertyTypesStats::class,
-            
-            // الصف الرابع: الرسوم البيانية (جنب بعض)
-            PropertyTypeDistributionChart::class,
-            PropertyMonthlyTrendsChart::class,
-            
-            // الصف الخامس: التحليلات المتقدمة
-            PropertyAdvancedStats::class,
+            // 📈 القسم الثالث: الرسوم البيانية والتحليلات (مطوي افتراضياً)
+            ChartsAnalyticsSection::class,
         ];
     }
 }

@@ -8,7 +8,9 @@ use Carbon\Carbon;
 
 class PropertyMonthlyTrendsChart extends ChartWidget
 {
-    protected static ?string $heading = '📈 Properties Added - Monthly Trends';    protected static ?int $sort = 5;
+    protected static ?string $heading = '📈 Properties Added - Monthly Trends';
+    
+    protected static ?int $sort = 5;
 
     protected int | string | array $columnSpan = 6;
 
