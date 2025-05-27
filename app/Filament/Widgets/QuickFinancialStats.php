@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class QuickFinancialStats extends BaseWidget
 {
-    protected static ?string $heading = '💼 Quick Financial Statistics';
+    protected ?string $heading = '💼 Quick Financial Statistics';
     protected static ?int $sort = 9;
     protected int | string | array $columnSpan = 'full';
 

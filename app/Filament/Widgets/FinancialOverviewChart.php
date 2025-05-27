@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class FinancialOverviewChart extends ChartWidget
 {
-    protected static ?string $heading = '💰 Financial Overview - Monthly Comparison';
+    protected ?string $heading = '💰 Financial Overview - Monthly Comparison';
     protected static ?int $sort = 6;
     protected int | string | array $columnSpan = 'full';
 

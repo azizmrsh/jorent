@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class UsersTenantsOverview extends BaseWidget
 {
-    protected static ?string $heading = '👥 Users & Tenants Summary';
+    protected ?string $heading = '👥 Users & Tenants Summary';
     protected static ?int $sort = 5;
     protected int | string | array $columnSpan = 'full';
 

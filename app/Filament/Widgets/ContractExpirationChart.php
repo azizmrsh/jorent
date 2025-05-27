@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class ContractExpirationChart extends ChartWidget
 {
-    protected static ?string $heading = '📅 Contract Expiration Timeline';
+    protected ?string $heading = '📅 Contract Expiration Timeline';
     protected static ?int $sort = 8;
     protected int | string | array $columnSpan = 'full';
 

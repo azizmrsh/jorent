@@ -10,7 +10,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class SystemAlertsTable extends BaseWidget
 {
-    protected static ?string $heading = '⚠️ Expiring Contracts (Next 30 Days)';
+    protected ?string $heading = '⚠️ Expiring Contracts (Next 30 Days)';
     protected static ?int $sort = 7;
     protected int | string | array $columnSpan = 'full';
 
