@@ -521,26 +521,26 @@ Forms\Components\Section::make('Digital Signatures')
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                    ->label('Export Contracts')
-                    ->color('success')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->fileName('contracts_' . date('Y-m-d'))
-                    ->withColumns([
-                        'id' => 'Contract ID',
-                        'landlord_name' => 'Landlord',
-                        'tenant_name' => 'Tenant Name',
-                        'tenant_phone' => 'Tenant Phone',
-                        'tenant_email' => 'Tenant Email',
-                        'property_name' => 'Property',
-                        'unit_name' => 'Unit',
-                        'rental_price' => 'Rental Price',
-                        'start_date' => 'Start Date',
-                        'end_date' => 'End Date',
-                        'status' => 'Status',
-                        'hired_by' => 'Created By',
-                        'hired_date' => 'Creation Date',
-                        'created_at' => 'Added Date',
-                    ]),
+                   ->label('Export Contracts'),
+                //    ->color('success')
+                //    ->icon('heroicon-o-arrow-down-tray')
+                //    ->fileName('contracts_' . date('Y-m-d'))
+                //    ->withColumns([
+                //        'id' => 'Contract ID',
+                //        'landlord_name' => 'Landlord',
+                //        'tenant_name' => 'Tenant Name',
+                //        'tenant_phone' => 'Tenant Phone',
+                //        'tenant_email' => 'Tenant Email',
+                //        'property_name' => 'Property',
+                //        'unit_name' => 'Unit',
+                //        'rental_price' => 'Rental Price',
+                //        'start_date' => 'Start Date',
+                //        'end_date' => 'End Date',
+                //        'status' => 'Status',
+                //        'hired_by' => 'Created By',
+                //        'hired_date' => 'Creation Date',
+                //        'created_at' => 'Added Date',
+                //    ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -559,23 +559,23 @@ Forms\Components\Section::make('Digital Signatures')
                         ->label('Delete Selected')
                         ->color('danger'),
                     FilamentExportBulkAction::make('export-selected')
-                        ->label('Export Selected')
-                        ->color('success')
-                        ->icon('heroicon-o-arrow-down-tray')
-                        ->fileName('selected_contracts_' . date('Y-m-d'))
-                        ->withColumns([
-                            'id' => 'Contract ID',
-                            'landlord_name' => 'Landlord',
-                            'tenant_name' => 'Tenant Name',
-                            'tenant_phone' => 'Tenant Phone',
-                            'property_name' => 'Property',
-                            'unit_name' => 'Unit',
-                            'rental_price' => 'Rental Price',
-                            'start_date' => 'Start Date',
-                            'end_date' => 'End Date',
-                            'status' => 'Status',
-                            'created_at' => 'Added Date',
-                        ]),
+                        ->label('Export Selected'),
+                    //    ->color('success')
+                    //    ->icon('heroicon-o-arrow-down-tray')
+                    //    ->fileName('selected_contracts_' . date('Y-m-d'))
+                    //    ->withColumns([
+                    //        'id' => 'Contract ID',
+                    //        'landlord_name' => 'Landlord',
+                    //        'tenant_name' => 'Tenant Name',
+                    //        'tenant_phone' => 'Tenant Phone',
+                    //        'property_name' => 'Property',
+                    //        'unit_name' => 'Unit',
+                    //        'rental_price' => 'Rental Price',
+                    //        'start_date' => 'Start Date',
+                    //        'end_date' => 'End Date',
+                    //        'status' => 'Status',
+                    //        'created_at' => 'Added Date',
+                    //    ]),
                 ]),
             ])
             ->emptyStateHeading('No Contracts Found')
