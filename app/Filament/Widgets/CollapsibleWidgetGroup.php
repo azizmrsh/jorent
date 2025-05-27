@@ -15,18 +15,75 @@ class CollapsibleWidgetGroup extends Widget
     public array $widgets = [];
     public string $icon = '';
 
-    public function __construct(
+    public function __construct()
+    {
+        // Default constructor for Filament auto-discovery
+        parent::__construct();
+    }
+
+    /**
+     * Create a collapsible widget group with configuration
+     */
+    public static function create(
         string $title,
         array $widgets,
         bool $collapsible = true,
         bool $collapsed = false,
         string $icon = ''
-    ) {
+    ): static {
+        $instance = new static();
+        $instance->title = $title;
+        $instance->widgets = $widgets;
+        $instance->collapsible = $collapsible;
+        $instance->collapsed = $collapsed;
+        $instance->icon = $icon;
+        
+        return $instance;
+    }
+
+    /**
+     * Set the title for this widget group
+     */
+    public function title(string $title): static
+    {
         $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Set the widgets for this group
+     */
+    public function widgets(array $widgets): static
+    {
         $this->widgets = $widgets;
+        return $this;
+    }
+
+    /**
+     * Make this widget group collapsible
+     */
+    public function collapsible(bool $collapsible = true): static
+    {
         $this->collapsible = $collapsible;
+        return $this;
+    }
+
+    /**
+     * Set initial collapsed state
+     */
+    public function collapsed(bool $collapsed = true): static
+    {
         $this->collapsed = $collapsed;
+        return $this;
+    }
+
+    /**
+     * Set the icon for this widget group
+     */
+    public function icon(string $icon): static
+    {
         $this->icon = $icon;
+        return $this;
     }
 
     public function render(): View
