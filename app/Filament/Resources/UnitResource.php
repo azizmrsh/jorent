@@ -190,25 +190,25 @@ class UnitResource extends Resource
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('name')
-                    ->label('اسم الوحدة')
+                    ->label('Unit Name')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit_number')
-                    ->label('رقم الوحدة')
+                    ->label('Unit Number')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('property.name')
-                    ->label('العقار')
+                    ->label('Property')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit_type')
-                    ->label('نوع الوحدة')
+                    ->label('Unit Type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'apartment' => 'primary',
@@ -216,25 +216,39 @@ class UnitResource extends Resource
                         'warehouse' => 'warning',
                         'house' => 'info',
                         'building' => 'secondary',
+                        'studio' => 'purple',
+                        'office' => 'orange',
+                        'shop' => 'pink',
                         default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'apartment' => 'Apartment',
+                        'villa' => 'Villa',
+                        'warehouse' => 'Warehouse',
+                        'house' => 'House',
+                        'building' => 'Building',
+                        'studio' => 'Studio',
+                        'office' => 'Office',
+                        'shop' => 'Shop',
+                        default => ucfirst($state),
                     })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('area')
-                    ->label('المساحة (م²)')
+                    ->label('Area (m²)')
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('rental_price')
-                    ->label('سعر الإيجار')
-                    ->money('SAR')
+                    ->label('Rental Price')
+                    ->money('JOD')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('status')
-                    ->label('الحالة')
+                    ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'available' => 'success',
@@ -245,62 +259,74 @@ class UnitResource extends Resource
                         'not_confirmed' => 'secondary',
                         default => 'gray',
                     })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'available' => 'Available',
+                        'rented' => 'Rented',
+                        'under_maintenance' => 'Under Maintenance',
+                        'unavailable' => 'Unavailable',
+                        'reserved' => 'Reserved',
+                        'not_confirmed' => 'Not Confirmed',
+                        default => ucfirst($state),
+                    })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('تاريخ آخر تحديث')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('ملاحظات')
+                    ->label('Notes')
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('property_id')
-                    ->label('العقار')
+                    ->label('Property')
                     ->relationship('property', 'name')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('unit_type')
-                    ->label('نوع الوحدة')
+                    ->label('Unit Type')
                     ->options([
-                        'apartment' => 'شقة',
-                        'villa' => 'فيلا',
-                        'warehouse' => 'مستودع',
-                        'house' => 'منزل',
-                        'building' => 'مبنى',
+                        'apartment' => 'Apartment',
+                        'villa' => 'Villa',
+                        'warehouse' => 'Warehouse',
+                        'house' => 'House',
+                        'building' => 'Building',
+                        'studio' => 'Studio',
+                        'office' => 'Office',
+                        'shop' => 'Shop',
                     ]),
                     
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('الحالة')
+                    ->label('Status')
                     ->options([
-                        'available' => 'متاحة',
-                        'rented' => 'مؤجرة',
-                        'under_maintenance' => 'تحت الصيانة',
-                        'unavailable' => 'غير متاحة',
-                        'reserved' => 'محجوزة',
-                        'not_confirmed' => 'غير مؤكدة',
+                        'available' => 'Available',
+                        'rented' => 'Rented',
+                        'under_maintenance' => 'Under Maintenance',
+                        'unavailable' => 'Unavailable',
+                        'reserved' => 'Reserved',
+                        'not_confirmed' => 'Not Confirmed',
                     ]),
                     
                 Tables\Filters\Filter::make('area_range')
-                    ->label('نطاق المساحة')
+                    ->label('Area Range')
                     ->form([
                         Forms\Components\TextInput::make('area_from')
-                            ->label('من (م²)')
+                            ->label('From (m²)')
                             ->numeric(),
                         Forms\Components\TextInput::make('area_to')
-                            ->label('إلى (م²)')
+                            ->label('To (m²)')
                             ->numeric(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -310,13 +336,13 @@ class UnitResource extends Resource
                     }),
                     
                 Tables\Filters\Filter::make('price_range')
-                    ->label('نطاق السعر')
+                    ->label('Price Range')
                     ->form([
                         Forms\Components\TextInput::make('price_from')
-                            ->label('من (ريال)')
+                            ->label('From (JOD)')
                             ->numeric(),
                         Forms\Components\TextInput::make('price_to')
-                            ->label('إلى (ريال)')
+                            ->label('To (JOD)')
                             ->numeric(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -326,12 +352,12 @@ class UnitResource extends Resource
                     }),
                     
                 Tables\Filters\Filter::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label('Creation Date')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
-                            ->label('من تاريخ'),
+                            ->label('From Date'),
                         Forms\Components\DatePicker::make('created_until')
-                            ->label('إلى تاريخ'),
+                            ->label('To Date'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -341,7 +367,7 @@ class UnitResource extends Resource
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                    ->label('تصدير البيانات')
+                    ->label('Export Data')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -352,7 +378,7 @@ class UnitResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     FilamentExportBulkAction::make('export')
-                        ->label('تصدير المحدد'),
+                        ->label('Export Selected'),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')
