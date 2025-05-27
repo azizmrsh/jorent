@@ -21,15 +21,15 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationGroup = 'Staff Management (Adminstration)';
-    protected static ?string $navigationLabel = 'Onwer and Managers' ;
+    protected static ?string $navigationLabel = 'Managers';
     protected static ?string $label = 'Managers ';
-    protected static ?string $pluralLabel = 'Onwer and Managers Information';
+    protected static ?string $pluralLabel = 'Managers Information';
     protected static ?string $slug = 'managers'; 
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
-        return $form
+        return $form 
             ->schema([
                 Forms\Components\TextInput::make('name')->required()->label('First Name')->maxLength(255),
                 Forms\Components\TextInput::make('midname')->required()->label('Middle Name')->maxLength(255),

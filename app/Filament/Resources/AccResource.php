@@ -20,10 +20,10 @@ class AccResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Staff Management (Adminstration)';
-    protected static ?string $navigationLabel = 'Accounts Manager';
-    protected static ?string $label = 'Accounts Manager';
-    protected static ?string $pluralLabel = 'Accounts Manager';
-    protected static ?string $slug = 'accs';
+    protected static ?string $navigationLabel = 'Proparty Manager';
+    protected static ?string $label = 'Proparty Manager';
+    protected static ?string $pluralLabel = 'Proparty Manager';
+    protected static ?string $slug = 'PropartyManagers';
 
     public static function form(Form $form): Form
     {
