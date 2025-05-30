@@ -138,7 +138,6 @@ class PaymentResource extends Resource
                     ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
                     
                 Forms\Components\Section::make('ملاحظات')
-                                    Forms\Components\Section::make('ملاحظات')
                     ->schema([
                         Forms\Components\Textarea::make('notes')
                             ->label('ملاحظات إضافية')
