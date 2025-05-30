@@ -30,7 +30,7 @@ class PaymentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات الدفعة')
+                Forms\Components\Section::make('معلومات الدفعة الأساسية')
                     ->schema([
                         Forms\Components\Select::make('contract_id')
                             ->relationship('contract', 'id')
@@ -42,13 +42,51 @@ class PaymentResource extends Resource
                                 "عقد #{$record->id} - {$record->tenant->firstname} {$record->tenant->lastname}"
                             ),
                             
+                        Forms\Components\TextInput::make('payment_number')
+                            ->label('رقم الدفعة')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->default(fn () => \App\Models\Payment::generatePaymentNumber())
+                            ->disabled()
+                            ->dehydrated(),
+                            
                         Forms\Components\TextInput::make('amount')
                             ->label('المبلغ')
                             ->numeric()
                             ->required()
-                            ->prefix('ريال')
-                            ->step(0.01),
+                            ->step(0.01)
+                            ->minValue(0.01),
                             
+                        Forms\Components\Select::make('currency')
+                            ->label('العملة')
+                            ->options([
+                                'JOD' => 'دينار أردني (JOD)',
+                                'USD' => 'دولار أمريكي (USD)',
+                                'EUR' => 'يورو (EUR)',
+                                'SAR' => 'ريال سعودي (SAR)',
+                                'AED' => 'درهم إماراتي (AED)',
+                            ])
+                            ->required()
+                            ->default('JOD'),
+                    ])
+                    ->columns(2),
+                    
+                Forms\Components\Section::make('معلومات الأطراف')
+                    ->schema([
+                        Forms\Components\TextInput::make('payer_name')
+                            ->label('اسم الدافع')
+                            ->required()
+                            ->maxLength(255),
+                            
+                        Forms\Components\TextInput::make('receiver_name')
+                            ->label('اسم المستلم')
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
+                    
+                Forms\Components\Section::make('تفاصيل الدفع')
+                    ->schema([
                         Forms\Components\DatePicker::make('payment_date')
                             ->label('تاريخ الدفع')
                             ->required()
@@ -63,19 +101,51 @@ class PaymentResource extends Resource
                                 'cliq' => 'كليك',
                             ])
                             ->required()
-                            ->default('cash'),
+                            ->default('cash')
+                            ->reactive(),
+                            
+                        Forms\Components\Select::make('payment_status')
+                            ->label('حالة الدفع')
+                            ->options([
+                                'pending' => 'قيد الانتظار',
+                                'completed' => 'مكتمل',
+                                'failed' => 'فاشل',
+                                'cancelled' => 'ملغي',
+                            ])
+                            ->required()
+                            ->default('completed'),
+                    ])
+                    ->columns(3),
+                    
+                Forms\Components\Section::make('تفاصيل البنك')
+                    ->schema([
+                        Forms\Components\TextInput::make('bank_name')
+                            ->label('اسم البنك')
+                            ->maxLength(255)
+                            ->placeholder('مطلوب للتحويلات البنكية'),
+                            
+                        Forms\Components\TextInput::make('transaction_id')
+                            ->label('رقم المعاملة البنكية')
+                            ->maxLength(255)
+                            ->placeholder('رقم المعاملة أو الإيصال البنكي'),
                             
                         Forms\Components\TextInput::make('reference_number')
                             ->label('الرقم المرجعي')
                             ->maxLength(255)
                             ->placeholder('اختياري - رقم الإيصال أو المرجع'),
-                            
-                        Forms\Components\Textarea::make('notes')
-                            ->label('ملاحظات')
-                            ->maxLength(65535)
-                            ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(3)
+                    ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
+                    
+                Forms\Components\Section::make('ملاحظات')
+                                    Forms\Components\Section::make('ملاحظات')
+                    ->schema([
+                        Forms\Components\Textarea::make('notes')
+                            ->label('ملاحظات إضافية')
+                            ->maxLength(65535)
+                            ->placeholder('أضف أي ملاحظات إضافية حول هذه الدفعة')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 
