@@ -13,18 +13,41 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained('contract1s')->onDelete('cascade');            $table->decimal('amount', 10, 2);
-            $table->date('payment_date');
-            $table->enum('payment_method', ['cash', 'bank_transfer', 'wallet', 'cliq'])->default('cash');
-            $table->string('reference_number')->nullable(); // رقم مرجعي اختياري
-            $table->text('notes')->nullable(); // ملاحظات
-            $table->timestamps();//type 
+            
+            // معرف العقد
+            $table->foreignId('contract_id')->constrained('contract1s')->onDelete('cascade');
+            
+            // رقم الدفعة الفريد
+            $table->string('payment_number')->unique()->comment('رقم الدفعة الفريد');
+            
+            // معلومات المبلغ والعملة
+            $table->decimal('amount', 10, 2)->comment('المبلغ');
+            $table->string('currency', 3)->default('JOD')->comment('العملة');
+            
+            // تاريخ ووقت الدفع
+            $table->date('payment_date')->comment('تاريخ الدفع');
+            
+            // أسماء الأطراف
+            $table->string('payer_name')->comment('اسم الدافع');
+            $table->string('receiver_name')->comment('اسم المستلم');
+            
+            // معلومات طريقة الدفع
+            $table->enum('payment_method', ['cash', 'bank_transfer', 'wallet', 'cliq'])->default('cash')->comment('طريقة الدفع');
+            $table->string('bank_name')->nullable()->comment('اسم البنك');
+            $table->string('transaction_id')->nullable()->comment('رقم المعاملة البنكية');
+            $table->string('reference_number')->nullable()->comment('الرقم المرجعي');
+            
+            // حالة الدفع
+            $table->enum('payment_status', ['pending', 'completed', 'failed', 'cancelled'])->default('completed')->comment('حالة الدفع');
+            
+            // ملاحظات
+            $table->text('notes')->nullable()->comment('ملاحظات');
+            
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+   
     public function down(): void
     {
         Schema::dropIfExists('payments');
