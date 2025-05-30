@@ -5,20 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عقد إيجار</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap');
+        /* Enhanced Arabic fonts using gpdf built-in fonts */
+        @font-face {
+            font-family: 'ArabicFont';
+            src: url('{{ public_path('vendor/gpdf/fonts/NotoSansArabic-Regular.ttf') }}') format('truetype');
+            font-weight: normal;
+        }
+        
+        @font-face {
+            font-family: 'ArabicFont';
+            src: url('{{ public_path('vendor/gpdf/fonts/NotoSansArabic-Bold.ttf') }}') format('truetype');
+            font-weight: bold;
+        }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Noto Sans Arabic', 'DejaVu Sans', Arial, sans-serif;
+            font-family: 'ArabicFont', 'NotoSansArabic', 'DejaVu Sans', sans-serif;
             direction: rtl;
             text-align: right;
-            font-size: 14px; /* حجم خط أساسي مناسب */
-            line-height: 1.8; /* زيادة طفيفة لتباعد الأسطر لتحسين القراءة */
+            font-size: 14px;
+            line-height: 1.8;
             color: #333;
             background: #fff;
         }
@@ -65,7 +76,18 @@
             width: 180px; /* تحديد عرض لأسماء الحقول */
         }
         .contract-info-table .info-value, .party-info-table .info-value {
-             font-weight: normal; /* جعل قيمة الحقل عادية بدلاً من غامقة */
+            font-weight: normal;
+            color: #1e40af; /* Blue color for dynamic content */
+            font-size: 15px;
+        }
+
+        /* Special styling for dynamic content */
+        .dynamic-field {
+            color: #1e40af !important;
+            font-weight: 600;
+            background-color: rgba(30, 64, 175, 0.05);
+            padding: 2px 4px;
+            border-radius: 3px;
         }
 
 
@@ -196,22 +218,23 @@
         <table class="contract-info-table">
             <tr>
                 <td>المؤجر:</td>
-                <td class="info-value">{{ $contract->landlord_name ?? 'غير محدد' }}</td>
-            </tr>            <tr>
+                <td class="info-value"><span class="dynamic-field">{{ $contract->landlord_name ?? 'غير محدد' }}</span></td>
+            </tr>            
+            <tr>
                 <td>المستأجر:</td>
-                <td class="info-value">{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? 'غير محدد' }}</td>
+                <td class="info-value"><span class="dynamic-field">{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? 'غير محدد' }}</span></td>
             </tr>
             <tr>
                 <td>أوصاف المأجور:</td>
-                <td class="info-value">{{ $contract->property_name_accessor ?? ($contract->property->name ?? 'غير محدد') }} - {{ $contract->unit_name_accessor ?? ($contract->unit->name ?? 'غير محدد') }}</td>
+                <td class="info-value"><span class="dynamic-field">{{ $contract->property_name_accessor ?? ($contract->property->name ?? 'غير محدد') }} - {{ $contract->unit_name_accessor ?? ($contract->unit->name ?? 'غير محدد') }}</span></td>
             </tr>
             <tr>
                 <td>مقدار الإيجار:</td>
-                <td class="info-value">{{ number_format($contract->rent_amount ?? 0, 2) }} دينار أردني</td>
+                <td class="info-value"><span class="dynamic-field">{{ number_format($contract->rent_amount ?? 0, 2) }} دينار أردني</span></td>
             </tr>
             <tr>
                 <td>تاريخ ابتداء الإيجار:</td>
-                <td class="info-value">{{ $contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') : 'غير محدد' }}</td>
+                <td class="info-value"><span class="dynamic-field">{{ $contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') : 'غير محدد' }}</span></td>
             </tr>
              <tr>
                 <td>مدة الإيجار:</td>
@@ -293,14 +316,15 @@
                     @if($contract->landlord_signature_path && Storage::disk('public')->exists($contract->landlord_signature_path))
                         <img src="{{ asset('storage/' . $contract->landlord_signature_path) }}" alt="توقيع المؤجر" class="signature-img">
                     @endif
-                    <div>{{ $contract->landlord_name ?? '...................................' }}</div>
+                    <div><span class="dynamic-field">{{ $contract->landlord_name ?? '...................................' }}</span></div>
                 </div>
                 
                 <div class="signature-box">
-                    <div class="signature-label">المستأجر:</div> [cite: 24, 48]                    @if($contract->tenant_signature_path && Storage::disk('public')->exists($contract->tenant_signature_path))
+                    <div class="signature-label">المستأجر:</div> [cite: 24, 48]
+                    @if($contract->tenant_signature_path && Storage::disk('public')->exists($contract->tenant_signature_path))
                         <img src="{{ asset('storage/' . $contract->tenant_signature_path) }}" alt="توقيع المستأجر" class="signature-img">
                     @endif
-                    <div>{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? '...................................' }}</div>
+                    <div><span class="dynamic-field">{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? '...................................' }}</span></div>
                 </div>
                 
                 <div class="signature-box">

@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Contract1;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Omaralalwi\Gpdf\Gpdf;
 
 class ContractPdfService
 {
@@ -22,18 +22,14 @@ class ContractPdfService
             // Load relationships
             $contract->load(['tenant', 'property.address', 'unit']);
             
-            // Configure PDF options for Arabic RTL support
-            $pdf = Pdf::loadView('contracts.pdf', ['contract' => $contract])
-                ->setPaper('a4', 'portrait')
-                ->setOptions([
-                    'defaultFont' => 'DejaVu Sans',
-                    'isRemoteEnabled' => true,
-                    'isHtml5ParserEnabled' => true,
-                    'isFontSubsettingEnabled' => true,
-                    'defaultMediaType' => 'print',
-                    'dpi' => 96,
-                    'fontHeightRatio' => 1.1,
-                ]);
+            // Render the view to HTML first
+            $html = view('contracts.pdf', ['contract' => $contract])->render();
+            
+            // Create gpdf instance for Arabic PDF generation
+            $gpdf = new Gpdf();
+            
+            // Generate PDF with Arabic support using gpdf
+            $pdfContent = $gpdf->generate($html);
             
             // Generate filename
             $filename = $this->generateFilename($contract);
@@ -45,7 +41,6 @@ class ContractPdfService
             }
             
             // Save PDF to storage
-            $pdfContent = $pdf->output();
             Storage::disk('public')->put($filepath, $pdfContent);
             
             // Update contract with PDF path
