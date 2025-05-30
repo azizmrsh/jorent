@@ -8,13 +8,13 @@
         /* Enhanced Arabic fonts using gpdf built-in fonts */
         @font-face {
             font-family: 'ArabicFont';
-            src: url('{{ public_path('vendor/gpdf/fonts/NotoNaskhArabic-Normal.ttf') }}') format('truetype');
+            src: url('<?php echo e(public_path('vendor/gpdf/fonts/NotoNaskhArabic-Normal.ttf')); ?>') format('truetype');
             font-weight: normal;
         }
         
         @font-face {
             font-family: 'ArabicFont';
-            src: url('{{ public_path('vendor/gpdf/fonts/NotoNaskhArabic-Bold.ttf') }}') format('truetype');
+            src: url('<?php echo e(public_path('vendor/gpdf/fonts/NotoNaskhArabic-Bold.ttf')); ?>') format('truetype');
             font-weight: bold;
         }
         
@@ -210,37 +210,37 @@
             <button onclick="window.print()" style="padding: 8px 15px; background-color: #2563eb; color: white; border: none; border-radius: 5px; cursor: pointer;">طباعة العقد</button>
         </div>
 
-        <div class="contract-number">رقم العقد: {{ $contract->id ?? 'غير محدد' }}</div>
+        <div class="contract-number">رقم العقد: <?php echo e($contract->id ?? 'غير محدد'); ?></div>
         
-        <div class="basmala">{{-- بسم الله الرحمن الرحيم --}}بسم الله الرحمن الرحيم</div> [cite: 1, 25]
-        <div class="contract-main-title">{{-- عقد إيجار --}}عقد إيجار</div> [cite: 1, 25]
+        <div class="basmala">بسم الله الرحمن الرحيم</div> [cite: 1, 25]
+        <div class="contract-main-title">عقد إيجار</div> [cite: 1, 25]
         
         <table class="contract-info-table">
             <tr>
                 <td>المؤجر:</td>
-                <td class="info-value"><span class="dynamic-field">{{ $contract->landlord_name ?? 'غير محدد' }}</span></td>
+                <td class="info-value"><span class="dynamic-field"><?php echo e($contract->landlord_name ?? 'غير محدد'); ?></span></td>
             </tr>            
             <tr>
                 <td>المستأجر:</td>
-                <td class="info-value"><span class="dynamic-field">{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? 'غير محدد' }}</span></td>
+                <td class="info-value"><span class="dynamic-field"><?php echo e($contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? 'غير محدد'); ?></span></td>
             </tr>
             <tr>
                 <td>أوصاف المأجور:</td>
-                <td class="info-value"><span class="dynamic-field">{{ $contract->property_name_accessor ?? ($contract->property->name ?? 'غير محدد') }} - {{ $contract->unit_name_accessor ?? ($contract->unit->name ?? 'غير محدد') }}</span></td>
+                <td class="info-value"><span class="dynamic-field"><?php echo e($contract->property_name_accessor ?? ($contract->property->name ?? 'غير محدد')); ?> - <?php echo e($contract->unit_name_accessor ?? ($contract->unit->name ?? 'غير محدد')); ?></span></td>
             </tr>
             <tr>
                 <td>مقدار الإيجار:</td>
-                <td class="info-value"><span class="dynamic-field">{{ number_format($contract->rent_amount ?? 0, 2) }} دينار أردني</span></td>
+                <td class="info-value"><span class="dynamic-field"><?php echo e(number_format($contract->rent_amount ?? 0, 2)); ?> دينار أردني</span></td>
             </tr>
             <tr>
                 <td>تاريخ ابتداء الإيجار:</td>
-                <td class="info-value"><span class="dynamic-field">{{ $contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') : 'غير محدد' }}</span></td>
+                <td class="info-value"><span class="dynamic-field"><?php echo e($contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') : 'غير محدد'); ?></span></td>
             </tr>
              <tr>
                 <td>مدة الإيجار:</td>
                 <td class="info-value">
-                     @if ($contract->start_date && $contract->end_date)
-                        @php
+                     <?php if($contract->start_date && $contract->end_date): ?>
+                        <?php
                             $startDate = \Carbon\Carbon::parse($contract->start_date);
                             $endDate = \Carbon\Carbon::parse($contract->end_date);
                             // Calculate difference
@@ -250,19 +250,19 @@
                             if ($diff->m > 0) $durationParts[] = $diff->m . ' ' . ($diff->m == 1 ? 'شهر' : ($diff->m == 2 ? 'شهرين' : $diff->m . ' شهور'));
                             if ($diff->d > 0 && count($durationParts) < 2) $durationParts[] = $diff->d . ' ' . ($diff->d == 1 ? 'يوم' : ($diff->d == 2 ? 'يومين' : $diff->d . ' أيام'));
                             echo implode(' و ', $durationParts);
-                        @endphp
-                    @else
+                        ?>
+                    <?php else: ?>
                         غير محددة
-                    @endif
+                    <?php endif; ?>
                 </td>
             </tr>
             <tr>
                 <td>استعمال المأجور:</td>
-                <td class="info-value">{{ $contract->unit->usage_type ?? 'سكني' }} {{-- افتراض أنه سكني إذا لم يحدد --}}</td>
+                <td class="info-value"><?php echo e($contract->unit->usage_type ?? 'سكني'); ?> </td>
             </tr>
             <tr>
                 <td>كيفية دفع بدل الإيجار:</td>
-                <td class="info-value">{{ $contract->payment_method ?? 'شهري مقدم، يستحق في اليوم الأول من كل شهر ميلادي' }} {{-- يمكنك تعديل القيمة الافتراضية --}}</td>
+                <td class="info-value"><?php echo e($contract->payment_method ?? 'شهري مقدم، يستحق في اليوم الأول من كل شهر ميلادي'); ?> </td>
             </tr>
         </table>
         
@@ -294,14 +294,15 @@
                 <p><strong>الثامن عشر:</strong> اذا كان العقار المؤجر شقة فيلتزم المستأجر بأحكام قانون الملكية العقارية ونظام إدارة الشقق و يلتزم بدفع ما يترتب على الشقة من مستحقات تفرض على ادارة او استعمال الخدمات المشتركة واذا كان للبناية حارس او عامل نظافة فيلزم بدفع مستحقاته ويلتزم بدفع اية نفقات لصيانة الخدمات المشتركة بما فيها صيانة المصعد او صيانة السطح حتى لو لم يكن يستخدمهما و يلتزم بدفع نسبته من فواتير المياه والكهرباء التي تستحق على الخدمات المشتركة، ولا يجوز له باي حال من الاحوال رفض المشاركة في مصاريف الخدمات المشتركة و لا يجوز له التذرع بعدم الاستفادة منها و يجب عليه أن يتقيد بالمكان المخصص لاصطفاف سيارته و لا يجوز له التعدي على الكراجات المخصصة لغيره من السكان.</p> [cite: 20, 21, 44, 45]
                 <p><strong>التاسع عشر:</strong> إن عدم احترام الجوار الساكنين في البناية التي تقع بها الشقة أو التي تقابلهم أو إيذاء أي من الجوار بأي أفعال لا يتقبلها العرف والعادة يعتبر سببا لفسخ العقد ويلزم المستأجر بالتعويض عن أي عطل أو ضرر يلحق بالمالك أو بالآخرين.</p> [cite: 22, 46]
                 
-                @if($contract->terms_and_conditions_extra)
+                <?php if($contract->terms_and_conditions_extra): ?>
                 <div style="margin-top: 20px; padding-top:15px; border-top: 1px dashed #ccc;">
                     <p><strong>شروط إضافية (خصوصية):</strong></p> [cite: 23, 47]
                     <div style="margin-top: 10px; line-height: 1.8; padding-right: 15px;">
-                        {!! nl2br(e($contract->terms_and_conditions_extra)) !!}
+                        <?php echo nl2br(e($contract->terms_and_conditions_extra)); ?>
+
                     </div>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
         
@@ -313,34 +314,30 @@
             <div class="signatures-grid">
                 <div class="signature-box">
                     <div class="signature-label">المؤجر:</div> [cite: 24, 48]
-                    @if($contract->landlord_signature_path && Storage::disk('public')->exists($contract->landlord_signature_path))
-                        <img src="{{ asset('storage/' . $contract->landlord_signature_path) }}" alt="توقيع المؤجر" class="signature-img">
-                    @endif
-                    <div><span class="dynamic-field">{{ $contract->landlord_name ?? '...................................' }}</span></div>
+                    <?php if($contract->landlord_signature_path && Storage::disk('public')->exists($contract->landlord_signature_path)): ?>
+                        <img src="<?php echo e(asset('storage/' . $contract->landlord_signature_path)); ?>" alt="توقيع المؤجر" class="signature-img">
+                    <?php endif; ?>
+                    <div><span class="dynamic-field"><?php echo e($contract->landlord_name ?? '...................................'); ?></span></div>
                 </div>
                 
                 <div class="signature-box">
                     <div class="signature-label">المستأجر:</div> [cite: 24, 48]
-                    @if($contract->tenant_signature_path && Storage::disk('public')->exists($contract->tenant_signature_path))
-                        <img src="{{ asset('storage/' . $contract->tenant_signature_path) }}" alt="توقيع المستأجر" class="signature-img">
-                    @endif
-                    <div><span class="dynamic-field">{{ $contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? '...................................' }}</span></div>
+                    <?php if($contract->tenant_signature_path && Storage::disk('public')->exists($contract->tenant_signature_path)): ?>
+                        <img src="<?php echo e(asset('storage/' . $contract->tenant_signature_path)); ?>" alt="توقيع المستأجر" class="signature-img">
+                    <?php endif; ?>
+                    <div><span class="dynamic-field"><?php echo e($contract->tenant_name_accessor ?? ($contract->tenant->firstname ?? '' . ' ' . $contract->tenant->lastname ?? '') ?? '...................................'); ?></span></div>
                 </div>
                 
                 <div class="signature-box">
                     <div class="signature-label">شاهد:</div> [cite: 24, 48]
-                    {{-- افترض وجود حقل لتوقيع الشاهد الأول إذا أردت عرض صورة توقيع --}}
-                    {{-- @if($contract->witness1_signature_path && Storage::disk('public')->exists($contract->witness1_signature_path))
-                        <img src="{{ asset('storage/' . $contract->witness1_signature_path) }}" alt="توقيع الشاهد الأول" class="signature-img">
-                    @endif --}}
+                    
+                    
                     <div>...................................</div>
                 </div>
                 <div class="signature-box">
                     <div class="signature-label">شاهد:</div> [cite: 24, 48]
-                    {{-- افترض وجود حقل لتوقيع الشاهد الثاني --}}
-                    {{-- @if($contract->witness2_signature_path && Storage::disk('public')->exists($contract->witness2_signature_path))
-                        <img src="{{ asset('storage/' . $contract->witness2_signature_path) }}" alt="توقيع الشاهد الثاني" class="signature-img">
-                    @endif --}}
+                    
+                    
                     <div>...................................</div>
                 </div>
             </div>
@@ -353,7 +350,8 @@
 
         <div style="margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px solid #e2e8f0;">
             <p style="font-size: 12px; color: #6b7280;">
-                تم إنشاء هذا العقد إلكترونياً بتاريخ {{ \Carbon\Carbon::now()->format('Y/m/d H:i') }}
+                تم إنشاء هذا العقد إلكترونياً بتاريخ <?php echo e(\Carbon\Carbon::now()->format('Y/m/d H:i')); ?>
+
             </p>
             <p style="font-size: 12px; color: #6b7280; margin-top: 5px;">
                 نظام إدارة العقارات - jhome
@@ -361,4 +359,4 @@
         </div>
     </div>
 </body>
-</html>
+</html><?php /**PATH C:\Users\mzyz2\Desktop\الجامعة\last\FinalProject\project\jorentV2\resources\views/contracts/pdf.blade.php ENDPATH**/ ?>

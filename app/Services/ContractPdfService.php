@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Omaralalwi\Gpdf\Gpdf;
+use Omaralalwi\Gpdf\GpdfConfig;
 
 class ContractPdfService
 {
@@ -25,8 +26,9 @@ class ContractPdfService
             // Render the view to HTML first
             $html = view('contracts.pdf', ['contract' => $contract])->render();
             
-            // Create gpdf instance for Arabic PDF generation
-            $gpdf = new Gpdf();
+            // Create gpdf instance for Arabic PDF generation with proper configuration
+            $gpdfConfig = new GpdfConfig(config('gpdf'));
+            $gpdf = new Gpdf($gpdfConfig);
             
             // Generate PDF with Arabic support using gpdf
             $pdfContent = $gpdf->generate($html);

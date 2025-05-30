@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PropertyGridController;
+use App\Services\ContractPdfService;
+use App\Models\Contract1;
 
 // Home route
 Route::get('/', function () {
@@ -15,3 +17,46 @@ Route::post('property-grid/filter', [PropertyGridController::class, 'filter'])->
 
 // Contracts routes
 Route::resource('contracts', ContractController::class);
+
+// Test route for PDF generation
+Route::get('/test-pdf', function () {
+    try {
+        // Get first contract or create a dummy one for testing
+        $contract = Contract1::with(['tenant', 'property.address', 'unit'])->first();
+        
+        if (!$contract) {
+            return response()->json([
+                'error' => 'No contracts found. Please create a contract first through the admin panel.',
+                'suggestion' => 'Go to /admin/contract1s/create to create a test contract'
+            ], 404);
+        }
+        
+        $pdfService = new ContractPdfService();
+        $pdfPath = $pdfService->generateContractPdf($contract);
+        
+        if ($pdfPath) {
+            $fullPath = storage_path('app/public/' . $pdfPath);
+            $fileSize = file_exists($fullPath) ? filesize($fullPath) : 0;
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'PDF generated successfully!',
+                'pdf_path' => $pdfPath,
+                'file_size' => $fileSize,
+                'download_url' => asset('storage/' . $pdfPath),
+                'contract_id' => $contract->id,
+                'tenant_name' => $contract->tenant->name ?? 'N/A'
+            ]);
+        } else {
+            return response()->json([
+                'error' => 'PDF generation failed. Check Laravel logs for details.'
+            ], 500);
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Exception occurred: ' . $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ], 500);
+    }
+})->name('test.pdf');
