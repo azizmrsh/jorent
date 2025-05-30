@@ -37,9 +37,10 @@ return [
 
     /**
      * Default font for generating PDFs.
+     * 🔧 FIXED: استخدام خط عربي كخط افتراضي
      * @var string
      */
-    GpdfSet::DEFAULT_FONT => GpdfDefaultSupportedFonts::TAJAWAL,
+    GpdfSet::DEFAULT_FONT => GpdfDefaultSupportedFonts::NOTO_NASKH_ARABIC,
 
     /**
      *
