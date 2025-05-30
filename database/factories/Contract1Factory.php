@@ -22,8 +22,8 @@ class Contract1Factory extends Factory
             'due_date' => $this->faker->date,
             'status' => $this->faker->randomElement(['active', 'inactive']),
             'terms_and_conditions_extra' => $this->faker->paragraph,
-            'tenant_signature_path' => $this->faker->imageUrl(200, 100, 'people', true, 'Tenant Signature'),
-            'landlord_signature_path' => $this->faker->imageUrl(200, 100, 'people', true, 'Landlord Signature'),
+            'tenant_signature_path' => null, // Will be set when actual signatures are uploaded
+            'landlord_signature_path' => null, // Will be set when actual signatures are uploaded
 
 
             'hired_date' => $this->faker->date,
