@@ -35,20 +35,20 @@ class ContractPdfService
             
             // Generate filename
             $filename = $this->generateFilename($contract);
-            $filepath = "contracts/{$filename}";
+            $filePath = 'contracts/' . $filename;
             
-            // Ensure the contracts directory exists
-            if (!Storage::disk('public')->exists('contracts')) {
-                Storage::disk('public')->makeDirectory('contracts');
+            // Ensure the contracts directory exists in public folder
+            if (!is_dir(public_path('contracts'))) {
+                mkdir(public_path('contracts'), 0755, true);
             }
             
-            // Save PDF to storage
-            Storage::disk('public')->put($filepath, $pdfContent);
+            // Save PDF directly to public/contracts directory (no symlink required)
+            file_put_contents(public_path($filePath), $pdfContent);
             
             // Update contract with PDF path
-            $contract->update(['pdf_path' => $filepath]);
+            $contract->update(['pdf_path' => $filePath]);
             
-            return $filepath;
+            return $filePath;
             
         } catch (\Exception $e) {
             Log::error('Contract PDF generation failed', [
@@ -85,11 +85,11 @@ class ContractPdfService
      */
     public function getContractPdfUrl(Contract1 $contract): ?string
     {
-        if (!$contract->pdf_path || !Storage::disk('public')->exists($contract->pdf_path)) {
+        if (!$contract->pdf_path || !file_exists(public_path($contract->pdf_path))) {
             return null;
         }
         
-        return asset('storage/' . $contract->pdf_path);
+        return asset($contract->pdf_path);
     }
     
     /**
@@ -100,8 +100,8 @@ class ContractPdfService
      */
     public function deleteContractPdf(Contract1 $contract): bool
     {
-        if ($contract->pdf_path && Storage::disk('public')->exists($contract->pdf_path)) {
-            return Storage::disk('public')->delete($contract->pdf_path);
+        if ($contract->pdf_path && file_exists(public_path($contract->pdf_path))) {
+            return unlink(public_path($contract->pdf_path));
         }
         
         return true;
