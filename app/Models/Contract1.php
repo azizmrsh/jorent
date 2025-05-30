@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Contract1 extends Model
 {
@@ -26,6 +27,7 @@ class Contract1 extends Model
         'witness2_signature_path',
         'hired_date',
         'hired_by',
+        'pdf_path',
     ];
 
     public function tenant()
@@ -78,5 +80,23 @@ class Contract1 extends Model
         return $this->unit?->rental_price ?? 0;
     }
 
+    /**
+     * Get the PDF URL for this contract
+     */
+    public function getPdfUrlAttribute(): ?string
+    {
+        if (!$this->attributes['pdf_path'] || !Storage::disk('public')->exists($this->attributes['pdf_path'])) {
+            return null;
+        }
+        
+        return asset('storage/' . $this->attributes['pdf_path']);
+    }
     
+    /**
+     * Check if PDF exists for this contract
+     */
+    public function hasPdf(): bool
+    {
+        return $this->attributes['pdf_path'] && Storage::disk('public')->exists($this->attributes['pdf_path']);
+    }
 }

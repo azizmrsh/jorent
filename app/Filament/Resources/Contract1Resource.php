@@ -380,6 +380,16 @@ Forms\Components\Section::make('Digital Signatures')
                     ->falseColor('danger')
                     ->toggleable(),
                     
+                Tables\Columns\IconColumn::make('has_pdf')
+                    ->label('PDF')
+                    ->boolean()
+                    ->getStateUsing(fn ($record) => $record->hasPdf())
+                    ->trueIcon('heroicon-o-document-text')
+                    ->falseIcon('heroicon-o-document-minus')
+                    ->trueColor('success')
+                    ->falseColor('gray')
+                    ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('hired_by')
                     ->label('Created By')
                     ->searchable()
@@ -550,6 +560,45 @@ Forms\Components\Section::make('Digital Signatures')
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
                     ->color('warning'),
+                    
+                // View PDF Action
+                Tables\Actions\Action::make('view_pdf')
+                    ->label('View PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->color('success')
+                    ->url(fn (Contract1 $record): string => $record->pdf_url ?? '#')
+                    ->openUrlInNewTab()
+                    ->visible(fn (Contract1 $record): bool => $record->hasPdf()),
+                    
+                // Generate/Regenerate PDF Action
+                Tables\Actions\Action::make('generate_pdf')
+                    ->label(fn (Contract1 $record): string => $record->hasPdf() ? 'Regenerate PDF' : 'Generate PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('primary')
+                    ->action(function (Contract1 $record) {
+                        $contractPdfService = new \App\Services\ContractPdfService();
+                        $pdfPath = $contractPdfService->regenerateContractPdf($record);
+                        
+                        if ($pdfPath) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('PDF Generated Successfully')
+                                ->body('Contract PDF has been generated and saved.')
+                                ->success()
+                                ->duration(5000)
+                                ->send();
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->title('PDF Generation Failed')
+                                ->body('There was an error generating the PDF. Please try again.')
+                                ->danger()
+                                ->duration(7000)
+                                ->send();
+                        }
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Generate Contract PDF')
+                    ->modalDescription('This will generate a PDF version of the contract. Are you sure?'),
+                    
                 Tables\Actions\DeleteAction::make()
                     ->label('Delete')
                     ->color('danger'),
