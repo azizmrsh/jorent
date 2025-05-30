@@ -56,15 +56,21 @@ class Payment extends Model
         $year = date('Y');
         $month = date('m');
         
-        // البحث عن آخر رقم في نفس الشهر
-        $lastPayment = self::where('payment_number', 'like', "{$prefix}-{$year}{$month}-%")
-                          ->orderBy('payment_number', 'desc')
-                          ->first();
-        
-        if ($lastPayment) {
-            $lastNumber = (int) substr($lastPayment->payment_number, -4);
-            $newNumber = $lastNumber + 1;
-        } else {
+        // التحقق من وجود العمود أولاً
+        try {
+            // البحث عن آخر رقم في نفس الشهر
+            $lastPayment = self::where('payment_number', 'like', "{$prefix}-{$year}{$month}-%")
+                              ->orderBy('payment_number', 'desc')
+                              ->first();
+            
+            if ($lastPayment) {
+                $lastNumber = (int) substr($lastPayment->payment_number, -4);
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+        } catch (\Exception $e) {
+            // إذا كان العمود غير موجود، ابدأ برقم 1
             $newNumber = 1;
         }
         

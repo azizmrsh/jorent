@@ -81,7 +81,36 @@ class PaymentResource extends Resource
                         Forms\Components\TextInput::make('receiver_name')
                             ->label('اسم المستلم')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->default(function () {
+                                $user = auth()->user();
+                                if ($user) {
+                                    // إنشاء الاسم الكامل من الحقول المتاحة
+                                    $nameParts = array_filter([
+                                        $user->name,
+                                        $user->midname,
+                                        $user->lastname
+                                    ]);
+                                    
+                                    return implode(' ', $nameParts) ?: 'غير محدد';
+                                }
+                                return null;
+                            })
+                            ->placeholder(function () {
+                                $user = auth()->user();
+                                if ($user) {
+                                    $nameParts = array_filter([
+                                        $user->name,
+                                        $user->midname,
+                                        $user->lastname
+                                    ]);
+                                    
+                                    return 'مثال: ' . implode(' ', $nameParts);
+                                }
+                                return 'سيتم ملء الاسم تلقائياً';
+                            })
+                            ->helperText('يتم ملء هذا الحقل تلقائياً بإسم المستخدم الحالي، يمكن تعديله')
+                            ->suffixIcon('heroicon-m-user'),
                     ])
                     ->columns(2),
                     
@@ -158,6 +187,14 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
+                Tables\Columns\TextColumn::make('payment_number')
+                    ->label('رقم الدفعة')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('تم نسخ رقم الدفعة!')
+                    ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('contract.id')
                     ->label('رقم العقد')
                     ->sortable()
@@ -179,11 +216,38 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->toggleable(),
                     
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('المبلغ')
-                    ->money('SAR')
+                Tables\Columns\TextColumn::make('payer_name')
+                    ->label('اسم الدافع')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('receiver_name')
+                    ->label('اسم المستلم')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('amount')
+                    ->label('المبلغ')
+                    ->money(fn ($record) => $record->currency ?? 'JOD')
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('currency')
+                    ->label('العملة')
+                    ->badge()
+                    ->color('info')
+                    ->sortable()
+                    ->toggleable()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'JOD' => 'دينار أردني',
+                        'USD' => 'دولار أمريكي',
+                        'EUR' => 'يورو',
+                        'SAR' => 'ريال سعودي',
+                        'AED' => 'درهم إماراتي',
+                        default => $state,
+                    }),
                     
                 Tables\Columns\TextColumn::make('payment_date')
                     ->label('تاريخ الدفع')
@@ -211,6 +275,40 @@ class PaymentResource extends Resource
                     ->sortable()
                     ->toggleable(),
                     
+                Tables\Columns\TextColumn::make('payment_status')
+                    ->label('حالة الدفع')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'completed' => 'success',
+                        'pending' => 'warning',
+                        'failed' => 'danger',
+                        'cancelled' => 'gray',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'completed' => 'مكتمل',
+                        'pending' => 'قيد الانتظار',
+                        'failed' => 'فاشل',
+                        'cancelled' => 'ملغي',
+                        default => $state,
+                    })
+                    ->sortable()
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('bank_name')
+                    ->label('اسم البنك')
+                    ->searchable()
+                    ->limit(20)
+                    ->placeholder('غير محدد')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
+                Tables\Columns\TextColumn::make('transaction_id')
+                    ->label('رقم المعاملة')
+                    ->searchable()
+                    ->limit(15)
+                    ->placeholder('غير محدد')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    
                 Tables\Columns\TextColumn::make('reference_number')
                     ->label('الرقم المرجعي')
                     ->searchable()
@@ -236,6 +334,25 @@ class PaymentResource extends Resource
                     ->relationship('contract', 'id')
                     ->searchable()
                     ->preload(),
+                    
+                Tables\Filters\SelectFilter::make('currency')
+                    ->label('العملة')
+                    ->options([
+                        'JOD' => 'دينار أردني',
+                        'USD' => 'دولار أمريكي',
+                        'EUR' => 'يورو',
+                        'SAR' => 'ريال سعودي',
+                        'AED' => 'درهم إماراتي',
+                    ]),
+                    
+                Tables\Filters\SelectFilter::make('payment_status')
+                    ->label('حالة الدفع')
+                    ->options([
+                        'completed' => 'مكتمل',
+                        'pending' => 'قيد الانتظار',
+                        'failed' => 'فاشل',
+                        'cancelled' => 'ملغي',
+                    ]),
                     
                 Tables\Filters\SelectFilter::make('payment_method')
                     ->label('طريقة الدفع')
