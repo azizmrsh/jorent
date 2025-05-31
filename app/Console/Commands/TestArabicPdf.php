@@ -84,7 +84,8 @@ class TestArabicPdf extends Command
             </html>';
 
             $this->info('1️⃣ Creating gpdf instance...');
-            $gpdf = new Gpdf(config('gpdf'));
+            $gpdfConfig = new \Omaralalwi\Gpdf\GpdfConfig(config('gpdf'));
+            $gpdf = new Gpdf($gpdfConfig);
             $this->info('✅ gpdf instance created successfully');
 
             $this->info('2️⃣ Generating PDF from Arabic HTML...');

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عقد إيجار</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @php
         use Illuminate\Support\Facades\Storage;
     @endphp
@@ -15,7 +14,7 @@
             padding: 0;
             box-sizing: border-box;
             /* استخدام الخطوط العربية المدعومة في gpdf */
-            font-family: 'NotoNaskhArabic', 'Tajawal', 'Almarai', sans-serif !important;
+            font-family: 'Tajawal', 'Almarai', 'NotoNaskhArabic', sans-serif !important;
         }
         
         /* 🔧 ADDED: قواعد إضافية لضمان دعم النصوص العربية */
@@ -23,7 +22,7 @@
         .container, .header, .content, .section-title,
         .detail-label, .detail-value, .property-title,
         .signature-title, .signature-name, .footer {
-            font-family: 'NotoNaskhArabic', 'Tajawal', 'Almarai', sans-serif !important;
+            font-family: 'Tajawal', 'Almarai', 'NotoNaskhArabic', sans-serif !important;
             direction: rtl;
             unicode-bidi: embed;
         }
@@ -36,7 +35,7 @@
             min-height: 100vh;
             direction: rtl;
             /* 🔧 FIXED: تحديد الخط العربي المدعوم بشكل صريح */
-            font-family: 'NotoNaskhArabic', 'Tajawal', 'Almarai', sans-serif !important;
+            font-family: 'Tajawal', 'Almarai', 'NotoNaskhArabic', sans-serif !important;
             unicode-bidi: embed;
         }
         

@@ -1,0 +1,3 @@
+# Keep the contracts directory but ignore PDF files in development
+*.pdf
+!.gitkeep
