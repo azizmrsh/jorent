@@ -26,12 +26,10 @@ return new class extends Migration
             $table->decimal('floor_area', 10, 2)->nullable(); 
             $table->decimal('total_area', 10, 2)->nullable(); 
             $table->json('features')->nullable();
-            $table->json('images')->nullable(); // Add this line for images
+            $table->string('image_path')->nullable(); // مسار الصورة الرئيسية
             
-            // Foreign key to addresses table one to one
-            $table->unsignedBigInteger('address_id')->nullable(); // Add this line for address_id
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('set null'); // Add this line for address_id foreign key
-
+            // سنضيف foreign key للـ addresses في migration منفصل لاحقاً
+            $table->unsignedBigInteger('address_id')->nullable(); 
             
             $table->timestamps();
         });

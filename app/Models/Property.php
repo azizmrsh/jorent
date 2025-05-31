@@ -20,7 +20,7 @@ class Property extends Model
         'floor_area',
         'total_area',
         'acc_id', // foreign key to accs table
-        'images', // JSON column for images
+        'image_path', // مسار الصورة الرئيسية
         'address_id', // foreign key to addresses table
         'created_at',
         'updated_at',
@@ -95,5 +95,33 @@ public function contracts()
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * 🖼️ Accessor للحصول على رابط الصورة الكامل
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image_path) {
+            return asset($this->image_path);
+        }
+        
+        // صورة افتراضية إذا لم تكن هناك صورة
+        return asset('images/property-placeholder.jpg');
+    }
+    
+    /**
+     * 📁 Mutator لحفظ الصورة المرفوعة
+     */
+    public function setImagePathAttribute($value)
+    {
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            // حفظ الصورة في مجلد properties
+            $filename = time() . '_' . $value->getClientOriginalName();
+            $path = $value->storeAs('uploads/properties', $filename, 'public');
+            $this->attributes['image_path'] = $path;
+        } else {
+            $this->attributes['image_path'] = $value;
+        }
     }
 }
