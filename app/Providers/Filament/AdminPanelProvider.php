@@ -57,7 +57,5 @@ class AdminPanelProvider extends PanelProvider
             // ->plugins([
             //     TableLayoutTogglePlugin::make(),
             // ]);
-
-
     }
 }

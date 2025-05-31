@@ -23,12 +23,19 @@ TypeError: array_merge(): Argument #2 must be of type array, int given
 - تم تعليق import للـ trait
 - تم تعليق متغير `$tableLayout`
 
-### 3️⃣ تنظيف Cache
+### 3️⃣ إزالة Package بالكامل من المشروع ⭐ جديد
+**الملف**: `composer.json`
+- تم حذف `"hydrat/filament-table-layout-toggle": "^2.1"` من dependencies
+- تم تنفيذ `composer remove hydrat/filament-table-layout-toggle`
+- تم حذف الـ package بالكامل من مجلد vendor/
+
+### 4️⃣ تنظيف Cache
 ```bash
 php artisan optimize:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
+composer dump-autoload
 ```
 
 ## 🎯 النتيجة:
