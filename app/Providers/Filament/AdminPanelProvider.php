@@ -18,8 +18,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-// 👇 هذا هو السطر المهم
-use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
+// تم تعليق هذا Plugin مؤقتاً لحل مشكلة array_merge()
+// use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -52,10 +52,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-          ->plugins([
-    TableLayoutTogglePlugin::make(),
-          ]);
+            ]);
+            // تم تعليق Plugin مؤقتاً لحل مشكلة array_merge()
+            // ->plugins([
+            //     TableLayoutTogglePlugin::make(),
+            // ]);
 
 
     }
