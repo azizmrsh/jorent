@@ -85,11 +85,11 @@ class Contract1 extends Model
      */
     public function getPdfUrlAttribute(): ?string
     {
-        if (!$this->attributes['pdf_path'] || !Storage::disk('public')->exists($this->attributes['pdf_path'])) {
+        if (!$this->attributes['pdf_path'] || !file_exists(public_path($this->attributes['pdf_path']))) {
             return null;
         }
         
-        return asset('storage/' . $this->attributes['pdf_path']);
+        return asset($this->attributes['pdf_path']);
     }
     
     /**
@@ -97,6 +97,6 @@ class Contract1 extends Model
      */
     public function hasPdf(): bool
     {
-        return $this->attributes['pdf_path'] && Storage::disk('public')->exists($this->attributes['pdf_path']);
+        return $this->attributes['pdf_path'] && file_exists(public_path($this->attributes['pdf_path']));
     }
 }

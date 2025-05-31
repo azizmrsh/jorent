@@ -613,8 +613,8 @@
                 <div class="signature-grid">
                     <div class="signature-box">
                         <div class="signature-title">المؤجر</div>
-                        @if($contract->landlord_signature_path && Storage::disk('public')->exists($contract->landlord_signature_path))
-                            <img src="{{ asset('storage/' . $contract->landlord_signature_path) }}" alt="توقيع المؤجر" style="max-width: 150px; max-height: 70px; margin: 0 auto 10px auto; display: block;">
+                        @if($contract->landlord_signature_path && file_exists(public_path($contract->landlord_signature_path)))
+                            <img src="{{ asset($contract->landlord_signature_path) }}" alt="توقيع المؤجر" style="max-width: 150px; max-height: 70px; margin: 0 auto 10px auto; display: block;">
                         @else
                             <div class="signature-line"></div>
                         @endif
@@ -623,8 +623,8 @@
                     
                     <div class="signature-box">
                         <div class="signature-title">المستأجر</div>
-                        @if($contract->tenant_signature_path && Storage::disk('public')->exists($contract->tenant_signature_path))
-                            <img src="{{ asset('storage/' . $contract->tenant_signature_path) }}" alt="توقيع المستأجر" style="max-width: 150px; max-height: 70px; margin: 0 auto 10px auto; display: block;">
+                        @if($contract->tenant_signature_path && file_exists(public_path($contract->tenant_signature_path)))
+                            <img src="{{ asset($contract->tenant_signature_path) }}" alt="توقيع المستأجر" style="max-width: 150px; max-height: 70px; margin: 0 auto 10px auto; display: block;">
                         @else
                             <div class="signature-line"></div>
                         @endif
