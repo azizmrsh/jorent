@@ -32,7 +32,7 @@ class Payment extends Model
      */
     public function contract()
     {
-        return $this->belongsTo(\App\Models\Contract1::class);
+        return $this->belongsTo(\App\Models\Contract1::class, 'contract_id');
     }
 
     /**
