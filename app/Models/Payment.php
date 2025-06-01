@@ -14,7 +14,11 @@ class Payment extends Model
         'amount',
         'payment_date',
         'payment_method',
-        'reference_number',
+        'payer_name',         // اسم الدافع
+        'receiver_name',      // اسم المستلم
+        'bank_name',          // اسم البنك/المحفظة
+        'transfer_reference', // الرقم المرجعي للحوالة
+        'reference_number',   // رقم مرجعي إضافي
         'notes',
     ];
 
