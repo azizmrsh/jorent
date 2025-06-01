@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class TotalUnitsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
-    protected int | string | array $columnSpan = 'auto';
+    protected int | string | array $columnSpan = 3;
 
     protected function getStats(): array
     {
@@ -18,7 +18,7 @@ class TotalUnitsWidget extends BaseWidget
 
         return [
             Stat::make('Total Units', number_format($totalUnits))
-                ->description("Recent additions: {$recentUnits}")
+                ->description("Recent: {$recentUnits}")
                 ->descriptionIcon('heroicon-m-building-office')
                 ->color('primary')
                 ->chart([7, 3, 4, 5, 6, 3, 5, 3])
