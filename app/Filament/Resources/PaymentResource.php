@@ -46,7 +46,7 @@ class PaymentResource extends Resource
                             ->label('المبلغ')
                             ->numeric()
                             ->required()
-                            ->prefix('ريال')
+                            ->prefix('دينار أردني')
                             ->step(0.01),
                             
                         Forms\Components\DatePicker::make('payment_date')
@@ -112,7 +112,7 @@ class PaymentResource extends Resource
                     
                 Tables\Columns\TextColumn::make('amount')
                     ->label('المبلغ')
-                    ->money('SAR')
+                    ->money('JOD')
                     ->sortable()
                     ->toggleable(),
                     
