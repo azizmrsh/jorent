@@ -215,10 +215,17 @@ class PropertyStatsOverview extends BaseWidget
     /**
      * تحديث الويدجت كل 30 ثانية
      */
-    protected static ?string $pollingInterval = '30s';
-
-    /**
+    protected static ?string $pollingInterval = '30s';    /**
      * تخصيص ارتفاع الويدجت
      */
     protected static ?string $maxHeight = '400px';
+    
+    /**
+     * Set the number of columns for the stats grid
+     * This ensures 4 widgets per row (12/3 = 4 widgets)
+     */
+    protected function getColumns(): int
+    {
+        return 4; // 4 widgets per row
+    }
 }
