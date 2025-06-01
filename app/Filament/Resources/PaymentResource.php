@@ -19,6 +19,9 @@ use Filament\Forms\Components\Grid;
 use Carbon\Carbon;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Widget;
 
 class PaymentResource extends Resource
 {
@@ -442,5 +445,14 @@ class PaymentResource extends Resource
     public static function getNavigationBadgeColor(): string
     {
         return static::getModel()::count() > 100 ? 'warning' : 'success';
+    }
+    
+    public static function getWidgets(): array
+    {
+        return [
+            PaymentResource\Widgets\PaymentOverviewWidget::class,
+            PaymentResource\Widgets\PaymentMethodsWidget::class,
+            PaymentResource\Widgets\MonthlyPaymentsTrendWidget::class,
+        ];
     }
 }
