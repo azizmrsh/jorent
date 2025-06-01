@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Payment extends Model
 {
@@ -30,7 +32,7 @@ class Payment extends Model
     /**
      * Get the contract that owns the payment.
      */
-    public function contract()
+    public function contract(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Contract1::class, 'contract_id');
     }
@@ -38,7 +40,7 @@ class Payment extends Model
     /**
      * Get the tenant through the contract.
      */
-    public function tenant()
+    public function tenant(): HasOneThrough
     {
         return $this->hasOneThrough(
             \App\Models\Tenant::class,
