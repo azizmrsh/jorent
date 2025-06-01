@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('bank_name')->nullable(); // اسم البنك
             $table->string('transfer_reference')->nullable(); // الرقم المرجعي للحوالة
             
-            $table->string('reference_number')->nullable(); // رقم مرجعي عام اختياري
+            //$table->string('reference_number')->nullable(); // رقم مرجعي عام اختياري
             $table->text('notes')->nullable(); // ملاحظات
             $table->timestamps();
         });

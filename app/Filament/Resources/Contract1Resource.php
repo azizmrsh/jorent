@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Carbon\Carbon;
+use Illuminate\Support\HtmlString;
+
 
 // Export functionality imports
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
@@ -525,15 +527,7 @@ Forms\Components\Section::make('Digital Signatures')
                     })
                     ->toggle(),
                     
-                Tables\Filters\Filter::make('created_this_month')
-                    ->label('Created This Month')
-                    ->query(function ($query) {
-                        return $query->whereBetween('created_at', [
-                            now()->startOfMonth(),
-                            now()->endOfMonth()
-                        ]);
-                    })
-                    ->toggle(),
+
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')

@@ -73,7 +73,7 @@ class Payment extends Model
      */
     public function getFormattedAmountAttribute()
     {
-        return number_format($this->amount, 2) . ' ريال';
+        return number_format($this->amount, 2) . ' jd';
     }
 
     /**
@@ -82,10 +82,10 @@ class Payment extends Model
     public function getPaymentMethodArabicAttribute()
     {
         return match($this->payment_method) {
-            'cash' => 'نقداً',
-            'bank_transfer' => 'تحويل بنكي',
-            'wallet' => 'محفظة إلكترونية',
-            'cliq' => 'كليك',
+            'cash' => 'cash',
+            'bank_transfer' => 'bank transfer',
+            'wallet' => 'wallet',
+            'cliq' => 'cliq',
             default => $this->payment_method,
         };
     }
