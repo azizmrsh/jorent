@@ -24,16 +24,16 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 إجمالي العقارات ومعدل النمو
+            // 📊 إجمالي العقارات (العدد الكلي فقط)
             TotalPropertiesWidget::class,
             
-            // 🏘️ إحصائيات أنواع العقارات مع النسب المئوية
+            // 🏘️ أنواع العقارات مجمعة (مباني، فيلات، منازل، مستودعات)
             PropertyTypeStatsWidget::class,
             
-            // 🏢 إحصائيات نوع الاستخدام مع النسب المئوية
+            // 🏢 أنواع الاستخدام مجمعة (سكني، تجاري، صناعي)
             UsageTypeStatsWidget::class,
             
-            // 🔢 عداد الوحدات ومتوسط الوحدات لكل عقار
+            // 🔢 عداد الوحدات وإحصائياتها
             UnitsCounterWidget::class,
         ];
     }

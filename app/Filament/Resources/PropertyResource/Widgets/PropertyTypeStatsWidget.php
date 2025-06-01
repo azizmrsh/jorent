@@ -25,37 +25,20 @@ class PropertyTypeStatsWidget extends BaseWidget
         $housePercentage = $totalProperties > 0 ? round(($houseCount / $totalProperties) * 100, 1) : 0;
         $warehousePercentage = $totalProperties > 0 ? round(($warehouseCount / $totalProperties) * 100, 1) : 0;
 
+        // إنشاء نص تفصيلي للأنواع
+        $detailsText = "🏢 مباني: " . number_format($buildingCount) . " ({$buildingPercentage}%) | " .
+                       "🏡 فيلات: " . number_format($villaCount) . " ({$villaPercentage}%) | " .
+                       "🏠 منازل: " . number_format($houseCount) . " ({$housePercentage}%) | " .
+                       "📦 مستودعات: " . number_format($warehouseCount) . " ({$warehousePercentage}%)";
+
         return [
-            Stat::make('مباني', number_format($buildingCount))
-                ->description("$buildingPercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-building-office-2')
+            Stat::make('أنواع العقارات', number_format($totalProperties))
+                ->description($detailsText)
+                ->descriptionIcon('heroicon-m-squares-plus')
                 ->color('primary')
+                ->chart([$buildingCount, $villaCount, $houseCount, $warehouseCount])
                 ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20',
-                ]),
-
-            Stat::make('فيلات', number_format($villaCount))
-                ->description("$villaPercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-home-modern')
-                ->color('success')
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20',
-                ]),
-
-            Stat::make('منازل', number_format($houseCount))
-                ->description("$housePercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-home')
-                ->color('warning')
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20',
-                ]),
-
-            Stat::make('مستودعات', number_format($warehouseCount))
-                ->description("$warehousePercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-cube')
-                ->color('danger')
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20',
+                    'class' => 'bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20',
                 ]),
         ];
     }

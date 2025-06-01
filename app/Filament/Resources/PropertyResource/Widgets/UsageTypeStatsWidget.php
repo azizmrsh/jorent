@@ -23,29 +23,17 @@ class UsageTypeStatsWidget extends BaseWidget
         $commercialPercentage = $totalProperties > 0 ? round(($commercialCount / $totalProperties) * 100, 1) : 0;
         $industrialPercentage = $totalProperties > 0 ? round(($industrialCount / $totalProperties) * 100, 1) : 0;
 
-        return [
-            Stat::make('سكني', number_format($residentialCount))
-                ->description("$residentialPercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-home')
+        // إنشاء نص تفصيلي لأنواع الاستخدام
+        $detailsText = "🏠 سكني: " . number_format($residentialCount) . " ({$residentialPercentage}%) | " .
+                       "🏪 تجاري: " . number_format($commercialCount) . " ({$commercialPercentage}%) | " .
+                       "🏭 صناعي: " . number_format($industrialCount) . " ({$industrialPercentage}%)";        return [
+            Stat::make('أنواع الاستخدام', number_format($totalProperties))
+                ->description($detailsText)
+                ->descriptionIcon('heroicon-m-rectangle-group')
                 ->color('success')
+                ->chart([$residentialCount, $commercialCount, $industrialCount])
                 ->extraAttributes([
                     'class' => 'bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20',
-                ]),
-
-            Stat::make('تجاري', number_format($commercialCount))
-                ->description("$commercialPercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-building-storefront')
-                ->color('warning')
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20',
-                ]),
-
-            Stat::make('صناعي', number_format($industrialCount))
-                ->description("$industrialPercentage% من إجمالي العقارات")
-                ->descriptionIcon('heroicon-m-cog-6-tooth')
-                ->color('info')
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20',
                 ]),
         ];
     }
