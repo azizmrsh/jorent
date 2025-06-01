@@ -54,11 +54,9 @@ class PropertyStatsOverview extends BaseWidget
         $propertiesWithAvailableUnits = Property::whereHas('units', function ($query) {
             $query->where('status', 'available');
         })->count();
-        $availabilityPercentage = $totalProperties > 0 ? round(($propertiesWithAvailableUnits / $totalProperties) * 100, 1) : 0;
-
-        // ===== الإحصائيات المالية =====
+        $availabilityPercentage = $totalProperties > 0 ? round(($propertiesWithAvailableUnits / $totalProperties) * 100, 1) : 0;        // ===== الإحصائيات المالية =====
         // القيمة الإجمالية
-        $totalValue = Unit::whereHas('property')->sum('price');
+        $totalValue = Unit::whereHas('property')->sum('rental_price');
         $propertiesWithUnits = Property::has('units')->count();
         $averageValue = $propertiesWithUnits > 0 ? $totalValue / $propertiesWithUnits : 0;
 
@@ -73,12 +71,11 @@ class PropertyStatsOverview extends BaseWidget
             $avgPropertyValue = 0;
             $highestValue = 0;
             $lowestValue = 0;
-        } else {
-            $propertyValues = Property::has('units')
+        } else {            $propertyValues = Property::has('units')
                 ->with('units')
                 ->get()
                 ->map(function ($property) {
-                    return $property->units->sum('price');
+                    return $property->units->sum('rental_price');
                 });
             
             $avgPropertyValue = $propertyValues->avg();
