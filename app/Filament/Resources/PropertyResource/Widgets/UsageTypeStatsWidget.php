@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class UsageTypeStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 1;
+    protected int | string | array $columnSpan = 3;
 
     protected function getStats(): array
     {
