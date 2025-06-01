@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class PropertyTypeStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
-    protected int | string | array $columnSpan = 'auto';
+    protected int | string | array $columnSpan = 3;
 
     protected function getStats(): array
     {
@@ -21,21 +21,21 @@ class PropertyTypeStatsWidget extends BaseWidget
         $houseCount = Property::where('type1', 'house')->count();
         $warehouseCount = Property::where('type1', 'warehouse')->count();
         
-        // Combined count
-        $combinedCount = $buildingCount + $villaCount + $houseCount + $warehouseCount;
+        // Find most common type
+        $types = [
+            'Buildings' => $buildingCount,
+            'Villas' => $villaCount,
+            'Houses' => $houseCount,
+            'Warehouses' => $warehouseCount
+        ];
         
-        // Create description with breakdown
-        $breakdown = [];
-        if ($buildingCount > 0) $breakdown[] = "Buildings: {$buildingCount}";
-        if ($villaCount > 0) $breakdown[] = "Villas: {$villaCount}";
-        if ($houseCount > 0) $breakdown[] = "Houses: {$houseCount}";
-        if ($warehouseCount > 0) $breakdown[] = "Warehouses: {$warehouseCount}";
-        
-        $description = !empty($breakdown) ? implode(' • ', $breakdown) : "No properties by type";
+        $mostCommonType = array_keys($types, max($types))[0] ?? 'Mixed';
+        $mostCommonCount = max($types);
+        $percentage = $totalProperties > 0 ? round(($mostCommonCount / $totalProperties) * 100, 1) : 0;
 
         return [
-            Stat::make('Property Types', number_format($combinedCount))
-                ->description($description)
+            Stat::make('Most Common Type', $mostCommonType)
+                ->description("{$mostCommonCount} properties ({$percentage}%)")
                 ->descriptionIcon('heroicon-m-building-office-2')
                 ->color('primary')
                 ->extraAttributes([

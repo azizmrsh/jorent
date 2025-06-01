@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class UsageTypeStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 'auto';
+    protected int | string | array $columnSpan = 3;
 
     protected function getStats(): array
     {
@@ -20,20 +20,20 @@ class UsageTypeStatsWidget extends BaseWidget
         $commercialCount = Property::where('type2', 'commercial')->count();
         $industrialCount = Property::where('type2', 'industrial')->count();
         
-        // Combined count
-        $combinedCount = $residentialCount + $commercialCount + $industrialCount;
+        // Find dominant usage type
+        $usageTypes = [
+            'Residential' => $residentialCount,
+            'Commercial' => $commercialCount,
+            'Industrial' => $industrialCount
+        ];
         
-        // Create description with breakdown
-        $breakdown = [];
-        if ($residentialCount > 0) $breakdown[] = "Residential: {$residentialCount}";
-        if ($commercialCount > 0) $breakdown[] = "Commercial: {$commercialCount}";
-        if ($industrialCount > 0) $breakdown[] = "Industrial: {$industrialCount}";
-        
-        $description = !empty($breakdown) ? implode(' • ', $breakdown) : "No properties by usage";
+        $dominantUsage = array_keys($usageTypes, max($usageTypes))[0] ?? 'Mixed';
+        $dominantCount = max($usageTypes);
+        $percentage = $totalProperties > 0 ? round(($dominantCount / $totalProperties) * 100, 1) : 0;
 
         return [
-            Stat::make('Usage Types', number_format($combinedCount))
-                ->description($description)
+            Stat::make('Primary Usage', $dominantUsage)
+                ->description("{$dominantCount} properties ({$percentage}%)")
                 ->descriptionIcon('heroicon-m-building-storefront')
                 ->color('success')
                 ->extraAttributes([

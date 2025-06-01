@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class TotalPropertiesWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
-    protected int | string | array $columnSpan ='auto';
+    protected int | string | array $columnSpan = 3;
 
     protected function getStats(): array
     {
