@@ -1,237 +1,115 @@
 <?php
 
-use Omaralalwi\Gpdf\Enums\{
-    GpdfDefaultSettings as GpdfDefault,
-    GpdfSettingKeys as GpdfSet,
-    GpdfStorageDrivers,
-    GpdfDefaultSupportedFonts
-};
-
-/**
- * Configuration file for the Gpdf package.
- *
- * This configuration file extends the dompdf options.
- *
- * GpdfDefaultSettings provides default values for each setting, which can be overridden here.
- *
- * @return array
- */
+// Temporarily disable gpdf to avoid dependency errors
 return [
-    /**
-     * Temporary directory for storing temporary PDF files.
-     * @var string|null
-     */
-    GpdfSet::TEMP_DIR => sys_get_temp_dir(),
+    'temp_dir' => sys_get_temp_dir(),
+    'font_dir' => storage_path('fonts'),
+    'font_cache' => storage_path('fonts/cache'),
+    'enabled' => false,
+    'default_font' => 'Arial',
+    'default_paper_size' => 'A4',
+    'default_paper_orientation' => 'portrait',
+    'dpi' => 96,
+    'enable_php' => false,
+    'is_remote_enabled' => false,
+    'is_javascript_enabled' => false,
 
-    /**
-     * Directory for storing font files.
-     * @var string
-     */
-    GpdfSet::FONT_DIR => realpath(dirname(__DIR__)) . '/public/vendor/gpdf/fonts/',
+    // GpdfSet options
+    // Set this to `true` if you want numbers to appear in Hindi format (e.g., ١,٢,٣,٤,٥).
+    // Set to `false` to display numbers in standard format (e.g., 1, 2, 3, 4, 5).
+    'show_numbers_as_hindi' => false,
 
-    /**
-     * Directory for storing font cache files.
-     * @var string
-     */
-    GpdfSet::FONT_CACHE => realpath(dirname(__DIR__)) . '/storage/fonts/',
+    // Set Max number of chars you can fit in one line, default is 50
+    'max_chars_per_line' => 100,
 
-    /**
-     * Default font for generating PDFs.
-     * @var string
-     */
-    GpdfSet::DEFAULT_FONT => 'Tajawal',
+    // Font height ratio setting.
+    'font_height_ratio' => defined('GpdfDefault::FONT_HEIGHT_RATIO') ? GpdfDefault::FONT_HEIGHT_RATIO : 1.0,
 
-    /**
-     *
-     * Set this to `true` if you want numbers to appear in Hindi format (e.g., ١,٢,٣,٤,٥).
-     * Set to `false` to display numbers in standard format (e.g., 1, 2, 3, 4, 5).
-     *
-     * @var bool
-     */
-    GpdfSet::SHOW_NUMBERS_AS_HINDI => false,
+    // Enable or disable font subsetting.
+    'is_font_sub_setting_enabled' => defined('GpdfDefault::IS_FONT_SUB_SETTING_ENABLED') ? GpdfDefault::IS_FONT_SUB_SETTING_ENABLED : false,
 
-    /**
-     *
-     * Set Max number of chars you can fit in one line, default is 50
-     *
-     * @var integer
-     */
-    GpdfSet::MAX_CHARS_PER_LINE => 100,
+    // Chroot directory for security purposes.
+    'chroot' => realpath(dirname(__DIR__)),
 
-    /**
-     * Font height ratio setting.
-     * @var float
-     */
-    GpdfSet::FONT_HEIGHT_RATIO => GpdfDefault::FONT_HEIGHT_RATIO,
+    'storage_path' => defined('GpdfDefault::STORAGE_PATH') ? GpdfDefault::STORAGE_PATH : null,
 
-    /**
-     * Enable or disable font subsetting.
-     * @var bool
-     */
-    GpdfSet::IS_FONT_SUB_SETTING_ENABLED => GpdfDefault::IS_FONT_SUB_SETTING_ENABLED,
+    'aws_bucket' => '',
+    'aws_region' => '',
+    'aws_key' => '',
+    'aws_secret' => '',
 
-    /**
-     * Chroot directory for security purposes.
-     * @var string|null
-     */
-    GpdfSet::CHROOT => realpath(dirname(__DIR__)),
+    // Enable or disable entity conversion.
+    'convert_entities' => defined('GpdfDefault::CONVERT_ENTITIES') ? GpdfDefault::CONVERT_ENTITIES : false,
 
-    GpdfSet::STORAGE_PATH => GpdfDefault::STORAGE_PATH,
+    // Allowed protocols for remote resources.
+    'allowed_protocols' => defined('GpdfDefault::ALLOWED_PROTOCOLS') ? GpdfDefault::ALLOWED_PROTOCOLS : [],
 
-    GpdfSet::AWS_BUCKET => '',
+    // Enable or disable artifact path validation.
+    'artifact_path_validation' => defined('GpdfDefault::ARTIFACT_PATH_VALIDATION') ? GpdfDefault::ARTIFACT_PATH_VALIDATION : false,
 
-    GpdfSet::AWS_REGION => '',
+    // Path to the log output file.
+    'log_output_file' => defined('GpdfDefault::LOG_OUTPUT_FILE') ? GpdfDefault::LOG_OUTPUT_FILE : null,
 
-    GpdfSet::AWS_KEY => '',
+    // Default media type for the generated PDFs.
+    'default_media_type' => defined('GpdfDefault::DEFAULT_MEDIA_TYPE') ? GpdfDefault::DEFAULT_MEDIA_TYPE : 'application/pdf',
 
-    GpdfSet::AWS_SECRET => '',
-    /**
-     * Enable or disable entity conversion.
-     * @var bool
-     */
-    GpdfSet::CONVERT_ENTITIES => GpdfDefault::CONVERT_ENTITIES,
+    // Default paper size for the generated PDFs.
+    'default_paper_size' => defined('GpdfDefault::DEFAULT_PAPER_SIZE') ? GpdfDefault::DEFAULT_PAPER_SIZE : 'A4',
 
-    /**
-     * Allowed protocols for remote resources.
-     * @var array
-     */
-    GpdfSet::ALLOWED_PROTOCOLS => GpdfDefault::ALLOWED_PROTOCOLS,
+    // Default paper orientation for the generated PDFs.
+    'default_paper_orientation' => defined('GpdfDefault::DEFAULT_PAPER_ORIENTATION') ? GpdfDefault::DEFAULT_PAPER_ORIENTATION : 'portrait',
 
-    /**
-     * Enable or disable artifact path validation.
-     * @var bool
-     */
-    GpdfSet::ARTIFACT_PATH_VALIDATION => GpdfDefault::ARTIFACT_PATH_VALIDATION,
+    // DPI setting for the generated PDFs.
+    'dpi' => defined('GpdfDefault::DPI') ? GpdfDefault::DPI : 96,
 
-    /**
-     * Path to the log output file.
-     * @var string|null
-     */
-    GpdfSet::LOG_OUTPUT_FILE => GpdfDefault::LOG_OUTPUT_FILE,
+    // Enable or disable PHP execution in the PDFs.
+    'enable_php' => defined('GpdfDefault::IS_PHP_ENABLED') ? GpdfDefault::IS_PHP_ENABLED : false,
 
-    /**
-     * Default media type for the generated PDFs.
-     * @var string
-     */
-    GpdfSet::DEFAULT_MEDIA_TYPE => GpdfDefault::DEFAULT_MEDIA_TYPE,
+    // Alias for ENABLE_PHP.
+    'is_php_enabled' => defined('GpdfDefault::IS_PHP_ENABLED') ? GpdfDefault::IS_PHP_ENABLED : false,
 
-    /**
-     * Default paper size for the generated PDFs.
-     * @var string
-     */
-    GpdfSet::DEFAULT_PAPER_SIZE => GpdfDefault::DEFAULT_PAPER_SIZE,
+    // Enable or disable remote resource fetching.
+    'is_remote_enabled' => defined('GpdfDefault::IS_REMOTE_ENABLED') ? GpdfDefault::IS_REMOTE_ENABLED : false,
 
-    /**
-     * Default paper orientation for the generated PDFs.
-     * @var string
-     */
-    GpdfSet::DEFAULT_PAPER_ORIENTATION => GpdfDefault::DEFAULT_PAPER_ORIENTATION,
+    // List of allowed remote hosts.
+    'allowed_remote_hosts' => defined('GpdfDefault::ALLOWED_REMOTE_HOSTS') ? GpdfDefault::ALLOWED_REMOTE_HOSTS : [],
 
-    /**
-     * DPI setting for the generated PDFs.
-     * @var int
-     */
-    GpdfSet::DPI => GpdfDefault::DPI,
+    // Enable or disable JavaScript execution in the PDFs.
+    'is_javascript_enabled' => true,
 
-    /**
-     * Enable or disable PHP execution in the PDFs.
-     * @var bool
-     */
-    GpdfSet::ENABLE_PHP => GpdfDefault::IS_PHP_ENABLED,
+    // Enable or disable HTML5 parser in the PDFs.
+    'is_html5_parser_enabled' => defined('GpdfDefault::IS_HTML5_PARSER_ENABLED') ? GpdfDefault::IS_HTML5_PARSER_ENABLED : false,
 
-    /**
-     * Alias for ENABLE_PHP.
-     * @var bool
-     */
-    GpdfSet::IS_PHP_ENABLED => GpdfDefault::IS_PHP_ENABLED,
+    // Enable or disable PNG debugging.
+    'debug_png' => defined('GpdfDefault::DEBUG_PNG') ? GpdfDefault::DEBUG_PNG : false,
 
-    /**
-     * Enable or disable remote resource fetching.
-     * @var bool
-     */
-    GpdfSet::IS_REMOTE_ENABLED => GpdfDefault::IS_REMOTE_ENABLED,
+    // Enable or disable keeping temporary files.
+    'debug_keep_temp' => defined('GpdfDefault::DEBUG_KEEP_TEMP') ? GpdfDefault::DEBUG_KEEP_TEMP : false,
 
-    /**
-     * List of allowed remote hosts.
-     * @var array
-     */
-    GpdfSet::ALLOWED_REMOTE_HOSTS => GpdfDefault::ALLOWED_REMOTE_HOSTS,
+    // Enable or disable CSS debugging.
+    'debug_css' => defined('GpdfDefault::DEBUG_CSS') ? GpdfDefault::DEBUG_CSS : false,
 
-    /**
-     * Enable or disable JavaScript execution in the PDFs.
-     * @var bool
-     */
-    GpdfSet::IS_JAVASCRIPT_ENABLED => true,
+    // Enable or disable layout debugging.
+    'debug_layout' => defined('GpdfDefault::DEBUG_LAYOUT') ? GpdfDefault::DEBUG_LAYOUT : false,
 
-    /**
-     * Enable or disable HTML5 parser in the PDFs.
-     * @var bool
-     */
-    GpdfSet::IS_HTML5_PARSER_ENABLED => GpdfDefault::IS_HTML5_PARSER_ENABLED,
+    // Enable or disable layout lines debugging.
+    'debug_layout_lines' => defined('GpdfDefault::DEBUG_LAYOUT_LINES') ? GpdfDefault::DEBUG_LAYOUT_LINES : false,
 
-    /**
-     * Enable or disable PNG debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_PNG => GpdfDefault::DEBUG_PNG,
+    // Enable or disable layout blocks debugging.
+    'debug_layout_blocks' => defined('GpdfDefault::DEBUG_LAYOUT_BLOCKS') ? GpdfDefault::DEBUG_LAYOUT_BLOCKS : false,
 
-    /**
-     * Enable or disable keeping temporary files.
-     * @var bool
-     */
-    GpdfSet::DEBUG_KEEP_TEMP => GpdfDefault::DEBUG_KEEP_TEMP,
+    // Enable or disable layout inline debugging.
+    'debug_layout_inline' => defined('GpdfDefault::DEBUG_LAYOUT_INLINE') ? GpdfDefault::DEBUG_LAYOUT_INLINE : false,
 
-    /**
-     * Enable or disable CSS debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_CSS => GpdfDefault::DEBUG_CSS,
+    // Enable or disable layout padding box debugging.
+    'debug_layout_padding_box' => defined('GpdfDefault::DEBUG_LAYOUT_PADDING_BOX') ? GpdfDefault::DEBUG_LAYOUT_PADDING_BOX : false,
 
-    /**
-     * Enable or disable layout debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_LAYOUT => GpdfDefault::DEBUG_LAYOUT,
+    // Backend used for generating PDFs.
+    'pdf_backend' => defined('GpdfDefault::PDF_BACKEND') ? GpdfDefault::PDF_BACKEND : null,
 
-    /**
-     * Enable or disable layout lines debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_LAYOUT_LINES => GpdfDefault::DEBUG_LAYOUT_LINES,
+    // License key for the PDF library.
+    'pdf_lib_license' => defined('GpdfDefault::PDF_LIB_LICENSE') ? GpdfDefault::PDF_LIB_LICENSE : null,
 
-    /**
-     * Enable or disable layout blocks debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_LAYOUT_BLOCKS => GpdfDefault::DEBUG_LAYOUT_BLOCKS,
-
-    /**
-     * Enable or disable layout inline debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_LAYOUT_INLINE => GpdfDefault::DEBUG_LAYOUT_INLINE,
-
-    /**
-     * Enable or disable layout padding box debugging.
-     * @var bool
-     */
-    GpdfSet::DEBUG_LAYOUT_PADDING_BOX => GpdfDefault::DEBUG_LAYOUT_PADDING_BOX,
-
-    /**
-     * Backend used for generating PDFs.
-     * @var string
-     */
-    GpdfSet::PDF_BACKEND => GpdfDefault::PDF_BACKEND,
-
-    /**
-     * License key for the PDF library.
-     * @var string
-     */
-    GpdfSet::PDF_LIB_LICENSE => GpdfDefault::PDF_LIB_LICENSE,
-
-    /**
-     * HTTP context options for fetching remote resources.
-     * @var resource|null
-     */
-    GpdfSet::HTTP_CONTEXT => GpdfDefault::HTTP_CONTEXT,
+    // HTTP context options for fetching remote resources.
+    'http_context' => defined('GpdfDefault::HTTP_CONTEXT') ? GpdfDefault::HTTP_CONTEXT : null,
 ];
