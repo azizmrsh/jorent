@@ -19,7 +19,6 @@ use Filament\Forms\Components\Grid;
 use Carbon\Carbon;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportAction;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Widget;
@@ -409,10 +408,6 @@ class PaymentResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
                     ->color('warning'),
-                FilamentExportAction::make('export')
-                    ->label('Export')
-                    ->color('success')
-                    ->icon('heroicon-o-arrow-down-tray'),
                 Tables\Actions\DeleteAction::make()
                     ->label('Delete')
                     ->color('danger'),
