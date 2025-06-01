@@ -6,6 +6,7 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentOverviewWidget extends BaseWidget
 {
@@ -13,61 +14,96 @@ class PaymentOverviewWidget extends BaseWidget
     
     protected function getStats(): array
     {
+        $currentUser = Auth::user();
+        $currentUserName = $currentUser?->name ?? 'Unknown User';
+        
         // Get current date ranges
         $today = Carbon::today();
         $thisMonth = Carbon::now()->startOfMonth();
-        $lastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
         
-        // Today's payments
-        $todayPayments = Payment::whereDate('payment_date', $today)->sum('amount');
-        $todayCount = Payment::whereDate('payment_date', $today)->count();
+        // 1. عدد الدفعات الكلي (Total Payments Count)
+        $totalPaymentsCount = Payment::count();
         
-        // This month's payments
-        $thisMonthPayments = Payment::where('payment_date', '>=', $thisMonth)->sum('amount');
-        $thisMonthCount = Payment::where('payment_date', '>=', $thisMonth)->count();
+        // 2. عدد الدفعات هذا الشهر (This Month Payments Count)
+        $thisMonthPaymentsCount = Payment::where('payment_date', '>=', $thisMonth)->count();
         
-        // Last month's payments for comparison
-        $lastMonthPayments = Payment::whereBetween('payment_date', [$lastMonth, $lastMonthEnd])->sum('amount');
+        // 3. مجموع الدفعات هذا الشهر (This Month Total Amount)
+        $thisMonthTotal = Payment::where('payment_date', '>=', $thisMonth)->sum('amount');
         
-        // Calculate percentage change
-        $monthlyChange = $lastMonthPayments > 0 
-            ? (($thisMonthPayments - $lastMonthPayments) / $lastMonthPayments) * 100 
-            : 0;
+        // 4. مجموع الدفعات اليوم (Today Total Amount)
+        $todayTotal = Payment::whereDate('payment_date', $today)->sum('amount');
         
-        // Total payments
-        $totalPayments = Payment::sum('amount');
-        $totalCount = Payment::count();
+        // 5. المبلغ المجمع هذا الشهر للمستخدم الحالي (User's This Month Collections)
+        $userThisMonthTotal = Payment::where('payment_date', '>=', $thisMonth)
+            ->where('receiver_name', $currentUserName)
+            ->sum('amount');
         
-        // Average payment
-        $averagePayment = $totalCount > 0 ? $totalPayments / $totalCount : 0;
+        // 6. المبلغ المجمع اليوم للمستخدم الحالي (User's Today Collections)
+        $userTodayTotal = Payment::whereDate('payment_date', $today)
+            ->where('receiver_name', $currentUserName)
+            ->sum('amount');
+        
+        // 7. عدد الدفعات التي جمعها المستخدم الحالي (User's Total Collections Count)
+        $userTotalCollections = Payment::where('receiver_name', $currentUserName)->count();
+        
+        // 8. متوسط الدفعة (Average Payment Amount)
+        $averagePayment = $totalPaymentsCount > 0 ? Payment::avg('amount') : 0;
         
         return [
-            Stat::make('Today\'s Collections', number_format($todayPayments, 2) . ' JOD')
-                ->description($todayCount . ' payment' . ($todayCount !== 1 ? 's' : '') . ' received today')
-                ->descriptionIcon('heroicon-m-calendar-days')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3])
-                ->color('success'),
-                
-            Stat::make('This Month\'s Revenue', number_format($thisMonthPayments, 2) . ' JOD')
-                ->description($thisMonthCount . ' payment' . ($thisMonthCount !== 1 ? 's' : '') . ' this month')
-                ->descriptionIcon('heroicon-m-chart-bar')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3, 4, 6, 7, 10])
-                ->color($monthlyChange >= 0 ? 'success' : 'danger')
-                ->extraAttributes([
-                    'class' => 'cursor-pointer',
-                ]),
-                
-            Stat::make('Total Collections', number_format($totalPayments, 2) . ' JOD')
-                ->description('From ' . $totalCount . ' total payments • Avg: ' . number_format($averagePayment, 2) . ' JOD')
+            // الصف الأول (First Row)
+            Stat::make('إجمالي الدفعات', $totalPaymentsCount)
+                ->description('عدد جميع الدفعات في النظام')
                 ->descriptionIcon('heroicon-m-credit-card')
-                ->chart([3, 5, 7, 8, 6, 9, 10, 11, 9, 12, 14, 15])
-                ->color('primary'),
+                ->color('primary')
+                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
+                
+            Stat::make('دفعات هذا الشهر', $thisMonthPaymentsCount)
+                ->description('عدد الدفعات المستلمة هذا الشهر')
+                ->descriptionIcon('heroicon-m-calendar-days')
+                ->color('info')
+                ->chart([3, 5, 7, 8, 6, 9, 10]),
+                
+            Stat::make('مجموع هذا الشهر', number_format($thisMonthTotal, 2) . ' JOD')
+                ->description('إجمالي المبالغ المستلمة هذا الشهر')
+                ->descriptionIcon('heroicon-m-banknotes')
+                ->color('success')
+                ->chart([5, 7, 9, 8, 6, 10, 12]),
+                
+            Stat::make('مجموع اليوم', number_format($todayTotal, 2) . ' JOD')
+                ->description('إجمالي المبالغ المستلمة اليوم')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('warning')
+                ->chart([2, 4, 6, 8, 5, 7, 9]),
+                
+            // الصف الثاني (Second Row) - للمستخدم الحالي
+            Stat::make('مجموعي هذا الشهر', number_format($userThisMonthTotal, 2) . ' JOD')
+                ->description('المبلغ الذي جمعته هذا الشهر')
+                ->descriptionIcon('heroicon-m-user')
+                ->color('emerald')
+                ->chart([4, 6, 8, 7, 5, 9, 11]),
+                
+            Stat::make('مجموعي اليوم', number_format($userTodayTotal, 2) . ' JOD')
+                ->description('المبلغ الذي جمعته اليوم')
+                ->descriptionIcon('heroicon-m-user-circle')
+                ->color('cyan')
+                ->chart([1, 3, 5, 7, 4, 6, 8]),
+                
+            Stat::make('دفعاتي الكلية', $userTotalCollections)
+                ->description('عدد الدفعات التي استلمتها')
+                ->descriptionIcon('heroicon-m-hand-raised')
+                ->color('violet')
+                ->chart([3, 4, 6, 8, 5, 7, 9, 6]),
+                
+            Stat::make('متوسط الدفعة', number_format($averagePayment, 2) . ' JOD')
+                ->description('متوسط قيمة الدفعة الواحدة')
+                ->descriptionIcon('heroicon-m-calculator')
+                ->color('amber')
+                ->chart([6, 8, 5, 9, 7, 6, 8, 10]),
         ];
     }
     
     protected function getColumns(): int
     {
-        return 3;
+        return 4; // 4 widgets في كل صف
     }
 }

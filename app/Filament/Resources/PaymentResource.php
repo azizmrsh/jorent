@@ -451,8 +451,6 @@ class PaymentResource extends Resource
     {
         return [
             PaymentResource\Widgets\PaymentOverviewWidget::class,
-            PaymentResource\Widgets\PaymentMethodsWidget::class,
-            PaymentResource\Widgets\MonthlyPaymentsTrendWidget::class,
         ];
     }
 }
