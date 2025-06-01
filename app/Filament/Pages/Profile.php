@@ -159,8 +159,7 @@ class Profile extends Page implements HasForms
                             ->schema([
                                 Section::make('Profile Picture')
                                     ->description('Upload or update your profile photo')
-                                    ->schema([
-                                        Forms\Components\FileUpload::make('profile_photo')
+                                    ->schema([                                        Forms\Components\FileUpload::make('profile_photo')
                                             ->label('Profile Photo')
                                             ->image()
                                             ->directory('profile_photos')
@@ -177,7 +176,10 @@ class Profile extends Page implements HasForms
                                             ->imageResizeTargetWidth('300')
                                             ->imageResizeTargetHeight('300')
                                             ->helperText('Recommended: Square image (1:1 aspect ratio), max 2MB')
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->extraAttributes([
+                                                'onchange' => 'console.log("Photo upload started")'
+                                            ]),
                                     ]),
                             ]),
 
