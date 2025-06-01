@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+use Carbon\Carbon;
 
 // Export functionality imports
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
@@ -113,7 +114,11 @@ class Contract1Resource extends Resource
                         $startDate = $get('start_date');
                         $endDate = $get('end_date');
 
-                        if ($startDate && $endDate && now()->between($startDate, $endDate)) {
+                        if (
+                            $startDate && $endDate &&
+                            Carbon::parse($startDate)->lte(now()) &&
+                            Carbon::parse($endDate)->gte(now())
+                        ) {
                             $set('status', 'active');
                         } else {
                             $set('status', 'inactive');
