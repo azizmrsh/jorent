@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class UnitsCounterWidget extends BaseWidget
 {
     protected static ?int $sort = 4;
-    protected int | string | array $columnSpan = '0';
+    protected int | string | array $columnSpan = 'full';
 
     protected function getStats(): array
     {
