@@ -11,11 +11,9 @@ class TotalPropertiesWidget extends BaseWidget
     protected static ?int $sort = 1;
     protected int | string | array $columnSpan = 'full';    protected function getStats(): array
     {
-        $totalProperties = Property::count();
-
-        return [
-            Stat::make('إجمالي العقارات', number_format($totalProperties))
-                ->description("العقارات المسجلة في النظام")
+        $totalProperties = Property::count();        return [
+            Stat::make('Total Properties', number_format($totalProperties))
+                ->description("Properties registered in system")
                 ->descriptionIcon('heroicon-m-building-office-2')
                 ->color('primary')
                 ->chart([7, 3, 4, 5, 6, 3, 5, 3])

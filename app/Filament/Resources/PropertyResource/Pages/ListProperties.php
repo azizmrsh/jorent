@@ -24,16 +24,16 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 إجمالي العقارات (العدد الكلي فقط)
+            // 📊 Total Properties (total count only)
             TotalPropertiesWidget::class,
             
-            // 🏘️ أنواع العقارات مجمعة (مباني، فيلات، منازل، مستودعات)
+            // 🏘️ Property Type Stats (Buildings, Villas, Houses, Warehouses)
             PropertyTypeStatsWidget::class,
             
-            // 🏢 أنواع الاستخدام مجمعة (سكني، تجاري، صناعي)
+            // 🏢 Usage Type Stats (Residential, Commercial, Industrial)
             UsageTypeStatsWidget::class,
             
-            // 🔢 عداد الوحدات وإحصائياتها
+            // 🔢 Total Units Counter
             UnitsCounterWidget::class,
         ];
     }
