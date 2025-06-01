@@ -24,16 +24,16 @@ class ListUnits extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 Total Units and Growth Statistics
+            // 📊 Total Units (count with recent additions)
             TotalUnitsWidget::class,
             
-            // 🏠 Unit Type Distribution
+            // 🏘️ Unit Type Stats (Apartments, Villas, Offices, Shops combined)
             UnitTypeStatsWidget::class,
             
-            // 📈 Unit Status Distribution  
+            // 📈 Unit Status Stats (Available, Rented, Maintenance combined)  
             UnitStatusStatsWidget::class,
             
-            // 💰 Unit Price Statistics
+            // 💰 Unit Price Statistics (Average price with revenue potential)
             UnitPriceStatsWidget::class,
         ];
     }
