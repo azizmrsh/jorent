@@ -5,6 +5,8 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
@@ -15,29 +17,26 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Tabs;
 use Filament\Support\Enums\MaxWidth;
 
-class Profile extends Page
+class Profile extends Page implements HasForms
 {
+    use InteractsWithForms;
+    
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'My Profile';
     protected static ?string $title = 'Profile Settings';
     protected static ?string $slug = 'profile';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.profile';
-    protected static ?string $navigationGroup = 'Settings';
-
-    public ?array $profileData = [];
-    public ?array $passwordData = [];
+    protected static ?string $navigationGroup = 'Settings';    public ?array $data = [];
 
     public function getMaxContentWidth(): MaxWidth
     {
         return MaxWidth::FiveExtraLarge;
-    }
-
-    public function mount(): void
+    }    public function mount(): void
     {
         $user = Auth::user();
         
-        $this->profileData = [
+        $this->form->fill([
             'name' => $user->name,
             'midname' => $user->midname,
             'lastname' => $user->lastname,
@@ -46,7 +45,7 @@ class Profile extends Page
             'address' => $user->address,
             'birth_date' => $user->birth_date,
             'profile_photo' => $user->profile_photo,
-        ];
+        ]);
         
         // Log profile access for security
         \Log::info('Profile accessed', [
@@ -56,9 +55,7 @@ class Profile extends Page
             'user_agent' => request()->userAgent(),
             'timestamp' => now()
         ]);
-    }
-
-    public function profileForm(Form $form): Form
+    }public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -109,7 +106,8 @@ class Profile extends Page
                             ->schema([
                                 Section::make('Contact Information')
                                     ->description('Manage your contact details')
-                                    ->schema([                                        Forms\Components\TextInput::make('email')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('email')
                                             ->label('Email Address')
                                             ->email()
                                             ->required()
@@ -127,7 +125,35 @@ class Profile extends Page
                                                     ->visible(fn () => Auth::user()->email_verified_at !== null)
                                             ),
                                     ]),
-                            ]),                        // Profile Photo Tab
+                                
+                                Section::make('Password Change')
+                                    ->description('Update your account password')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('current_password')
+                                            ->label('Current Password')
+                                            ->password()
+                                            ->currentPassword()
+                                            ->validationMessages([
+                                                'current_password' => 'The current password is incorrect.',
+                                            ]),
+                                        
+                                        Grid::make(2)->schema([
+                                            Forms\Components\TextInput::make('new_password')
+                                                ->label('New Password')
+                                                ->password()
+                                                ->rule(Password::default())
+                                                ->same('new_password_confirmation')
+                                                ->validationMessages([
+                                                    'same' => 'The password confirmation does not match.',
+                                                ]),
+                                            Forms\Components\TextInput::make('new_password_confirmation')
+                                                ->label('Confirm New Password')
+                                                ->password(),
+                                        ]),
+                                    ]),
+                            ]),
+
+                        // Profile Photo Tab
                         Tabs\Tab::make('Profile Photo')
                             ->icon('heroicon-o-camera')
                             ->schema([
@@ -188,43 +214,7 @@ class Profile extends Page
                     ->columnSpanFull()
                     ->persistTabInQueryString(),
             ])
-            ->statePath('profileData');
-    }
-
-    public function passwordForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Section::make('Change Password')
-                    ->description('Update your account password')
-                    ->schema([
-                        Forms\Components\TextInput::make('current_password')
-                            ->label('Current Password')
-                            ->password()
-                            ->required()
-                            ->currentPassword()
-                            ->validationMessages([
-                                'current_password' => 'The current password is incorrect.',
-                            ]),
-                        
-                        Grid::make(2)->schema([
-                            Forms\Components\TextInput::make('new_password')
-                                ->label('New Password')
-                                ->password()
-                                ->required()
-                                ->rule(Password::default())
-                                ->same('new_password_confirmation')
-                                ->validationMessages([
-                                    'same' => 'The password confirmation does not match.',
-                                ]),
-                            Forms\Components\TextInput::make('new_password_confirmation')
-                                ->label('Confirm New Password')
-                                ->password()
-                                ->required(),
-                        ]),
-                    ]),
-            ])
-            ->statePath('passwordData');
+            ->statePath('data');
     }    protected function getHeaderActions(): array
     {
         return [
@@ -233,21 +223,11 @@ class Profile extends Page
                 ->icon('heroicon-o-check-circle')
                 ->color('success')
                 ->keyBindings(['mod+s'])
-                ->action('updateProfile')
+                ->action('save')
                 ->requiresConfirmation()
                 ->modalHeading('Update Profile')
                 ->modalDescription('Are you sure you want to save these profile changes?')
                 ->modalSubmitActionLabel('Yes, Update'),
-                
-            Action::make('updatePassword')
-                ->label('Change Password')
-                ->icon('heroicon-o-key')
-                ->color('warning')
-                ->action('updatePassword')
-                ->requiresConfirmation()
-                ->modalHeading('Change Password')
-                ->modalDescription('Are you sure you want to change your password? You will need to use the new password for future logins.')
-                ->modalSubmitActionLabel('Yes, Change Password'),
 
             Action::make('downloadData')
                 ->label('Download Data')
@@ -263,15 +243,34 @@ class Profile extends Page
                 ->action('refreshProfile')
                 ->keyBindings(['f5']),
         ];
-    }public function updateProfile(): void
+    }    public function save(): void
     {
         try {
-            $data = $this->profileForm->getState();
+            $data = $this->form->getState();
             
             $user = Auth::user();
+            
+            // Handle password change if provided
+            if (!empty($data['current_password']) && !empty($data['new_password'])) {
+                if (!Hash::check($data['current_password'], $user->password)) {
+                    Notification::make()
+                        ->title('Current Password Incorrect')
+                        ->danger()
+                        ->body('The current password you entered is incorrect.')
+                        ->send();
+                    return;
+                }
+                
+                $data['password'] = Hash::make($data['new_password']);
+                unset($data['current_password'], $data['new_password'], $data['new_password_confirmation']);
+            } else {
+                // Remove password fields if not changing password
+                unset($data['current_password'], $data['new_password'], $data['new_password_confirmation']);
+            }
+            
             $user->update($data);
             
-            // Refresh the mounted data
+            // Refresh the form
             $this->mount();
             
             Notification::make()
@@ -286,36 +285,6 @@ class Profile extends Page
                 ->title('Update Failed')
                 ->danger()
                 ->body('Failed to update profile: ' . $e->getMessage())
-                ->persistent()
-                ->send();
-        }
-    }
-
-    public function updatePassword(): void
-    {
-        try {
-            $data = $this->passwordForm->getState();
-            
-            $user = Auth::user();
-            $user->update([
-                'password' => Hash::make($data['new_password']),
-            ]);
-            
-            // Clear password form data
-            $this->passwordData = [];
-            
-            Notification::make()
-                ->title('Password Updated Successfully! 🔐')
-                ->success()
-                ->body('Your password has been changed successfully. Please use your new password for future logins.')
-                ->duration(5000)
-                ->send();
-                
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title('Password Update Failed')
-                ->danger()
-                ->body('Failed to update password: ' . $e->getMessage())
                 ->persistent()
                 ->send();
         }
