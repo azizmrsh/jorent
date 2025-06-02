@@ -16,6 +16,7 @@ class PropertiesDetailedStats extends BaseWidget
     
     protected function getStats(): array
     {
+        
         // إحصائيات العقارات الأساسية
         $totalProperties = Property::count();
         $newPropertiesThisMonth = Property::where('created_at', '>=', Carbon::now()->startOfMonth())->count();
