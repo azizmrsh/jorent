@@ -24,16 +24,9 @@ class ListTenants extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 👥 Total tenants and growth metrics
             TotalTenantsWidget::class,
-            
-            // 📊 Tenant status distribution
             TenantStatusWidget::class,
-            
-            // 📄 Document verification tracking
             DocumentVerificationWidget::class,
-            
-            // 🕒 Recent tenant additions
             RecentTenantsWidget::class,
         ];
     }
