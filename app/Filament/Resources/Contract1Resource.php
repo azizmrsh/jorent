@@ -35,6 +35,9 @@ class Contract1Resource extends Resource
     protected static ?string $model = Contract1::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Contract';
+    protected static ?string $pluralLabel = 'Contracts';
+    protected static ?string $navigationGroup = 'Real Estate Management';
     protected static ?string $navigationLabel = 'Contracts';
     protected static ?string $slug = 'contracts';
 

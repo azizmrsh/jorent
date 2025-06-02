@@ -23,6 +23,7 @@ class AccResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Property Managers';
+    protected static ?string $navigationGroup = 'Real Estate Management';
     protected static ?string $label = 'Property Manager';
     protected static ?string $pluralLabel = 'Property Managers';
     protected static ?string $slug = 'property-managers';

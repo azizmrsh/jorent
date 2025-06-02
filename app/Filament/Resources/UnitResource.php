@@ -25,6 +25,8 @@ class UnitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationLabel = 'Units';
+        protected static ?string $navigationGroup = 'Real Estate ';
+
     protected static ?string $label = 'Unit';
     protected static ?string $pluralLabel = 'Units';
     protected static ?string $slug = 'units';
