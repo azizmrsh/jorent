@@ -9,7 +9,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class AvailableUnitsWidget extends BaseWidget
 {
     protected static ?int $sort = 4;
-    protected int | string | array $columnSpan = 3;
+    protected int | string | array $columnSpan = 1;
 
     protected function getStats(): array
     {
