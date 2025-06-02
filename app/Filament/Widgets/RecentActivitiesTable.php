@@ -3,9 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Contract1;
-use App\Models\Payment;
-use App\Models\Tenant;
-use App\Models\Property;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Carbon\Carbon;
@@ -18,112 +15,74 @@ class RecentActivitiesTable extends BaseWidget
     
     protected function getHeading(): string
     {
-        return '🕐 Recent System Activities';
+        return '🕐 Recent Contract Activities';
     }
-    
+
     public function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->query($this->getTableQuery())
             ->columns([
-                Tables\Columns\TextColumn::make('type')
+                Tables\Columns\TextColumn::make('activity_type')
                     ->label('Activity Type')
+                    ->getStateUsing(fn () => 'New Contract')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'New Contract' => 'success',
-                        'Payment Received' => 'info',
-                        'New Tenant' => 'warning',
-                        'New Property' => 'primary',
-                        default => 'gray',
-                    })
-                    ->icon(fn (string $state): string => match ($state) {
-                        'New Contract' => 'heroicon-m-document-plus',
-                        'Payment Received' => 'heroicon-m-banknotes',
-                        'New Tenant' => 'heroicon-m-user-plus',
-                        'New Property' => 'heroicon-m-building-office-2',
-                        default => 'heroicon-m-bell',
-                    }),
+                    ->color('success')
+                    ->icon('heroicon-m-document-plus'),
                     
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Description')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('tenant_info')
+                    ->label('Tenant')
+                    ->getStateUsing(function ($record) {
+                        return $record->tenant ? "{$record->tenant->firstname} {$record->tenant->lastname}" : 'N/A';
+                    })
+                    ->searchable(['tenant.firstname', 'tenant.lastname'])
+                    ->icon('heroicon-m-user'),
+                    
+                Tables\Columns\TextColumn::make('property_info')
+                    ->label('Property & Unit')
+                    ->getStateUsing(function ($record) {
+                        $property = $record->property ? $record->property->name : 'N/A';
+                        $unit = $record->unit ? " ({$record->unit->name})" : '';
+                        return $property . $unit;
+                    })
+                    ->searchable(['property.name', 'unit.name'])
+                    ->icon('heroicon-m-building-office')
                     ->wrap(),
                     
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Amount')
+                Tables\Columns\TextColumn::make('rent_amount')
+                    ->label('Rent Amount')
                     ->money('JOD')
-                    ->placeholder('—')
-                    ->alignEnd(),
+                    ->alignEnd()
+                    ->icon('heroicon-m-currency-dollar'),
                     
-                Tables\Columns\TextColumn::make('date')
-                    ->label('Date')
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created')
                     ->dateTime('M j, Y g:i A')
                     ->sortable()
                     ->since()
-                    ->tooltip(fn ($record) => $record->date->format('F j, Y \a\t g:i A')),
+                    ->tooltip(fn ($record) => $record->created_at->format('F j, Y \a\t g:i A')),
                     
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->color(fn (?string $state): string => match ($state) {
-                        'Active' => 'success',
-                        'Completed' => 'info',
-                        'Pending' => 'warning',
-                        'Inactive' => 'danger',
+                        'active' => 'success',
+                        'pending' => 'warning',
+                        'inactive' => 'danger',
+                        'cancelled' => 'danger',
                         default => 'gray',
                     }),
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->paginated([10, 25, 50])
-            ->defaultPaginationPageOption(10);
-    }
-      protected function getTableQuery(): Builder
+            ->defaultPaginationPageOption(10)
+            ->striped()
+            ->searchable();
+    }    protected function getTableQuery(): Builder
     {
-        // استخدام العقود الحديثة كنقطة بداية
         return Contract1::query()
             ->with(['tenant', 'property', 'unit'])
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->latest('created_at');
-    }
-    
-    protected function getTableColumns(): array
-    {
-        return [
-            Tables\Columns\TextColumn::make('id')
-                ->label('Activity Type')
-                ->formatStateUsing(fn () => 'New Contract')
-                ->badge()
-                ->color('success')
-                ->icon('heroicon-m-document-plus'),
-                
-            Tables\Columns\TextColumn::make('description')
-                ->label('Description')
-                ->getStateUsing(function ($record) {
-                    return "Contract #{$record->id} - {$record->tenant?->firstname} {$record->tenant?->lastname} for {$record->property?->name} ({$record->unit?->name})";
-                })
-                ->searchable()
-                ->wrap(),
-                
-            Tables\Columns\TextColumn::make('rent_amount')
-                ->label('Amount')
-                ->money('JOD')
-                ->alignEnd(),
-                
-            Tables\Columns\TextColumn::make('created_at')
-                ->label('Date')
-                ->dateTime('M j, Y g:i A')
-                ->sortable()
-                ->since()
-                ->tooltip(fn ($record) => $record->created_at->format('F j, Y \a\t g:i A')),
-                
-            Tables\Columns\TextColumn::make('status')
-                ->label('Status')
-                ->badge()
-                ->color(fn (?string $state): string => match ($state) {
-                    'active' => 'success',
-                    'inactive' => 'danger',
-                    default => 'gray',
-                }),
-        ];
     }
 }
