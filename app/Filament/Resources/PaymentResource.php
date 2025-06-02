@@ -37,7 +37,7 @@ class PaymentResource extends Resource
     
     protected static ?int $navigationSort = 5;
     
-    protected static ?string $navigationGroup = 'Property Management';
+    protected static ?string $navigationGroup = 'Rental Management';
 
     public static function form(Form $form): Form
     {

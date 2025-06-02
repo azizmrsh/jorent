@@ -11,6 +11,8 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use App\Filament\Pages\Profile;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -40,6 +42,23 @@ class AdminPanelProvider extends PanelProvider
                 Profile::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder
+                    ->groups([
+                        NavigationGroup::make('Dashboard')
+                            ->icon('heroicon-o-home')
+                            ->collapsed(false),
+                        NavigationGroup::make('Rental Management')
+                            ->icon('heroicon-o-building-office-2')
+                            ->collapsed(false)
+                            ->items([
+                                // Properties will be auto-sorted by navigationSort
+                            ]),
+                        NavigationGroup::make('Staff Management')
+                            ->icon('heroicon-o-users')
+                            ->collapsed(false),
+                    ]);
+            })
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

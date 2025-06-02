@@ -24,11 +24,12 @@ class UnitResource extends Resource
     protected static ?string $model = Unit::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationGroup = 'Real Estate';
+    protected static ?string $navigationGroup = 'Rental Management';
     protected static ?string $navigationLabel = 'Units';
     protected static ?string $label = 'Unit';
     protected static ?string $pluralLabel = 'Units';
     protected static ?string $slug = 'units';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

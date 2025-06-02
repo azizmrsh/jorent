@@ -22,11 +22,12 @@ class AccResource extends Resource
     protected static ?string $model = Acc::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Staff Management (Adminstration)';
-    protected static ?string $navigationLabel = 'Proparty Manager';
-    protected static ?string $label = 'Proparty Manager';
-    protected static ?string $pluralLabel = 'Proparty Manager';
-    protected static ?string $slug = 'PropartyManagers';
+    protected static ?string $navigationGroup = 'Staff Management';
+    protected static ?string $navigationLabel = 'Property Managers';
+    protected static ?string $label = 'Property Manager';
+    protected static ?string $pluralLabel = 'Property Managers';
+    protected static ?string $slug = 'property-managers';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
