@@ -1,6 +1,5 @@
 <?php
 
-<<<<<<< Updated upstream
 use Omaralalwi\Gpdf\Enums\{
     GpdfDefaultSettings as GpdfDefault,
     GpdfSettingKeys as GpdfSet,
@@ -41,21 +40,6 @@ return [
      * @var string
      */
     GpdfSet::DEFAULT_FONT => 'Tajawal',
-=======
-// Temporarily disable gpdf to avoid dependency errors
-return [
-    'temp_dir' => sys_get_temp_dir(),
-    'font_dir' => storage_path('fonts'),
-    'font_cache' => storage_path('fonts/cache'),
-    'enabled' => false,
-    'default_font' => 'Arial',
-    'default_paper_size' => 'A4',
-    'default_paper_orientation' => 'portrait',
-    'dpi' => 96,
-    'enable_php' => false,
-    'is_remote_enabled' => false,
-    'is_javascript_enabled' => false,
->>>>>>> Stashed changes
 
     /**
      *
@@ -242,7 +226,6 @@ return [
     /**
      * License key for the PDF library.
      * @var string
-<<<<<<< Updated upstream
      */
     GpdfSet::PDF_LIB_LICENSE => GpdfDefault::PDF_LIB_LICENSE,
 
@@ -252,15 +235,3 @@ return [
      */
     GpdfSet::HTTP_CONTEXT => GpdfDefault::HTTP_CONTEXT,
 ];
-=======
-     */ 
-    GpdfSet::PDF_LIB_LICENSE => GpdfDefault::PDF_LIB_LICENSE, 
- 
-    /** 
-     * HTTP context options for fetching remote resources. 
-     * @var resource|null 
-     */
-    GpdfSet::HTTP_CONTEXT => GpdfDefault::HTTP_CONTEXT,
-];
-
->>>>>>> Stashed changes
