@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class RecentTenantsWidget extends BaseWidget
 {
     protected static ?int $sort = 4;
-    protected int | string | array $columnSpan = 3;
+    protected int | string | array $columnSpan = 1;
 
     protected function getStats(): array
     {
