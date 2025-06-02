@@ -13,7 +13,7 @@ class PropertiesUnitsOverview extends ChartWidget
     protected static ?int $sort = 4;
     protected int | string | array $columnSpan = 'full';
     
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return '🏢 Properties & Units Distribution';
     }

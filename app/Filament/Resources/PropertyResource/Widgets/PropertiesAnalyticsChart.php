@@ -13,7 +13,7 @@ class PropertiesAnalyticsChart extends ChartWidget
     protected static ?int $sort = 1;
     protected int | string | array $columnSpan = 'full';
     
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return '📊 Properties Analytics';
     }

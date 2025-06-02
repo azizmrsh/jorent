@@ -12,7 +12,7 @@ class ContractsRevenueChart extends ChartWidget
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
     
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return '💰 Contracts Revenue Analysis';
     }

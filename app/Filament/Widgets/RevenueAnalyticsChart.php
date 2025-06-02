@@ -13,7 +13,7 @@ class RevenueAnalyticsChart extends ChartWidget
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
     
-    protected function getHeading(): string
+    public function getHeading(): string
     {
         return '📈 Revenue Analytics - Last 6 Months';
     }
