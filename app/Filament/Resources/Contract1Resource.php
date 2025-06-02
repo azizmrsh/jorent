@@ -35,10 +35,8 @@ class Contract1Resource extends Resource
     protected static ?string $model = Contract1::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Rental Management';
     protected static ?string $navigationLabel = 'Contracts';
     protected static ?string $slug = 'contracts';
-    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

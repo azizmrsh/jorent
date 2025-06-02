@@ -34,10 +34,6 @@ class PaymentResource extends Resource
     protected static ?string $modelLabel = 'Payment';
     
     protected static ?string $pluralModelLabel = 'Payments';
-    
-    protected static ?int $navigationSort = 5;
-    
-    protected static ?string $navigationGroup = 'Rental Management';
 
     public static function form(Form $form): Form
     {
