@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,6 +18,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class UserResource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
@@ -40,7 +43,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('phone')->label('Phone')->tel()->maxLength(255),
                 Forms\Components\TextInput::make('address')->required()->label('Address')->maxLength(255),
                 Forms\Components\DatePicker::make('birth_date')->label('Birth Date'),
-                Forms\Components\FileUpload::make('profile_photo')->label('Profile Image')->image()->directory('uploads/images')->maxSize(1024),
+                self::profilePhotoUpload(),
                 Forms\Components\TextInput::make('password')
                     ->required()
                     ->label('Password')
@@ -48,8 +51,7 @@ class UserResource extends Resource
                     ->minLength(8)
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                    ->confirmed('password_confirmation')
-                    ->label('Password Confirmation')
+                    ->confirmed()
                     ->dehydrated(fn ($state) => ! blank($state)),
                 Forms\Components\TextInput::make('password_confirmation')
                     ->required()

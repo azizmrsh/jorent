@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TenantResource\Pages;
 use App\Filament\Resources\TenantResource\RelationManagers;
 use App\Models\Tenant;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,6 +18,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class TenantResource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = Tenant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -82,11 +85,7 @@ class TenantResource extends Resource
                 // Profile Information
                 Forms\Components\Fieldset::make('Profile Information')
                     ->schema([
-                        Forms\Components\FileUpload::make('profile_photo')
-                            ->label('Profile Photo')
-                            ->image()
-                            ->directory('uploads/images')
-                            ->maxSize(1024),
+                        self::profilePhotoUpload(),
 
                         Forms\Components\Select::make('status')
                             ->required()
@@ -114,11 +113,7 @@ class TenantResource extends Resource
                         Forms\Components\TextInput::make('document_number')     
                             ->label('Document Number')
                             ->maxLength(255),
-                        Forms\Components\FileUpload::make('document_photo')
-                            ->label('Document Photo')
-                            ->image()
-                            ->directory('uploads/images')
-                            ->maxSize(1024),
+                        self::documentPhotoUpload(),
                     ]),
 
                 // Employment Information

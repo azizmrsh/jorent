@@ -35,7 +35,7 @@ Route::get('/test-pdf', function () {
         $pdfPath = $pdfService->generateContractPdf($contract);
         
         if ($pdfPath) {
-            $fullPath = storage_path('app/public/' . $pdfPath);
+            $fullPath = public_path($pdfPath);
             $fileSize = file_exists($fullPath) ? filesize($fullPath) : 0;
             
             return response()->json([
@@ -43,7 +43,7 @@ Route::get('/test-pdf', function () {
                 'message' => 'PDF generated successfully!',
                 'pdf_path' => $pdfPath,
                 'file_size' => $fileSize,
-                'download_url' => asset('storage/' . $pdfPath),
+                'download_url' => asset($pdfPath),
                 'contract_id' => $contract->id,
                 'tenant_name' => $contract->tenant->name ?? 'N/A'
             ]);

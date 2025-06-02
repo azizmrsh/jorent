@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AccResource\Pages;
 use App\Models\Acc;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class AccResource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = Acc::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -51,19 +54,7 @@ class AccResource extends Resource
                 Forms\Components\TextInput::make('address')->label('Address')->maxLength(255),
             ]),
             Forms\Components\Fieldset::make('Profile Information')->schema([
-                Forms\Components\FileUpload::make('profile_photo')
-                    ->label('Profile Photo')
-                    ->image()
-                    ->directory('profile_photos')
-                    ->disk('public')
-                    ->visibility('public')
-                    ->maxSize(2048)
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
-                    ->imageResizeMode('cover')
-                    ->imageCropAspectRatio('1:1')
-                    ->imageResizeTargetWidth('300')
-                    ->imageResizeTargetHeight('300')
-                    ->columnSpanFull(),
+                self::profilePhotoUpload(),
                 Forms\Components\TextInput::make('password')->label('Password')->password()->maxLength(255)->required()->dehydrated(fn ($state) => filled($state))->visible(fn (string $context) => in_array($context, ['create', 'edit'])),
                 Forms\Components\TextInput::make('status')->label('Status')->required()->maxLength(255)->default('active'),
             ]),
@@ -76,7 +67,7 @@ class AccResource extends Resource
                     'other' => 'Other',
                 ])->default('passport'),
                 Forms\Components\TextInput::make('document_number')->label('Document Number')->maxLength(255),
-                Forms\Components\FileUpload::make('document_photo')->label('Document Photo')->image()->directory('uploads/images')->maxSize(1024),
+                self::documentPhotoUpload(),
             ]),
             Forms\Components\Fieldset::make('Employment Information')->schema([
                 Forms\Components\DatePicker::make('hired_date')->default(now())->label('Hired Date')->disabled(),
