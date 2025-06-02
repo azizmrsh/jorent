@@ -58,12 +58,10 @@ class PropertyStatsOverview extends BaseWidget
         // القيمة الإجمالية
         $totalValue = Unit::whereHas('property')->sum('rental_price');
         $propertiesWithUnits = Property::has('units')->count();
-        $averageValue = $propertiesWithUnits > 0 ? $totalValue / $propertiesWithUnits : 0;
-
-        // الإيرادات الشهرية
+        $averageValue = $propertiesWithUnits > 0 ? $totalValue / $propertiesWithUnits : 0;        // الإيرادات الشهرية
         $monthlyRevenue = Contract1::where('status', 'active')
             ->whereHas('unit.property')
-            ->sum('monthly_rent');
+            ->sum('rent_amount');
         $annualRevenue = $monthlyRevenue * 12;
 
         // متوسط قيمة العقار ونطاق الأسعار
