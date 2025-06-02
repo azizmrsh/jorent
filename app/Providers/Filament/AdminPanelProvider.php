@@ -38,7 +38,8 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')            ->pages([
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
                 Pages\Dashboard::class,
                 Profile::class,
             ])
@@ -49,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
                         NavigationItem::make('Dashboard')
                             ->icon('heroicon-o-home')
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
-                            ->url(route('filament.admin.pages.dashboard')),
+                            ->url(fn (): string => url('/admin')),
                     ])
                     ->groups([
                         NavigationGroup::make('Rental Management')
