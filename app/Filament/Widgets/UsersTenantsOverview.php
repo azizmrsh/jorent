@@ -33,9 +33,10 @@ class UsersTenantsOverview extends BaseWidget
             $query->where('status', 'active');
         })->count();
         $newTenantsThisMonth = Tenant::where('created_at', '>=', Carbon::now()->startOfMonth())->count();
-        
-        // إحصائيات التحقق
-        $verifiedTenants = Tenant::where('is_verified', true)->count();
+          // إحصائيات التحقق - استخدام الأعمدة الموجودة
+        $verifiedTenants = Tenant::whereNotNull('document_type')
+            ->whereNotNull('document_number')
+            ->count();
         $verificationRate = $totalTenants > 0 ? round(($verifiedTenants / $totalTenants) * 100, 1) : 0;
         
         // متوسط العقود للمستأجر
