@@ -10,9 +10,13 @@ use Carbon\Carbon;
 
 class PropertiesAnalyticsChart extends ChartWidget
 {
-    protected static ?string $heading = '📊 Properties Analytics';
     protected static ?int $sort = 1;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '📊 Properties Analytics';
+    }
     
     public ?string $filter = '6months';
     

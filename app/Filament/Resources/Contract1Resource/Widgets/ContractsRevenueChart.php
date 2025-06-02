@@ -9,9 +9,13 @@ use Carbon\Carbon;
 
 class ContractsRevenueChart extends ChartWidget
 {
-    protected static ?string $heading = '💰 Contracts Revenue Analysis';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '💰 Contracts Revenue Analysis';
+    }
     
     public ?string $filter = '6months';
     

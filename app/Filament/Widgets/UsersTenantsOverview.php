@@ -12,9 +12,13 @@ use Carbon\Carbon;
 
 class UsersTenantsOverview extends BaseWidget
 {
-    protected static ?string $heading = '👥 Users & Tenants Overview';
     protected static ?int $sort = 5;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '👥 Users & Tenants Overview';
+    }
     
     protected function getStats(): array
     {

@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class PropertiesUnitsOverview extends ChartWidget
 {
-    protected static ?string $heading = '🏢 Properties & Units Distribution';
     protected static ?int $sort = 4;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '🏢 Properties & Units Distribution';
+    }
     
     protected function getData(): array
     {

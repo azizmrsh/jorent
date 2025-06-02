@@ -8,9 +8,13 @@ use Carbon\Carbon;
 
 class PaymentsMethodsChart extends ChartWidget
 {
-    protected static ?string $heading = '💳 Payment Methods Distribution';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '💳 Payment Methods Distribution';
+    }
     
     public ?string $filter = 'thisMonth';
     

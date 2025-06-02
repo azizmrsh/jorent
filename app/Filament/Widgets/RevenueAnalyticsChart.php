@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class RevenueAnalyticsChart extends ChartWidget
 {
-    protected static ?string $heading = '📈 Revenue Analytics - Last 6 Months';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '📈 Revenue Analytics - Last 6 Months';
+    }
     
     protected function getData(): array
     {

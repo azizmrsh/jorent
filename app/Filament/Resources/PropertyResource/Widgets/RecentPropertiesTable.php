@@ -12,9 +12,13 @@ use Carbon\Carbon;
 
 class RecentPropertiesTable extends BaseWidget
 {
-    protected static ?string $heading = '🏗️ Recent Properties & Activities';
     protected static ?int $sort = 3;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '🏗️ Recent Properties & Activities';
+    }
     
     public function table(Table $table): Table
     {

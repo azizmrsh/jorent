@@ -13,9 +13,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class RecentActivitiesTable extends BaseWidget
 {
-    protected static ?string $heading = '🕐 Recent System Activities';
     protected static ?int $sort = 3;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '🕐 Recent System Activities';
+    }
     
     public function table(Tables\Table $table): Tables\Table
     {

@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class FinancialOverviewChart extends ChartWidget
 {
-    protected static ?string $heading = '💰 Financial Overview - Payment Methods & Trends';
     protected static ?int $sort = 6;
     protected int | string | array $columnSpan = 'full';
+    
+    protected function getHeading(): string
+    {
+        return '💰 Financial Overview - Payment Methods & Trends';
+    }
     
     protected function getData(): array
     {
