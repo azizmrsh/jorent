@@ -1,13 +1,21 @@
 <?php
 
 use Omaralalwi\Gpdf\Enums\{
-    GpdfDefaultSettings as GpdfDefault,
-    GpdfSettingKeys as GpdfSet,
-    GpdfStorageDrivers,
-    GpdfDefaultSupportedFonts
-};
-
+   GpdfDefaultSettings as GpdfDefault,
+   GpdfSettingKeys as GpdfSet,
+   GpdfStorageDrivers,
+   GpdfDefaultSupportedFonts
+   };
+   
+/**/
+// * use Omaralalwi\Gpdf\Enums\{
+//    GpdfDefaultSettings as GpdfDefault,
+//    GpdfSettingKeys as GpdfSet,
+//    GpdfStorageDrivers,
+//    GpdfDefaultSupportedFonts
+//};
 /**
+ * 
  * Configuration file for the Gpdf package.
  *
  * This configuration file extends the dompdf options.
