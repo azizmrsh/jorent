@@ -57,5 +57,38 @@ class Tenant extends Model
 
 
 
-  
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->firstname} {$this->midname} {$this->lastname}";
+    }
+
+    public function getFullAddressAttribute(): string
+    {
+        return $this->address?->full_address ?? 'No address';
+    }
+
+    public function getFullAddressWithStreetAttribute(): string
+    {
+        return $this->address?->full_address_with_street ?? 'No address';
+    }
+
+    public function getActiveContractAttribute()
+    {
+        return $this->contracts()->where('status', 'active')->first();
+    }
+
+    public function getTotalPaymentsAttribute()
+    {
+        return $this->payments()->sum('amount');
+    }
+
+    public function getTotalInvoicesAttribute()
+    {
+        return $this->invoices()->sum('amount');
+    }
+
+    public function getBalanceAttribute()
+    {
+        return $this->total_invoices - $this->total_payments;
+    }
 }
