@@ -24,11 +24,8 @@ class ListUnits extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 4 Simple Widgets on Same Line
-            TotalUnitsWidget::class,              // Total units count
-            UnitStatusStatsWidget::class,         // Occupancy rate
-            AvailableUnitsWidget::class,          // Available units count
-            TotalRevenueWidget::class,            // Total revenue potential
+            // 📊 Consolidated Widget with 4 Stats
+            TotalUnitsWidget::class,
         ];
     }
 }
