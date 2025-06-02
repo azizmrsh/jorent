@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Notifications\Notification;
 
 class UserResource extends Resource
 {
@@ -118,6 +119,20 @@ class UserResource extends Resource
                     ->copyable()
                     ->copyMessage('Email copied!')
                     ->limit(50),
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->label('✅ Email Verified')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable()
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseColor('danger')
+                    ->trueColor('success')
+                    ->tooltip(function ($record) {
+                        return $record->email_verified_at 
+                            ? 'Verified on ' . $record->email_verified_at->format('Y-m-d H:i')
+                            : 'Email not verified';
+                    }),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('📞 Phone')
                     ->sortable()
@@ -194,6 +209,16 @@ class UserResource extends Resource
                     ])
                     ->placeholder('Select status'),
 
+                // 📧 فلتر التحقق من البريد الإلكتروني
+                Tables\Filters\TernaryFilter::make('email_verified')
+                    ->label('📧 Email Verified')
+                    ->trueLabel('✅ Verified')
+                    ->falseLabel('❌ Not Verified')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('email_verified_at'),
+                        false: fn (Builder $query) => $query->whereNull('email_verified_at'),
+                    ),
+
                 // 📅 فلتر تاريخ الميلاد
                 Tables\Filters\Filter::make('birth_date_range')
                     ->form([
@@ -252,11 +277,89 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('resend_verification')
+                    ->label('Resend Verification')
+                    ->icon('heroicon-o-envelope')
+                    ->color('warning')
+                    ->visible(fn ($record) => is_null($record->email_verified_at))
+                    ->action(function ($record) {
+                        $record->sendEmailVerificationNotification();
+                        Notification::make()
+                            ->title('Verification email sent')
+                            ->body('Email verification has been sent to ' . $record->email)
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Resend Email Verification')
+                    ->modalDescription('Are you sure you want to resend the email verification to this user?')
+                    ->modalSubmitActionLabel('Send Email'),
+                Tables\Actions\Action::make('mark_verified')
+                    ->label('Mark as Verified')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn ($record) => is_null($record->email_verified_at))
+                    ->action(function ($record) {
+                        $record->update(['email_verified_at' => now()]);
+                        Notification::make()
+                            ->title('Email marked as verified')
+                            ->body('Email has been manually verified for ' . $record->email)
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Mark Email as Verified')
+                    ->modalDescription('Are you sure you want to manually mark this email as verified?')
+                    ->modalSubmitActionLabel('Mark Verified'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('resend_verification_bulk')
+                        ->label('Resend Verification to Selected')
+                        ->icon('heroicon-o-envelope')
+                        ->color('warning')
+                        ->action(function ($records) {
+                            $unverifiedCount = 0;
+                            foreach ($records as $record) {
+                                if (is_null($record->email_verified_at)) {
+                                    $record->sendEmailVerificationNotification();
+                                    $unverifiedCount++;
+                                }
+                            }
+                            Notification::make()
+                                ->title('Verification emails sent')
+                                ->body("Email verification sent to {$unverifiedCount} unverified users")
+                                ->success()
+                                ->send();
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Resend Email Verification')
+                        ->modalDescription('Are you sure you want to resend email verification to all selected unverified users?')
+                        ->modalSubmitActionLabel('Send Emails'),
+                    Tables\Actions\BulkAction::make('mark_verified_bulk')
+                        ->label('Mark Selected as Verified')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function ($records) {
+                            $updatedCount = 0;
+                            foreach ($records as $record) {
+                                if (is_null($record->email_verified_at)) {
+                                    $record->update(['email_verified_at' => now()]);
+                                    $updatedCount++;
+                                }
+                            }
+                            Notification::make()
+                                ->title('Emails marked as verified')
+                                ->body("{$updatedCount} users have been manually verified")
+                                ->success()
+                                ->send();
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Mark Emails as Verified')
+                        ->modalDescription('Are you sure you want to manually mark selected emails as verified?')
+                        ->modalSubmitActionLabel('Mark Verified'),
                     FilamentExportBulkAction::make('export-selected')
                         ->label('Export Selected')
                         ->fileName('users-selected')

@@ -60,3 +60,62 @@ Route::get('/test-pdf', function () {
         ], 500);
     }
 })->name('test.pdf');
+
+// Email Verification Routes
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    
+    return redirect('/admin')->with('verified', true);
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// API Route للتحقق من حالة التحقق (للاستخدام مع JavaScript)
+Route::get('/api/user/verification-status', function (Request $request) {
+    return response()->json([
+        'verified' => $request->user()->hasVerifiedEmail()
+    ]);
+})->middleware('auth');
+
+// Tenant Email Verification Routes
+use App\Models\Tenant;
+use Illuminate\Support\Facades\URL;
+
+Route::get('/tenant/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $tenant = Tenant::findOrFail($id);
+    
+    if (! hash_equals((string) $hash, sha1($tenant->getEmailForVerification()))) {
+        abort(403);
+    }
+    
+    if ($tenant->hasVerifiedEmail()) {
+        return redirect('/admin/tenants')->with('message', 'Email already verified!');
+    }
+    
+    if ($tenant->markEmailAsVerified()) {
+        return redirect('/admin/tenants')->with('message', 'Email verified successfully!');
+    }
+    
+    return redirect('/admin/tenants')->with('error', 'Email verification failed!');
+})->name('tenant.verification.verify')->middleware('signed');
+
+// API Route for tenant verification status
+Route::get('/api/tenant/{id}/verification-status', function ($id) {
+    $tenant = Tenant::findOrFail($id);
+    return response()->json([
+        'verified' => $tenant->hasVerifiedEmail(),
+        'email' => $tenant->email,
+        'verified_at' => $tenant->email_verified_at
+    ]);
+});

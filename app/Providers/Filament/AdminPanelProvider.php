@@ -58,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             ]);
             // تم تعليق Plugin مؤقتاً لحل مشكلة array_merge()
             // ->plugins([

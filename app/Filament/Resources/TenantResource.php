@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Notifications\Notification;
 
 class TenantResource extends Resource
 {
@@ -171,6 +172,20 @@ class TenantResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->label('✅ تم تأكيد البريد')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable()
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseColor('danger')
+                    ->trueColor('success')
+                    ->tooltip(function ($record) {
+                        return $record->email_verified_at 
+                            ? 'تم التأكيد في ' . $record->email_verified_at->format('Y-m-d H:i')
+                            : 'البريد الإلكتروني غير مؤكد';
+                    }),
                     
                 Tables\Columns\TextColumn::make('phone')
                     ->label('رقم الهاتف')
@@ -310,6 +325,16 @@ class TenantResource extends Resource
                     ->label('لديه بريد إلكتروني')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('email')->where('email', '!=', '')),
                     
+                // 📧 فلتر التحقق من البريد الإلكتروني
+                Tables\Filters\TernaryFilter::make('email_verified')
+                    ->label('📧 تأكيد البريد الإلكتروني')
+                    ->trueLabel('✅ مؤكد')
+                    ->falseLabel('❌ غير مؤكد')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('email_verified_at'),
+                        false: fn (Builder $query) => $query->whereNull('email_verified_at'),
+                    ),
+                    
                 Tables\Filters\Filter::make('has_phone')
                     ->label('لديه رقم هاتف')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('phone')->where('phone', '!=', '')),
@@ -325,11 +350,101 @@ class TenantResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                
+                // 📧 إعادة إرسال رابط التحقق من البريد الإلكتروني
+                Tables\Actions\Action::make('resend_verification')
+                    ->label('📧 إعادة إرسال التحقق')
+                    ->icon('heroicon-o-envelope')
+                    ->color('info')
+                    ->visible(fn ($record) => $record->email && !$record->email_verified_at)
+                    ->requiresConfirmation()
+                    ->modalHeading('إعادة إرسال رابط التحقق من البريد الإلكتروني')
+                    ->modalDescription('هل أنت متأكد من أنك تريد إعادة إرسال رابط التحقق من البريد الإلكتروني؟')
+                    ->modalSubmitActionLabel('إرسال')
+                    ->modalCancelActionLabel('إلغاء')
+                    ->action(function ($record) {
+                        if ($record->email) {
+                            try {
+                                $record->sendEmailVerificationNotification();
+                                
+                                Notification::make()
+                                    ->title('تم إرسال رابط التحقق بنجاح')
+                                    ->body("تم إرسال رابط التحقق إلى {$record->email}")
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('فشل في إرسال رابط التحقق')
+                                    ->body("حدث خطأ: " . $e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
+                        } else {
+                            Notification::make()
+                                ->title('لا يوجد بريد إلكتروني')
+                                ->body('المستأجر لا يمتلك بريد إلكتروني')
+                                ->warning()
+                                ->send();
+                        }
+                    }),
+
+                // ✅ تأكيد البريد الإلكتروني يدوياً
+                Tables\Actions\Action::make('mark_verified')
+                    ->label('✅ تأكيد البريد')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->email && !$record->email_verified_at)
+                    ->requiresConfirmation()
+                    ->modalHeading('تأكيد البريد الإلكتروني يدوياً')
+                    ->modalDescription('هل أنت متأكد من أنك تريد تأكيد البريد الإلكتروني يدوياً؟')
+                    ->modalSubmitActionLabel('تأكيد')
+                    ->modalCancelActionLabel('إلغاء')
+                    ->action(function ($record) {
+                        $record->update([
+                            'email_verified_at' => now(),
+                        ]);
+                        
+                        Notification::make()
+                            ->title('تم تأكيد البريد الإلكتروني بنجاح')
+                            ->body("تم تأكيد البريد الإلكتروني لـ {$record->firstname} {$record->lastname}")
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    
+                    // ✅ تأكيد البريد الإلكتروني للمحددين
+                    Tables\Actions\BulkAction::make('bulk_verify_email')
+                        ->label('✅ تأكيد البريد للمحددين')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('تأكيد البريد الإلكتروني للمستأجرين المحددين')
+                        ->modalDescription('هل أنت متأكد من أنك تريد تأكيد البريد الإلكتروني لجميع المستأجرين المحددين؟')
+                        ->modalSubmitActionLabel('تأكيد الكل')
+                        ->modalCancelActionLabel('إلغاء')
+                        ->action(function ($records) {
+                            $count = 0;
+                            foreach ($records as $record) {
+                                if ($record->email && !$record->email_verified_at) {
+                                    $record->update([
+                                        'email_verified_at' => now(),
+                                    ]);
+                                    $count++;
+                                }
+                            }
+                            
+                            Notification::make()
+                                ->title('تم تأكيد البريد الإلكتروني بنجاح')
+                                ->body("تم تأكيد البريد الإلكتروني لـ {$count} مستأجر")
+                                ->success()
+                                ->send();
+                        }),
+                    
                     FilamentExportBulkAction::make('export')
                         ->label('تصدير المحدد'),
                 ]),
