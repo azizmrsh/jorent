@@ -44,10 +44,7 @@ class PropertyFactory extends Factory
             'acc_id' => function () {
                 return Acc::factory()->create()->id;
             },
-            'images' => json_encode([
-                $this->faker->imageUrl(640, 480, 'property'),
-                $this->faker->imageUrl(640, 480, 'property'),
-            ]),
+            'image_path' => 'uploads/properties/' . $this->faker->uuid . '.jpg', // مسار صورة تجريبي
             'address_id' => function () {
                 return Address::factory()->create()->id;
             },

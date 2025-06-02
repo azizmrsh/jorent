@@ -39,13 +39,25 @@ class Tenant extends Model
 
 
     public function contracts()
-{
-    return $this->hasMany(Contract1::class);
-}
+    {
+        return $this->hasMany(Contract1::class);
+    }
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasManyThrough(
+            Payment::class,
+            Contract1::class,
+            'tenant_id', // Foreign key on contracts table
+            'contract_id', // Foreign key on payments table
+            'id', // Local key on tenants table
+            'id' // Local key on contracts table
+        );
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
 

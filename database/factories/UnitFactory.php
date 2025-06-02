@@ -38,20 +38,23 @@ class UnitFactory extends Factory
         
         return [
             'name' => 'Unit ' . $this->faker->bothify('##??'),
-            'description' => $this->faker->paragraph(),
-            'price' => $this->faker->randomFloat(2, 300, 5000),
+            'unit_number' => $this->faker->numberBetween(1, 100),
+            'area' => $this->faker->randomFloat(2, 50, 300),
             'images' => json_encode([
-                $this->faker->imageUrl(640, 480, 'apartment'),
-                $this->faker->imageUrl(640, 480, 'apartment'),
+                'uploads/units/' . $this->faker->uuid . '.jpg',
+                'uploads/units/' . $this->faker->uuid . '.jpg',
             ]),
             'property_id' => function () {
-                return Property::factory()->create()->id;
+                // استخدام property موجود أو إنشاء واحد جديد
+                return \App\Models\Property::inRandomOrder()->first()?->id 
+                    ?? \App\Models\Property::factory()->create()->id;
             },
             'unit_details' => $unitDetails,
             'features' => $unitFeatures,
-            'status' => $this->faker->randomElement(['available', 'occupied', 'maintenance', 'reserved']),
+            'status' => $this->faker->randomElement(['available', 'rented', 'under_maintenance', 'unavailable', 'reserved']),
             'unit_type' => $this->faker->randomElement($unitTypes),
             'rental_price' => $this->faker->randomFloat(2, 500, 5000),
+            'notes' => $this->faker->optional()->paragraph(),
         ];
     }
     

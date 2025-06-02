@@ -8,9 +8,11 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
@@ -33,6 +35,23 @@ class PropertyResource extends Resource
                         TextInput::make('name')
                             ->label('Property Name')
                             ->required(),
+                        
+                        // 📸 رفع صورة العقار
+                        FileUpload::make('image_path')
+                            ->label('Property Image')
+                            ->image()
+                            ->directory('uploads/properties')
+                            ->disk('public')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->maxSize(5120) // 5MB
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->helperText('Upload a high-quality image of the property (max 5MB)')
+                            ->columnSpanFull(),
                         Forms\Components\Textarea::make('description')->label('Description'),
                         Forms\Components\Select::make('type1')
                             ->label('Primary Type')
@@ -84,6 +103,15 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
+                // 📸 عرض صورة العقار
+                ImageColumn::make('image_path')
+                    ->label('Image')
+                    ->width(80)
+                    ->height(60)
+                    ->defaultImageUrl('/images/no-image.svg')
+                    ->circular(false)
+                    ->toggleable(),
+                    
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->sortable()

@@ -106,22 +106,5 @@
         "bold": "Tajawal-Bold",
         "italic": "Tajawal-Italic",
         "bold_italic": "Tajawal-BoldItalic"
-    },
-    "font awesome 6 brands": {
-        "normal": "font_awesome_6_brands_normal_36faa0e194d3288643f7144dedd8e1b1"
-    },
-    "font awesome 6 free": {
-        "normal": "C:\\Users\\mzyz2\\Desktop\\\u0627\u0644\u062c\u0627\u0645\u0639\u0629\\last\\FinalProject\\project\\jorentV2\\public\\vendor\\gpdf\\fonts\/font_awesome_6_free_normal_cf2d7daaeabedac0226ae26fc7e4f075",
-        "900": "font_awesome_6_free_900_665c8d2ea728525da852b5cd3a1d51a5"
-    },
-    "font awesome 5 brands": {
-        "normal": "font_awesome_5_brands_normal_36faa0e194d3288643f7144dedd8e1b1"
-    },
-    "font awesome 5 free": {
-        "900": "C:\\Users\\mzyz2\\Desktop\\\u0627\u0644\u062c\u0627\u0645\u0639\u0629\\last\\FinalProject\\project\\jorentV2\\public\\vendor\\gpdf\\fonts\/font_awesome_5_free_900_665c8d2ea728525da852b5cd3a1d51a5",
-        "normal": "font_awesome_5_free_normal_cf2d7daaeabedac0226ae26fc7e4f075"
-    },
-    "fontawesome": {
-        "normal": "fontawesome_normal_6aa5cc0b95be2651581a2d7ad4a9d038"
     }
 }
