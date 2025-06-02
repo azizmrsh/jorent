@@ -3,177 +3,172 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentResource\Pages;
-use App\Filament\Resources\PaymentResource\RelationManagers;
 use App\Models\Payment;
+use App\Models\Contract1;
+use App\Models\Tenant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Carbon\Carbon;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\ChartWidget;
+use Filament\Widgets\Widget;
 
 class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Financial';
+    
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    
     protected static ?string $navigationLabel = 'Payments';
-    protected static ?string $label = 'Payment';
-    protected static ?string $pluralLabel = 'Payments';
-    protected static ?string $slug = 'payments';
-    protected static ?string $recordTitleAttribute = 'id';
+    
+    protected static ?string $modelLabel = 'Payment';
+    
+    protected static ?string $pluralModelLabel = 'Payments';
+    
+    protected static ?int $navigationSort = 5;
+    
+    protected static ?string $navigationGroup = 'Property Management';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('معلومات الدفعة الأساسية')
+                Section::make('Payment Information')
+                    ->description('Enter payment details')
                     ->schema([
-                        Forms\Components\Select::make('contract_id')
-                            ->relationship('contract', 'id')
-                            ->label('العقد')
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->getOptionLabelFromRecordUsing(fn ($record) => 
-                                "عقد #{$record->id} - {$record->tenant->firstname} {$record->tenant->lastname}"
-                            ),
-                            
-                        Forms\Components\TextInput::make('payment_number')
-                            ->label('رقم الدفعة')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->default(fn () => \App\Models\Payment::generatePaymentNumber())
-                            ->disabled()
-                            ->dehydrated(),
-                            
-                        Forms\Components\TextInput::make('amount')
-                            ->label('المبلغ')
-                            ->numeric()
-                            ->required()
-                            ->step(0.01)
-                            ->minValue(0.01),
-                            
-                        Forms\Components\Select::make('currency')
-                            ->label('العملة')
-                            ->options([
-                                'JOD' => 'دينار أردني (JOD)',
-                                'USD' => 'دولار أمريكي (USD)',
-                                'EUR' => 'يورو (EUR)',
-                                'SAR' => 'ريال سعودي (SAR)',
-                                'AED' => 'درهم إماراتي (AED)',
-                            ])
-                            ->required()
-                            ->default('JOD'),
-                    ])
-                    ->columns(2),
+                        Grid::make(2)->schema([
+                            Forms\Components\Select::make('contract_id')
+                                ->label('Contract')
+                                ->relationship('contract', 'id')
+                                ->getOptionLabelFromRecordUsing(function ($record) {
+                                    $tenant = $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : 'No Tenant';
+                                    $property = $record->property ? $record->property->name : 'No Property';
+                                    $unit = $record->unit ? $record->unit->name : 'No Unit';
+                                    return "#{$record->id} - {$tenant} | {$property} - {$unit}";
+                                })
+                                ->searchable(['id'])
+                                ->preload()
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    if ($state) {
+                                        $contract = Contract1::with(['tenant', 'property', 'unit'])->find($state);
+                                        if ($contract) {
+                                            // Auto-fill tenant name and rental amount
+                                            if ($contract->tenant) {
+                                                $set('payer_name', $contract->tenant->firstname . ' ' . $contract->tenant->lastname);
+                                            }
+                                            if ($contract->unit) {
+                                                $set('amount', $contract->unit->rental_price);
+                                            }
+                                        }
+                                    }
+                                })
+                                ->columnSpan(2),
+                        ]),
+                        
+                        Grid::make(3)->schema([
+                            Forms\Components\TextInput::make('amount')
+                                ->label('Payment Amount')
+                                ->required()
+                                ->numeric()
+                                ->step(0.01)
+                                ->suffix('JOD')
+                                ->minValue(0)
+                                ->maxValue(999999.99),
+                                
+                            Forms\Components\DatePicker::make('payment_date')
+                                ->label('Payment Date')
+                                ->required()
+                                ->default(now())
+                                ->maxDate(now()),
+                                
+                            Forms\Components\Select::make('payment_method')
+                                ->label('Payment Method')
+                                ->required()
+                                ->options([
+                                    'cash' => '💵 Cash',
+                                    'bank_transfer' => '🏦 Bank Transfer',
+                                    'wallet' => '📱 Digital Wallet',
+                                    'cliq' => '⚡ CliQ',
+                                ])
+                                ->default('cash')
+                                ->reactive(),
+                        ]),
+                    ])->columns(1),
                     
-                Forms\Components\Section::make('معلومات الأطراف')
+                Section::make('Payer & Receiver Information')
+                    ->description('Details about who paid and who received')
                     ->schema([
-                        Forms\Components\TextInput::make('payer_name')
-                            ->label('اسم الدافع')
-                            ->required()
-                            ->maxLength(255),
-                            
-                        Forms\Components\TextInput::make('receiver_name')
-                            ->label('اسم المستلم')
-                            ->required()
-                            ->maxLength(255)
-                            ->default(function () {
-                                $user = auth()->user();
-                                if ($user) {
-                                    // إنشاء الاسم الكامل من الحقول المتاحة
-                                    $nameParts = array_filter([
-                                        $user->name,
-                                        $user->midname,
-                                        $user->lastname
-                                    ]);
-                                    
-                                    return implode(' ', $nameParts) ?: 'غير محدد';
-                                }
-                                return null;
-                            })
-                            ->placeholder(function () {
-                                $user = auth()->user();
-                                if ($user) {
-                                    $nameParts = array_filter([
-                                        $user->name,
-                                        $user->midname,
-                                        $user->lastname
-                                    ]);
-                                    
-                                    return 'مثال: ' . implode(' ', $nameParts);
-                                }
-                                return 'سيتم ملء الاسم تلقائياً';
-                            })
-                            ->helperText('يتم ملء هذا الحقل تلقائياً بإسم المستخدم الحالي، يمكن تعديله')
-                            ->suffixIcon('heroicon-m-user'),
-                    ])
-                    ->columns(2),
+                        Grid::make(2)->schema([
+                            Forms\Components\TextInput::make('payer_name')
+                                ->label('Payer Name')
+                                ->required()
+                                ->maxLength(255)
+                                ->placeholder('Who made the payment?'),
+                                
+                            Forms\Components\TextInput::make('receiver_name')
+                                ->label('Receiver Name')
+                                ->required()
+                                ->maxLength(255)
+                                ->default(fn () => Auth::user()?->name)
+                                ->placeholder('Who received the payment?'),
+                        ]),
+                    ])->columns(1),
                     
-                Forms\Components\Section::make('تفاصيل الدفع')
+                Section::make('Transfer Details')
+                    ->description('Additional information for bank transfers and digital payments')
                     ->schema([
-                        Forms\Components\DatePicker::make('payment_date')
-                            ->label('تاريخ الدفع')
-                            ->required()
-                            ->default(now()),
-                            
-                        Forms\Components\Select::make('payment_method')
-                            ->label('طريقة الدفع')
-                            ->options([
-                                'cash' => 'نقداً',
-                                'bank_transfer' => 'تحويل بنكي',
-                                'wallet' => 'محفظة إلكترونية',
-                                'cliq' => 'كليك',
-                            ])
-                            ->required()
-                            ->default('cash')
-                            ->reactive(),
-                            
-                        Forms\Components\Select::make('payment_status')
-                            ->label('حالة الدفع')
-                            ->options([
-                                'pending' => 'قيد الانتظار',
-                                'completed' => 'مكتمل',
-                                'failed' => 'فاشل',
-                                'cancelled' => 'ملغي',
-                            ])
-                            ->required()
-                            ->default('completed'),
-                    ])
-                    ->columns(3),
-                    
-                Forms\Components\Section::make('تفاصيل البنك')
-                    ->schema([
-                        Forms\Components\TextInput::make('bank_name')
-                            ->label('اسم البنك')
-                            ->maxLength(255)
-                            ->placeholder('مطلوب للتحويلات البنكية'),
-                            
-                        Forms\Components\TextInput::make('transaction_id')
-                            ->label('رقم المعاملة البنكية')
-                            ->maxLength(255)
-                            ->placeholder('رقم المعاملة أو الإيصال البنكي'),
-                            
-                        Forms\Components\TextInput::make('reference_number')
-                            ->label('الرقم المرجعي')
-                            ->maxLength(255)
-                            ->placeholder('اختياري - رقم الإيصال أو المرجع'),
-                    ])
-                    ->columns(3)
-                    ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
-                    
-                Forms\Components\Section::make('ملاحظات')
-                    ->schema([
+                        Grid::make(2)->schema([
+                            Forms\Components\TextInput::make('bank_name')
+                                ->label('Bank/Wallet Name')
+                                ->maxLength(255)
+                                ->placeholder('e.g., Arab Bank, Zain Cash, Orange Money')
+                                ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
+                                
+                            Forms\Components\TextInput::make('transfer_reference')
+                                ->label('Transfer Reference')
+                                ->maxLength(255)
+                                ->placeholder('Transaction ID or Reference Number')
+                                ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
+                        ]),
+                        
                         Forms\Components\Textarea::make('notes')
-                            ->label('ملاحظات إضافية')
-                            ->maxLength(65535)
-                            ->placeholder('أضف أي ملاحظات إضافية حول هذه الدفعة')
-                            ->columnSpanFull(),
-                    ]),
+                            ->label('Additional Notes')
+                            ->maxLength(1000)
+                            ->rows(3)
+                            ->placeholder('Any additional information about this payment...'),
+                    ])->columns(1),
+                    
+                Section::make('Meta Information')
+                    ->description('System information')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Forms\Components\TextInput::make('created_by')
+                                ->label('Created By')
+                                ->default(fn () => Auth::user()?->name)
+                                ->disabled()
+                                ->dehydrated(false),
+                                
+                            Forms\Components\DateTimePicker::make('created_at')
+                                ->label('Created At')
+                                ->default(now())
+                                ->disabled()
+                                ->dehydrated(false),
+                        ]),
+                    ])->columns(1)
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 
@@ -182,255 +177,255 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label('Payment ID')
                     ->sortable()
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                    
-                Tables\Columns\TextColumn::make('payment_number')
-                    ->label('رقم الدفعة')
-                    ->searchable()
-                    ->sortable()
-                    ->copyable()
-                    ->copyMessage('تم نسخ رقم الدفعة!')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.id')
-                    ->label('رقم العقد')
+                    ->label('Contract')
                     ->sortable()
                     ->searchable()
+                    ->formatStateUsing(fn ($record) => "#{$record->contract_id}")
+                    ->badge()
+                    ->color('info')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.tenant.firstname')
-                    ->label('المستأجر')
+                    ->label('Tenant')
+                    ->searchable(['firstname', 'lastname'])
                     ->sortable()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->contract && $record->contract->tenant) {
+                            return $record->contract->tenant->firstname . ' ' . $record->contract->tenant->lastname;
+                        }
+                        return 'No Tenant';
+                    })
+                    ->copyable()
+                    ->copyMessage('Tenant name copied!')
+                    ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('contract.property.name')
+                    ->label('Property')
                     ->searchable()
-                    ->formatStateUsing(fn ($record) => 
-                        $record->contract->tenant->firstname . ' ' . $record->contract->tenant->lastname
-                    )
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('Property name copied!')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.unit.name')
-                    ->label('الوحدة')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(),
-                    
-                Tables\Columns\TextColumn::make('payer_name')
-                    ->label('اسم الدافع')
+                    ->label('Unit')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
-                    
-                Tables\Columns\TextColumn::make('receiver_name')
-                    ->label('اسم المستلم')
-                    ->searchable()
-                    ->sortable()
+                    ->badge()
+                    ->color('secondary')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('المبلغ')
-                    ->money(fn ($record) => $record->currency ?? 'JOD')
+                    ->label('Amount')
+                    ->money('JOD')
                     ->sortable()
+                    ->alignEnd()
+                    ->copyable()
+                    ->copyMessage('Amount copied!')
                     ->toggleable(),
                     
-                Tables\Columns\TextColumn::make('currency')
-                    ->label('العملة')
-                    ->badge()
-                    ->color('info')
-                    ->sortable()
-                    ->toggleable()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'JOD' => 'دينار أردني',
-                        'USD' => 'دولار أمريكي',
-                        'EUR' => 'يورو',
-                        'SAR' => 'ريال سعودي',
-                        'AED' => 'درهم إماراتي',
-                        default => $state,
-                    }),
-                    
                 Tables\Columns\TextColumn::make('payment_date')
-                    ->label('تاريخ الدفع')
-                    ->date()
+                    ->label('Payment Date')
+                    ->date('Y-m-d')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label('طريقة الدفع')
+                    ->label('Method')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'cash' => 'success',
-                        'bank_transfer' => 'primary',
-                        'wallet' => 'warning',
-                        'cliq' => 'info',
+                        'bank_transfer' => 'info',
+                        'wallet' => 'warning', 
+                        'cliq' => 'danger',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'cash' => 'نقداً',
-                        'bank_transfer' => 'تحويل بنكي',
-                        'wallet' => 'محفظة إلكترونية',
-                        'cliq' => 'كليك',
+                        'cash' => '💵 Cash',
+                        'bank_transfer' => '🏦 Bank Transfer',
+                        'wallet' => '📱 Digital Wallet',
+                        'cliq' => '⚡ CliQ',
                         default => $state,
                     })
                     ->sortable()
                     ->toggleable(),
                     
-                Tables\Columns\TextColumn::make('payment_status')
-                    ->label('حالة الدفع')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'completed' => 'success',
-                        'pending' => 'warning',
-                        'failed' => 'danger',
-                        'cancelled' => 'gray',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'completed' => 'مكتمل',
-                        'pending' => 'قيد الانتظار',
-                        'failed' => 'فاشل',
-                        'cancelled' => 'ملغي',
-                        default => $state,
-                    })
-                    ->sortable()
+                Tables\Columns\TextColumn::make('payer_name')
+                    ->label('Payer')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Payer name copied!')
                     ->toggleable(),
+                    
+                Tables\Columns\TextColumn::make('receiver_name')
+                    ->label('Receiver')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Receiver name copied!')
+                    ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('bank_name')
-                    ->label('اسم البنك')
+                    ->label('Bank/Wallet')
                     ->searchable()
-                    ->limit(20)
-                    ->placeholder('غير محدد')
                     ->toggleable(isToggledHiddenByDefault: true),
                     
-                Tables\Columns\TextColumn::make('transaction_id')
-                    ->label('رقم المعاملة')
+                Tables\Columns\TextColumn::make('transfer_reference')
+                    ->label('Reference')
                     ->searchable()
-                    ->limit(15)
-                    ->placeholder('غير محدد')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                    
-                Tables\Columns\TextColumn::make('reference_number')
-                    ->label('الرقم المرجعي')
-                    ->searchable()
-                    ->limit(20)
-                    ->placeholder('لا يوجد')
+                    ->copyable()
+                    ->copyMessage('Reference copied!')
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('ملاحظات')
-                    ->limit(30)
-                    ->placeholder('لا توجد ملاحظات')
+                    ->label('Notes')
+                    ->limit(50)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= 50) {
+                            return null;
+                        }
+                        return $state;
+                    })
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
-                    ->dateTime()
+                    ->label('Date Added')
+                    ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('payment_date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('contract_id')
-                    ->label('العقد')
+                    ->label('Contract')
                     ->relationship('contract', 'id')
                     ->searchable()
                     ->preload(),
                     
-                Tables\Filters\SelectFilter::make('currency')
-                    ->label('العملة')
-                    ->options([
-                        'JOD' => 'دينار أردني',
-                        'USD' => 'دولار أمريكي',
-                        'EUR' => 'يورو',
-                        'SAR' => 'ريال سعودي',
-                        'AED' => 'درهم إماراتي',
-                    ]),
-                    
-                Tables\Filters\SelectFilter::make('payment_status')
-                    ->label('حالة الدفع')
-                    ->options([
-                        'completed' => 'مكتمل',
-                        'pending' => 'قيد الانتظار',
-                        'failed' => 'فاشل',
-                        'cancelled' => 'ملغي',
-                    ]),
-                    
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->label('طريقة الدفع')
+                    ->label('Payment Method')
                     ->options([
-                        'cash' => 'نقداً',
-                        'bank_transfer' => 'تحويل بنكي',
-                        'wallet' => 'محفظة إلكترونية',
-                        'cliq' => 'كليك',
-                    ]),
-                    
-                Tables\Filters\Filter::make('amount_range')
-                    ->label('نطاق المبلغ')
-                    ->form([
-                        Forms\Components\TextInput::make('amount_from')
-                            ->label('من (ريال)')
-                            ->numeric(),
-                        Forms\Components\TextInput::make('amount_to')
-                            ->label('إلى (ريال)')
-                            ->numeric(),
+                        'cash' => '💵 Cash',
+                        'bank_transfer' => '🏦 Bank Transfer',
+                        'wallet' => '📱 Digital Wallet',
+                        'cliq' => '⚡ CliQ',
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when($data['amount_from'], fn ($query, $amount) => $query->where('amount', '>=', $amount))
-                            ->when($data['amount_to'], fn ($query, $amount) => $query->where('amount', '<=', $amount));
-                    }),
+                    ->multiple(),
                     
                 Tables\Filters\Filter::make('payment_date_range')
-                    ->label('نطاق تاريخ الدفع')
+                    ->label('Payment Date Range')
                     ->form([
-                        Forms\Components\DatePicker::make('payment_from')
-                            ->label('من تاريخ'),
-                        Forms\Components\DatePicker::make('payment_until')
-                            ->label('إلى تاريخ'),
+                        Forms\Components\DatePicker::make('from_date')
+                            ->label('From Date'),
+                        Forms\Components\DatePicker::make('to_date')
+                            ->label('To Date'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
+                    ->query(function ($query, array $data) {
                         return $query
-                            ->when($data['payment_from'], fn ($query, $date) => $query->whereDate('payment_date', '>=', $date))
-                            ->when($data['payment_until'], fn ($query, $date) => $query->whereDate('payment_date', '<=', $date));
+                            ->when($data['from_date'], fn ($q, $date) => $q->where('payment_date', '>=', $date))
+                            ->when($data['to_date'], fn ($q, $date) => $q->where('payment_date', '<=', $date));
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['from_date'] ?? null) {
+                            $indicators['from_date'] = 'From: ' . Carbon::parse($data['from_date'])->format('Y-m-d');
+                        }
+                        if ($data['to_date'] ?? null) {
+                            $indicators['to_date'] = 'To: ' . Carbon::parse($data['to_date'])->format('Y-m-d');
+                        }
+                        return $indicators;
                     }),
                     
-                Tables\Filters\Filter::make('has_reference')
-                    ->label('لديه رقم مرجعي')
-                    ->query(fn (Builder $query): Builder => $query->whereNotNull('reference_number')->where('reference_number', '!=', '')),
+                Tables\Filters\Filter::make('amount_range')
+                    ->label('Amount Range')
+                    ->form([
+                        Forms\Components\TextInput::make('min_amount')
+                            ->label('Minimum Amount')
+                            ->numeric()
+                            ->suffix('JOD'),
+                        Forms\Components\TextInput::make('max_amount')
+                            ->label('Maximum Amount')
+                            ->numeric()
+                            ->suffix('JOD'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['min_amount'], fn ($q, $amount) => $q->where('amount', '>=', $amount))
+                            ->when($data['max_amount'], fn ($q, $amount) => $q->where('amount', '<=', $amount));
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['min_amount'] ?? null) {
+                            $indicators['min_amount'] = 'Min: ' . number_format($data['min_amount']) . ' JOD';
+                        }
+                        if ($data['max_amount'] ?? null) {
+                            $indicators['max_amount'] = 'Max: ' . number_format($data['max_amount']) . ' JOD';
+                        }
+                        return $indicators;
+                    }),
                     
                 Tables\Filters\Filter::make('this_month')
-                    ->label('هذا الشهر')
-                    ->query(fn (Builder $query): Builder => $query->whereMonth('payment_date', now()->month)->whereYear('payment_date', now()->year)),
+                    ->label('This Month Payments')
+                    ->query(function ($query) {
+                        return $query->whereBetween('payment_date', [
+                            now()->startOfMonth(),
+                            now()->endOfMonth()
+                        ]);
+                    })
+                    ->toggle(),
                     
                 Tables\Filters\Filter::make('today')
-                    ->label('اليوم')
-                    ->query(fn (Builder $query): Builder => $query->whereDate('payment_date', now())),
+                    ->label('Today\'s Payments')
+                    ->query(function ($query) {
+                        return $query->whereDate('payment_date', today());
+                    })
+                    ->toggle(),
+                    
+                Tables\Filters\Filter::make('has_reference')
+                    ->label('Has Transfer Reference')
+                    ->query(function ($query) {
+                        return $query->whereNotNull('transfer_reference')
+                                   ->where('transfer_reference', '!=', '');
+                    })
+                    ->toggle(),
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                    ->label('تصدير البيانات')
+                    ->label('Export Payments')
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('View')
+                    ->color('info'),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->color('warning'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Delete')
+                    ->color('danger'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    FilamentExportBulkAction::make('export')
-                        ->label('تصدير المحدد'),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Delete Selected')
+                        ->color('danger'),
+                    FilamentExportBulkAction::make('export-selected')
+                        ->label('Export Selected')
+                        ->color('success')
+                        ->icon('heroicon-o-arrow-down-tray'),
                 ]),
             ])
-            ->defaultSort('payment_date', 'desc')
-            ->striped()
-            ->paginated([10, 25, 50, 100]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+            ->emptyStateHeading('No Payments Found')
+            ->emptyStateDescription('Start by creating a new payment record.')
+            ->emptyStateIcon('heroicon-o-credit-card');
     }
 
     public static function getPages(): array
@@ -441,8 +436,21 @@ class PaymentResource extends Resource
             'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
     }
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    
+    public static function getNavigationBadgeColor(): string
+    {
+        return static::getModel()::count() > 100 ? 'warning' : 'success';
+    }
+    
+    public static function getWidgets(): array
+    {
+        return [
+            PaymentResource\Widgets\PaymentOverviewWidget::class,
+        ];
+    }
 }
-
-////
-///
-///

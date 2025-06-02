@@ -39,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
                 Profile::class,
             ])
-            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets') // Temporarily commented out
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

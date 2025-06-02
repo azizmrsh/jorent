@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Contract1;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Omaralalwi\Gpdf\Gpdf;
@@ -12,7 +11,7 @@ use Omaralalwi\Gpdf\GpdfConfig;
 class ContractPdfService
 {
     /**
-     * Generate PDF for a contract and save it to storage
+     * Generate PDF for a contract and save it to public directory
      *
      * @param Contract1 $contract
      * @return string|null The PDF file path or null if failed
@@ -35,20 +34,22 @@ class ContractPdfService
             
             // Generate filename
             $filename = $this->generateFilename($contract);
-            $filePath = 'contracts/' . $filename;
+            $filepath = "contracts/{$filename}";
             
-            // Ensure the contracts directory exists in public folder
-            if (!is_dir(public_path('contracts'))) {
-                mkdir(public_path('contracts'), 0755, true);
+            // Ensure the contracts directory exists in public
+            $publicContractsDir = public_path('contracts');
+            if (!is_dir($publicContractsDir)) {
+                mkdir($publicContractsDir, 0755, true);
             }
             
-            // Save PDF directly to public/contracts directory (no symlink required)
-            file_put_contents(public_path($filePath), $pdfContent);
+            // Save PDF directly to public/contracts directory
+            $fullPath = public_path($filepath);
+            file_put_contents($fullPath, $pdfContent);
             
-            // Update contract with PDF path
-            $contract->update(['pdf_path' => $filePath]);
+            // Update contract with PDF path (relative to public directory)
+            $contract->update(['pdf_path' => $filepath]);
             
-            return $filePath;
+            return $filepath;
             
         } catch (\Exception $e) {
             Log::error('Contract PDF generation failed', [
@@ -85,10 +86,17 @@ class ContractPdfService
      */
     public function getContractPdfUrl(Contract1 $contract): ?string
     {
-        if (!$contract->pdf_path || !file_exists(public_path($contract->pdf_path))) {
+        if (!$contract->pdf_path) {
             return null;
         }
         
+        // Check if file exists in public directory
+        $fullPath = public_path($contract->pdf_path);
+        if (!file_exists($fullPath)) {
+            return null;
+        }
+        
+        // Return direct public URL (no storage/ prefix needed)
         return asset($contract->pdf_path);
     }
     
@@ -100,8 +108,11 @@ class ContractPdfService
      */
     public function deleteContractPdf(Contract1 $contract): bool
     {
-        if ($contract->pdf_path && file_exists(public_path($contract->pdf_path))) {
-            return unlink(public_path($contract->pdf_path));
+        if ($contract->pdf_path) {
+            $fullPath = public_path($contract->pdf_path);
+            if (file_exists($fullPath)) {
+                return unlink($fullPath);
+            }
         }
         
         return true;

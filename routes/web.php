@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PropertyGridController;
-use App\Http\Controllers\PdfController;
 use App\Services\ContractPdfService;
 use App\Models\Contract1;
 
@@ -18,16 +17,6 @@ Route::post('property-grid/filter', [PropertyGridController::class, 'filter'])->
 
 // Contracts routes
 Route::resource('contracts', ContractController::class);
-
-// PDF routes for contract PDFs
-Route::prefix('pdf')->name('pdf.')->group(function () {
-    Route::get('/contract/{id}/generate', [PdfController::class, 'generateContractPdf'])->name('generate');
-    Route::get('/contract/{id}/view', [PdfController::class, 'viewPdf'])->name('view');
-    Route::get('/contract/{id}/download', [PdfController::class, 'downloadPdf'])->name('download');
-    Route::post('/contract/{id}/regenerate', [PdfController::class, 'regeneratePdf'])->name('regenerate');
-    Route::get('/contract/{id}/quick-generate', [PdfController::class, 'generateQuickPdf'])->name('quick-generate');
-    Route::get('/contract/{id}/status', [PdfController::class, 'checkPdfStatus'])->name('status');
-});
 
 // Test route for PDF generation
 Route::get('/test-pdf', function () {
@@ -46,7 +35,7 @@ Route::get('/test-pdf', function () {
         $pdfPath = $pdfService->generateContractPdf($contract);
         
         if ($pdfPath) {
-            $fullPath = public_path($pdfPath);
+            $fullPath = storage_path('app/public/' . $pdfPath);
             $fileSize = file_exists($fullPath) ? filesize($fullPath) : 0;
             
             return response()->json([
@@ -54,7 +43,7 @@ Route::get('/test-pdf', function () {
                 'message' => 'PDF generated successfully!',
                 'pdf_path' => $pdfPath,
                 'file_size' => $fileSize,
-                'download_url' => asset($pdfPath),
+                'download_url' => asset('storage/' . $pdfPath),
                 'contract_id' => $contract->id,
                 'tenant_name' => $contract->tenant->name ?? 'N/A'
             ]);
