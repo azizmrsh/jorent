@@ -57,8 +57,23 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            // Connection pooling and optimization settings
+            'pool' => [
+                'max_connections' => env('DB_MAX_CONNECTIONS', 10),
+                'min_connections' => env('DB_MIN_CONNECTIONS', 1),
+            ],
+            'read_timeout' => 60,
+            'write_timeout' => 60,
+            'timeout' => 60,
+            'connect_timeout' => 10,
+            'wait_timeout' => 600,
+            'interactive_timeout' => 600,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_TIMEOUT => 60,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::ATTR_PERSISTENT => false, // تعطيل الاتصالات المستمرة لتوفير الموارد
             ]) : [],
         ],
 
