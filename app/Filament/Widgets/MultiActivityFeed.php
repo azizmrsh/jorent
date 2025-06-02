@@ -43,10 +43,8 @@ class MultiActivityFeed extends Widget
                     'status' => $contract->status ?? 'active',
                     'date' => $contract->created_at,
                 ];
-            });
-
-        // Get recent payments
-        $payments = Payment::with(['contract1.tenant', 'contract1.property'])
+            });        // Get recent payments
+        $payments = Payment::with(['contract.tenant', 'contract.property'])
             ->where('created_at', '>=', $thirtyDaysAgo)
             ->get()
             ->map(function ($payment) {
@@ -57,7 +55,7 @@ class MultiActivityFeed extends Widget
                     'color' => 'info',
                     'title' => 'Payment Received',
                     'description' => "Payment #{$payment->id} via {$payment->payment_method}",
-                    'subtitle' => $payment->contract1?->tenant?->firstname . ' ' . $payment->contract1?->tenant?->lastname,
+                    'subtitle' => $payment->contract?->tenant?->firstname . ' ' . $payment->contract?->tenant?->lastname,
                     'amount' => $payment->amount,
                     'status' => $payment->payment_status ?? 'completed',
                     'date' => $payment->created_at,
