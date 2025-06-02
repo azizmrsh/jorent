@@ -35,11 +35,9 @@ class DocumentVerificationWidget extends BaseWidget
                 ->chart([7, 8, 6, 9, 8, 7, 9, 8])
                 ->extraAttributes([
                     'class' => 'bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20',
-                ]),
-
-            Stat::make('Unverified Documents', number_format($unverifiedDocuments))
+                ]),            Stat::make('Unverified Documents', number_format($unverifiedDocuments))
                 ->description("Documents pending verification")
-                ->descriptionIcon('heroicon-m-document-x-mark')
+                ->descriptionIcon('heroicon-m-document-minus')
                 ->color('warning')
                 ->chart([3, 2, 4, 1, 2, 3, 1, 2])
                 ->extraAttributes([
