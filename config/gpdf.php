@@ -1,4 +1,3 @@
-@ -0,0 +1,237 @@
 <?php
 
 use Omaralalwi\Gpdf\Enums\{
