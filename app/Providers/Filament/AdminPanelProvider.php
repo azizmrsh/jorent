@@ -13,6 +13,7 @@ use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use App\Filament\Pages\Profile;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -44,16 +45,16 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->groups([
-                        NavigationGroup::make('Dashboard')
+                    ->items([
+                        NavigationItem::make('Dashboard')
                             ->icon('heroicon-o-home')
-                            ->collapsed(false),
+                            ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+                            ->url(route('filament.admin.pages.dashboard')),
+                    ])
+                    ->groups([
                         NavigationGroup::make('Rental Management')
                             ->icon('heroicon-o-building-office-2')
-                            ->collapsed(false)
-                            ->items([
-                                // Properties will be auto-sorted by navigationSort
-                            ]),
+                            ->collapsed(false),
                         NavigationGroup::make('Staff Management')
                             ->icon('heroicon-o-users')
                             ->collapsed(false),
