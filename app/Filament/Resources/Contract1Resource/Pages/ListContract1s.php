@@ -7,6 +7,10 @@ use App\Filament\Resources\Contract1Resource\Widgets\TotalContractsWidget;
 use App\Filament\Resources\Contract1Resource\Widgets\ContractStatusWidget;
 use App\Filament\Resources\Contract1Resource\Widgets\RevenueStatsWidget;
 use App\Filament\Resources\Contract1Resource\Widgets\ExpiringContractsWidget;
+use App\Filament\Resources\Contract1Resource\Widgets\ActiveContractsWidget;
+use App\Filament\Resources\Contract1Resource\Widgets\PendingContractsWidget;
+use App\Filament\Resources\Contract1Resource\Widgets\MonthlyRevenueWidget;
+use App\Filament\Resources\Contract1Resource\Widgets\NewContractsWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -24,17 +28,17 @@ class ListContract1s extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 Total contracts and growth rate
-            TotalContractsWidget::class,
+            // 📊 First Row - 4 Widgets
+            TotalContractsWidget::class,         // إجمالي العقود
+            ContractStatusWidget::class,         // حالة العقود
+            RevenueStatsWidget::class,          // إحصائيات الإيرادات
+            ExpiringContractsWidget::class,     // العقود المنتهية الصلاحية
             
-            // 📈 Contract status distribution
-            ContractStatusWidget::class,
-            
-            // 💰 Revenue analytics
-            RevenueStatsWidget::class,
-            
-            // ⏰ Expiring contracts tracker
-            ExpiringContractsWidget::class,
+            // 📈 Second Row - 4 Widgets
+            ActiveContractsWidget::class,       // العقود النشطة
+            PendingContractsWidget::class,      // العقود المعلقة
+            MonthlyRevenueWidget::class,        // الإيرادات الشهرية
+            NewContractsWidget::class,          // العقود الجديدة
         ];
     }
 }
