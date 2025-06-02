@@ -92,27 +92,29 @@ class TestArabicPdf extends Command
             $pdfContent = $gpdf->generate($arabicHtml);
             $this->info('✅ PDF content generated successfully');
 
-            $this->info('3️⃣ Saving test PDF to storage...');
+            $this->info('3️⃣ Saving test PDF to public/uploads/contracts...');
             $testFile = 'test_arabic_pdf_' . date('Y-m-d_H-i-s') . '.pdf';
             
-            // Ensure contracts directory exists
-            if (!Storage::disk('public')->exists('contracts')) {
-                Storage::disk('public')->makeDirectory('contracts');
+            // Ensure contracts directory exists in public/uploads folder
+            $contractsDir = public_path('uploads/contracts');
+            if (!file_exists($contractsDir)) {
+                mkdir($contractsDir, 0755, true);
             }
             
-            // Save the PDF
-            Storage::disk('public')->put('contracts/' . $testFile, $pdfContent);
+            // Save the PDF directly to public/uploads/contracts/
+            $fullPath = $contractsDir . '/' . $testFile;
+            file_put_contents($fullPath, $pdfContent);
             $this->info('✅ Test PDF saved successfully');
 
             $this->info('4️⃣ Verifying file...');
-            if (Storage::disk('public')->exists('contracts/' . $testFile)) {
-                $fileSize = Storage::disk('public')->size('contracts/' . $testFile);
+            if (file_exists($fullPath)) {
+                $fileSize = filesize($fullPath);
                 $this->info("✅ File exists and is {$fileSize} bytes");
                 
                 if ($fileSize > 1000) {
                     $this->info('🎉 SUCCESS: Arabic PDF generation test PASSED!');
-                    $this->info('📄 Test file: storage/app/public/contracts/' . $testFile);
-                    $this->info('🌐 URL: ' . asset('storage/contracts/' . $testFile));
+                    $this->info('📄 Test file: public/uploads/contracts/' . $testFile);
+                    $this->info('🌐 URL: ' . asset('uploads/contracts/' . $testFile));
                     
                     $this->newLine();
                     $this->info('📋 Next Steps:');

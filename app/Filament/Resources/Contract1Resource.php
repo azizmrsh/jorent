@@ -7,6 +7,7 @@ use App\Models\Contract1;
 use App\Models\Tenant;
 use App\Models\Property;
 use App\Models\Unit;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
@@ -20,7 +21,7 @@ use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Carbon\Carbon;
 use Illuminate\Support\HtmlString;
 
-
+//osaid 
 // Export functionality imports
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
@@ -29,6 +30,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 class Contract1Resource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = Contract1::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -174,10 +177,11 @@ Forms\Components\Section::make('Digital Signatures')
             $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
             
             // Generate random filename
-            $fileName = 'signatures/' . Str::uuid() . '.png';
+            $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
 
-            // Save file to storage/app/public/signatures
-            Storage::disk('public')->put($fileName, $imageData);
+            // Save file to public/uploads/contracts/signatures
+            $publicPath = public_path('uploads/' . $fileName);
+            file_put_contents($publicPath, $imageData);
 
             // Save only the path
             $set('tenant_signature_path', $fileName);
@@ -192,8 +196,9 @@ Forms\Components\Section::make('Digital Signatures')
             ->dehydrateStateUsing(function ($state, callable $set) {
                 if ($state) {
                     $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
-                    $fileName = 'signatures/' . Str::uuid() . '.png';
-                    Storage::disk('public')->put($fileName, $imageData);
+                    $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
+                    $publicPath = public_path('uploads/' . $fileName);
+                    file_put_contents($publicPath, $imageData);
                     $set('landlord_signature_path', $fileName);
                 }
                 return null;

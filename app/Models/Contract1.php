@@ -23,8 +23,6 @@ class Contract1 extends Model
         'terms_and_conditions_extra',
         'tenant_signature_path',
         'landlord_signature_path',
-        'witness1_signature_path',
-        'witness2_signature_path',
         'hired_date',
         'hired_by',
         'pdf_path',

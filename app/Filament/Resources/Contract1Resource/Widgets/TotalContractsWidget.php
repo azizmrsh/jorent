@@ -18,6 +18,7 @@ class TotalContractsWidget extends BaseWidget
         $thisMonthGrowth = $recentContracts > 0 ? round(($recentContracts / max($totalContracts - $recentContracts, 1)) * 100, 1) : 0;
 
         return [
+            //
             Stat::make('Total Contracts', number_format($totalContracts))
                 ->description("Contracts registered in system")
                 ->descriptionIcon('heroicon-m-document-text')

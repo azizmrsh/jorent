@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UnitResource\Pages;
 use App\Filament\Resources\UnitResource\RelationManagers;
 use App\Models\Unit;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class UnitResource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = Unit::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
@@ -147,17 +150,7 @@ class UnitResource extends Resource
                  ///////////////////
                 Forms\Components\Section::make('Images')
                     ->schema([
-                        Forms\Components\Repeater::make('images')
-                            ->label('Images')
-                            ->schema([
-                                Forms\Components\FileUpload::make('image')
-                                    ->label('Image')
-                                    ->image()
-                                    ->directory('uploads/units')
-                                    ->maxSize(1024),
-                            ])
-                            ->columns(1)
-                            ->createItemButtonLabel('Add Image'),
+                        self::unitImagesUpload(),
                     ]),
 
                 Forms\Components\Section::make('Additional Details')

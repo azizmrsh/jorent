@@ -15,12 +15,10 @@ class ContractStatusWidget extends BaseWidget
     {
         $activeContracts = Contract1::where('status', 'active')->count();
         $inactiveContracts = Contract1::where('status', 'inactive')->count();
-        $expiredContracts = Contract1::where('status', 'expired')->count();
         $totalContracts = Contract1::count();
         
         $activePercentage = $totalContracts > 0 ? round(($activeContracts / $totalContracts) * 100, 1) : 0;
         $inactivePercentage = $totalContracts > 0 ? round(($inactiveContracts / $totalContracts) * 100, 1) : 0;
-        $expiredPercentage = $totalContracts > 0 ? round(($expiredContracts / $totalContracts) * 100, 1) : 0;
 
         return [
             Stat::make('Active Contracts', number_format($activeContracts))
@@ -39,15 +37,6 @@ class ContractStatusWidget extends BaseWidget
                 ->chart([3, 1, 4, 3, 2, 1, 3, 2])
                 ->extraAttributes([
                     'class' => 'bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20',
-                ]),
-
-            Stat::make('Expired Contracts', number_format($expiredContracts))
-                ->description("$expiredPercentage% of total contracts")
-                ->descriptionIcon('heroicon-m-clock')
-                ->color('warning')
-                ->chart([1, 2, 3, 1, 2, 4, 2, 1])
-                ->extraAttributes([
-                    'class' => 'bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20',
                 ]),
         ];
     }

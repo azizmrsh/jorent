@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough; // إضافة هذا
+
 
 class Tenant extends Model
 {
@@ -43,7 +45,7 @@ class Tenant extends Model
         return $this->hasMany(Contract1::class);
     }
 
-    public function payments(): HasMany
+    public function payments(): HasManyThrough
     {
         return $this->hasManyThrough(
             Payment::class,
@@ -55,10 +57,6 @@ class Tenant extends Model
         );
     }
 
-    public function invoices(): HasMany
-    {
-        return $this->hasMany(Invoice::class);
-    }
 
 
     public function getFullNameAttribute(): string
@@ -86,13 +84,7 @@ class Tenant extends Model
         return $this->payments()->sum('amount');
     }
 
-    public function getTotalInvoicesAttribute()
-    {
-        return $this->invoices()->sum('amount');
-    }
 
-    public function getBalanceAttribute()
-    {
-        return $this->total_invoices - $this->total_payments;
-    }
+
+
 }

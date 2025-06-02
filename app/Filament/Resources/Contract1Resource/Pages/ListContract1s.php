@@ -24,17 +24,11 @@ class ListContract1s extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 Total contracts and growth rate
-            TotalContractsWidget::class,
-            
-            // 📈 Contract status distribution
-            ContractStatusWidget::class,
-            
-            // 💰 Revenue analytics
-            RevenueStatsWidget::class,
-            
-            // ⏰ Expiring contracts tracker
-            ExpiringContractsWidget::class,
+            // 📊 Simple 4 Widgets Row
+            TotalContractsWidget::class,         // إجمالي العقود
+            ContractStatusWidget::class,         // حالة العقود
+            RevenueStatsWidget::class,          // إحصائيات الإيرادات
+            ExpiringContractsWidget::class,     // العقود المنتهية الصلاحية
         ];
     }
 }

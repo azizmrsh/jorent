@@ -3,10 +3,7 @@
 namespace App\Filament\Resources\PropertyResource\Pages;
 
 use App\Filament\Resources\PropertyResource;
-use App\Filament\Resources\PropertyResource\Widgets\TotalPropertiesWidget;
-use App\Filament\Resources\PropertyResource\Widgets\PropertyTypeStatsWidget;
-use App\Filament\Resources\PropertyResource\Widgets\UsageTypeStatsWidget;
-use App\Filament\Resources\PropertyResource\Widgets\UnitsCounterWidget;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyStatsOverview;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -24,17 +21,9 @@ class ListProperties extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            // 📊 Total Properties (total count only)
-            TotalPropertiesWidget::class,
-            
-            // 🏘️ Property Type Stats (Buildings, Villas, Houses, Warehouses)
-            PropertyTypeStatsWidget::class,
-            
-            // 🏢 Usage Type Stats (Residential, Commercial, Industrial)
-            UsageTypeStatsWidget::class,
-            
-            // 🔢 Total Units Counter
-            UnitsCounterWidget::class,
+            // 🏢 Consolidated Property Statistics Overview
+            // Contains all 8 widgets in one file: 4 general stats (top row) + 4 financial stats (bottom row)
+            PropertyStatsOverview::class,
         ];
     }
 }

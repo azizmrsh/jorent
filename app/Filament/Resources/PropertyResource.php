@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Models\Property;
+use App\Traits\FileUploadTrait;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -19,6 +20,8 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class PropertyResource extends Resource
 {
+    use FileUploadTrait;
+    
     protected static ?string $model = Property::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
@@ -37,21 +40,7 @@ class PropertyResource extends Resource
                             ->required(),
                         
                         // 📸 رفع صورة العقار
-                        FileUpload::make('image_path')
-                            ->label('Property Image')
-                            ->image()
-                            ->directory('uploads/properties')
-                            ->disk('public')
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '16:9',
-                                '4:3',
-                                '1:1',
-                            ])
-                            ->maxSize(5120) // 5MB
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->helperText('Upload a high-quality image of the property (max 5MB)')
-                            ->columnSpanFull(),
+                        self::propertyImageUpload(),
                         Forms\Components\Textarea::make('description')->label('Description'),
                         Forms\Components\Select::make('type1')
                             ->label('Primary Type')

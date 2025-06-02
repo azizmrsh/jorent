@@ -34,15 +34,15 @@ class ContractPdfService
             
             // Generate filename
             $filename = $this->generateFilename($contract);
-            $filepath = "contracts/{$filename}";
+            $filepath = "uploads/contracts/{$filename}";
             
-            // Ensure the contracts directory exists in public
-            $publicContractsDir = public_path('contracts');
+            // Ensure the contracts directory exists in public/uploads
+            $publicContractsDir = public_path('uploads/contracts');
             if (!is_dir($publicContractsDir)) {
                 mkdir($publicContractsDir, 0755, true);
             }
             
-            // Save PDF directly to public/contracts directory
+            // Save PDF directly to public/uploads/contracts directory
             $fullPath = public_path($filepath);
             file_put_contents($fullPath, $pdfContent);
             
