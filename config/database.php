@@ -59,7 +59,7 @@ return [
             'engine' => null,
             // Connection pooling and optimization settings
             'pool' => [
-                'max_connections' => env('DB_MAX_CONNECTIONS', 10),
+                'max_connections' => env('DB_MAX_CONNECTIONS', 3),
                 'min_connections' => env('DB_MIN_CONNECTIONS', 1),
             ],
             'read_timeout' => 60,
