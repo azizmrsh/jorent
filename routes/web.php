@@ -5,6 +5,19 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PropertyGridController;
 use App\Services\ContractPdfService;
 use App\Models\Contract1;
+use Illuminate\Support\Facades\Auth;
+
+// Authentication Routes
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
+
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout')->middleware('auth');
 
 // Home route
 Route::get('/', function () {
