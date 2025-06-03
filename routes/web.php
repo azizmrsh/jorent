@@ -132,3 +132,36 @@ Route::get('/api/tenant/{id}/verification-status', function ($id) {
         'verified_at' => $tenant->email_verified_at
     ]);
 });
+
+// Test Email Route - إزالة هذا بعد التأكد من عمل البريد
+Route::get('/test-email', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('🧪 اختبار البريد الإلكتروني من JoRent', function ($message) {
+            $message->to('osaidalhajj03@gmail.com')
+                    ->subject('🧪 اختبار البريد - JoRent');
+        });
+        
+        return response()->json([
+            'success' => true,
+            'message' => '✅ تم إرسال الإيميل بنجاح! تحقق من صندوق الوارد.',
+            'config' => [
+                'mailer' => config('mail.default'),
+                'host' => config('mail.mailers.smtp.host'),
+                'port' => config('mail.mailers.smtp.port'),
+                'username' => config('mail.mailers.smtp.username'),
+                'from' => config('mail.from.address')
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'suggestions' => [
+                '1. تأكد من أن App Password صحيح',
+                '2. تأكد من تفعيل التحقق بخطوتين في Gmail',
+                '3. جرب إنشاء App Password جديد'
+            ]
+        ], 500);
+    }
+})->name('test.email');
