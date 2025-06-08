@@ -35,8 +35,17 @@ class ContractPdfService
                 'margin_bottom' => 25,
                 'autoArabic' => true,
                 'autoLangToFont' => true,
-                'default_font' => 'dejavusans'
+                'autoScriptToLang' => true,
+                'default_font' => 'dejavusans',
+                'ignore_invalid_utf8' => true,
+                'useAdobeCJK' => true,
+                'debug' => false,
+                'allow_charset_conversion' => true,
+                'charset_in' => 'utf-8'
             ]);
+            
+            // Set default font for better Arabic support
+            $mpdf->SetDefaultFont('dejavusans');
             
             // Generate PDF with Arabic support using mPDF
             $mpdf->WriteHTML($html);

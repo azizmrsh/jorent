@@ -10,7 +10,12 @@
         @page {
             margin: 25px 20px;
         }
-        
+     <div class="container">
+        <div class="header">
+            <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">بسم الله الرحمن الرحيم</div>
+            <h1 class="contract-title">عقد إيجار رسمي</h1>
+            <p class="contract-subtitle">محرر بتاريخ {{ \Carbon\Carbon::now()->format('Y/m/d') }}</p>
+        </div>  
         * {
             margin: 0;
             padding: 0;
@@ -34,21 +39,52 @@
         }
         
         .header {
-            background: #333;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 15px;
+            background: #000000 !important;
+            color: #ffffff !important;
+            padding: 25px !important;
+            text-align: center !important;
+            margin-bottom: 25px !important;
+            border: 4px solid #000000 !important;
+            display: block !important;
+            width: 100% !important;
+            min-height: 120px !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+            z-index: 999 !important;
+        }
+        
+        .bismillah {
+            font-size: 18px !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
+            margin-bottom: 15px !important;
+            display: block !important;
+            text-align: center !important;
+            line-height: 1.2 !important;
+            text-shadow: none !important;
+            background: transparent !important;
         }
         
         .contract-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 26px !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
+            margin-bottom: 12px !important;
+            display: block !important;
+            text-align: center !important;
+            line-height: 1.2 !important;
+            text-shadow: none !important;
+            background: transparent !important;
         }
         
         .contract-subtitle {
-            font-size: 14px;
+            font-size: 16px !important;
+            color: #ffffff !important;
+            display: block !important;
+            text-align: center !important;
+            line-height: 1.2 !important;
+            text-shadow: none !important;
+            background: transparent !important;
         }
         
         .content {
@@ -130,12 +166,15 @@
             background: #f9f9f9;
             border: 1px solid #e1e1e1;
             page-break-inside: avoid;
+            display: block;
+            overflow: hidden;
+            min-height: 40px;
         }
         
         .term-number {
             display: inline-block;
-            background: #333;
-            color: white;
+            background: #000000;
+            color: #ffffff;
             width: 20px;
             height: 20px;
             text-align: center;
@@ -143,14 +182,20 @@
             font-weight: bold;
             font-size: 11px;
             margin-left: 8px;
+            vertical-align: top;
+            flex-shrink: 0;
         }
         
         .term-content {
-            display: inline;
-            line-height: 1.4;
+            display: inline-block;
+            line-height: 1.6;
             font-size: 12px;
             white-space: pre-wrap;
+            word-wrap: break-word;
             word-break: break-word;
+            vertical-align: top;
+            width: calc(100% - 35px);
+            min-height: auto;
         }
         
         .signature-section {
@@ -183,7 +228,7 @@
         
         .signature-line {
             height: 2px;
-            background: #333;
+            background: #000000;
             margin: 10px 0;
         }
         
@@ -228,8 +273,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="contract-title">عقد إيجار رسمي</h1>
-            <p class="contract-subtitle">محرر بتاريخ {{ \Carbon\Carbon::now()->format('Y/m/d') }}</p>
+            <div class="bismillah">بسم الله الرحمن الرحيم</div>
+            <div class="contract-title">عقد إيجار رسمي</div>
+            <div class="contract-subtitle">محرر بتاريخ {{ \Carbon\Carbon::now()->format('Y/m/d') }}</div>
         </div>
         
         <div class="content">
