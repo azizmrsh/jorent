@@ -191,7 +191,7 @@ class Contract1Resource extends Resource
             /// Signatures
 Forms\Components\Section::make('Digital Signatures')
     ->schema([
-    SignaturePad::make('tenant_signature')
+    SignaturePad::make('tenant_signature_path')
     ->label('Tenant Signature')
     ->required()
     ->dehydrateStateUsing(function ($state, callable $set) {
@@ -212,14 +212,14 @@ Forms\Components\Section::make('Digital Signatures')
             $publicPath = public_path('uploads/' . $fileName);
             file_put_contents($publicPath, $imageData);
 
-            // Save only the path
-            $set('tenant_signature_path', $fileName);
+            // Return the filename to be saved in database
+            return $fileName;
         }
 
-        return null; // Don't store base64
+        return null;
     }),
     // Landlord signature
-        SignaturePad::make('landlord_signature')
+        SignaturePad::make('landlord_signature_path')
             ->label('Landlord Signature')
             ->required()
             ->dehydrateStateUsing(function ($state, callable $set) {
@@ -235,7 +235,9 @@ Forms\Components\Section::make('Digital Signatures')
                     
                     $publicPath = public_path('uploads/' . $fileName);
                     file_put_contents($publicPath, $imageData);
-                    $set('landlord_signature_path', $fileName);
+                    
+                    // Return the filename to be saved in database
+                    return $fileName;
                 }
                 return null;
             }),
