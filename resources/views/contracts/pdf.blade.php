@@ -494,8 +494,8 @@
                     <tr>
                         <td>
                             <div class="signature-title">المؤجر</div>
-                            @if($contract->landlord_signature_path && file_exists(public_path('contracts/signatures/' . basename($contract->landlord_signature_path))))
-                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('contracts/signatures/' . basename($contract->landlord_signature_path)))) }}" style="max-width: 150px; max-height: 70px;" />
+                            @if($contract->landlord_signature_path && file_exists(public_path('uploads/' . $contract->landlord_signature_path)))
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/' . $contract->landlord_signature_path))) }}" style="max-width: 150px; max-height: 70px;" />
                             @else
                                 <div class="signature-line"></div>
                             @endif
@@ -506,8 +506,8 @@
                         
                         <td>
                             <div class="signature-title">المستأجر</div>
-                            @if($contract->tenant_signature_path && file_exists(public_path('contracts/signatures/' . basename($contract->tenant_signature_path))))
-                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('contracts/signatures/' . basename($contract->tenant_signature_path)))) }}" style="max-width: 150px; max-height: 70px;" />
+                            @if($contract->tenant_signature_path && file_exists(public_path('uploads/' . $contract->tenant_signature_path)))
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/' . $contract->tenant_signature_path))) }}" style="max-width: 150px; max-height: 70px;" />
                             @else
                                 <div class="signature-line"></div>
                             @endif
