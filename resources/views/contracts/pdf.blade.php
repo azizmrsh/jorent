@@ -529,14 +529,22 @@
                         </td>
                         
                         <td>
-                            <div class="signature-title">شاهد</div>
-                            <div class="signature-line"></div>
+                            <div class="signature-title">الشاهد الأول</div>
+                            @if($contract->witness1_signature_path && file_exists(public_path('uploads/' . $contract->witness1_signature_path)))
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/' . $contract->witness1_signature_path))) }}" style="max-width: 150px; max-height: 70px;" />
+                            @else
+                                <div class="signature-line"></div>
+                            @endif
                             <div class="signature-name">...................................</div>
                         </td>
                         
                         <td>
-                            <div class="signature-title">شاهد</div>
-                            <div class="signature-line"></div>
+                            <div class="signature-title">الشاهد الثاني</div>
+                            @if($contract->witness2_signature_path && file_exists(public_path('uploads/' . $contract->witness2_signature_path)))
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('uploads/' . $contract->witness2_signature_path))) }}" style="max-width: 150px; max-height: 70px;" />
+                            @else
+                                <div class="signature-line"></div>
+                            @endif
                             <div class="signature-name">...................................</div>
                         </td>
                     </tr>

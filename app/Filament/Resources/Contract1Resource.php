@@ -194,6 +194,7 @@ Forms\Components\Section::make('Digital Signatures')
     SignaturePad::make('tenant_signature_path')
     ->label('Tenant Signature')
     ->required()
+    ->exportPenColor('#007bff')
     ->dehydrateStateUsing(function ($state, callable $set) {
         if ($state) {
             // Remove base64 prefix
@@ -222,6 +223,7 @@ Forms\Components\Section::make('Digital Signatures')
         SignaturePad::make('landlord_signature_path')
             ->label('Landlord Signature')
             ->required()
+            ->exportPenColor('#007bff')
             ->dehydrateStateUsing(function ($state, callable $set) {
                 if ($state) {
                     $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
@@ -242,33 +244,55 @@ Forms\Components\Section::make('Digital Signatures')
                 return null;
             }),
 
-//        // First Witness Signature
-//        SignaturePad::make('witness1_signature')
-//            ->label('First Witness Signature')
-//            ->required()
-//            ->dehydrateStateUsing(function ($state, callable $set) {
-//                if ($state) {
-//                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
-//                    $fileName = 'signatures/' . Str::uuid() . '.png';
-//                    Storage::disk('public')->put($fileName, $imageData);
-//                    $set('witness1_signature_path', $fileName);
-//                }
-//                return null;
-//            }),
-//
-//        // Second Witness Signature
-//        SignaturePad::make('witness2_signature')
-//            ->label('Second Witness Signature')
-//            ->required()
-//            ->dehydrateStateUsing(function ($state, callable $set) {
-//                if ($state) {
-//                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
-//                    $fileName = 'signatures/' . Str::uuid() . '.png';
-//                    Storage::disk('public')->put($fileName, $imageData);
-//                    $set('witness2_signature_path', $fileName);
-//                }
-//                return null;
-//            }),
+        // First Witness Signature
+        SignaturePad::make('witness1_signature_path')
+            ->label('First Witness Signature')
+            ->required()
+            ->exportPenColor('#007bff')
+            ->dehydrateStateUsing(function ($state, callable $set) {
+                if ($state) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+                    $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
+                    
+                    // Ensure directory exists
+                    $directory = public_path('uploads/contracts/signatures');
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0755, true);
+                    }
+                    
+                    $publicPath = public_path('uploads/' . $fileName);
+                    file_put_contents($publicPath, $imageData);
+                    
+                    // Return the filename to be saved in database
+                    return $fileName;
+                }
+                return null;
+            }),
+
+        // Second Witness Signature
+        SignaturePad::make('witness2_signature_path')
+            ->label('Second Witness Signature')
+            ->required()
+            ->exportPenColor('#007bff')
+            ->dehydrateStateUsing(function ($state, callable $set) {
+                if ($state) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
+                    $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
+                    
+                    // Ensure directory exists
+                    $directory = public_path('uploads/contracts/signatures');
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0755, true);
+                    }
+                    
+                    $publicPath = public_path('uploads/' . $fileName);
+                    file_put_contents($publicPath, $imageData);
+                    
+                    // Return the filename to be saved in database
+                    return $fileName;
+                }
+                return null;
+            }),
     ])->columns(4),
             
 
