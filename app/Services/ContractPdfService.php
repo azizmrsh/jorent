@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Models\Contract1;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Omaralalwi\Gpdf\Gpdf;
-use Omaralalwi\Gpdf\GpdfConfig;
+use Mpdf\Mpdf;
 
 class ContractPdfService
 {
@@ -25,12 +24,23 @@ class ContractPdfService
             // Render the view to HTML first
             $html = view('contracts.pdf', ['contract' => $contract])->render();
             
-            // Create gpdf instance for Arabic PDF generation with proper configuration
-            $gpdfConfig = new GpdfConfig(config('gpdf'));
-            $gpdf = new Gpdf($gpdfConfig);
+            // Create mPDF instance for Arabic PDF generation with proper configuration
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4',
+                'orientation' => 'P',
+                'margin_left' => 20,
+                'margin_right' => 20,
+                'margin_top' => 25,
+                'margin_bottom' => 25,
+                'autoArabic' => true,
+                'autoLangToFont' => true,
+                'default_font' => 'dejavusans'
+            ]);
             
-            // Generate PDF with Arabic support using gpdf
-            $pdfContent = $gpdf->generate($html);
+            // Generate PDF with Arabic support using mPDF
+            $mpdf->WriteHTML($html);
+            $pdfContent = $mpdf->Output('', 'S');
             
             // Generate filename
             $filename = $this->generateFilename($contract);

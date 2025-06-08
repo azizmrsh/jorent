@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>عقد إيجار</title>
     @php
         use Illuminate\Support\Facades\Storage;
     @endphp
     <style>
+        @page {
+            margin: 25px 20px;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-family: 'DejaVu Sans', 'Amiri', sans-serif;
         }
         
         body {
             background: white;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.4;
             direction: rtl;
             text-align: right;
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 14px;
+            font-family: 'DejaVu Sans', 'Amiri', sans-serif;
+            font-size: 13px;
         }
         
         .container {
@@ -32,30 +36,30 @@
         .header {
             background: #333;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .contract-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .contract-subtitle {
-            font-size: 16px;
+            font-size: 14px;
         }
         
         .content {
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             color: #333;
-            margin: 20px 0 15px 0;
-            padding-bottom: 5px;
+            margin: 15px 0 10px 0;
+            padding-bottom: 3px;
             border-bottom: 2px solid #ddd;
             font-weight: bold;
         }
@@ -117,57 +121,64 @@
         }
         
         .terms-section {
-            margin: 20px 0;
+            margin: 15px 0;
         }
         
         .term-item {
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 8px;
+            padding: 10px;
             background: #f9f9f9;
             border: 1px solid #e1e1e1;
+            page-break-inside: avoid;
         }
         
         .term-number {
             display: inline-block;
             background: #333;
             color: white;
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             text-align: center;
-            line-height: 25px;
+            line-height: 20px;
             font-weight: bold;
-            margin-left: 10px;
+            font-size: 11px;
+            margin-left: 8px;
         }
         
         .term-content {
             display: inline;
-            line-height: 1.6;
+            line-height: 1.4;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
         
         .signature-section {
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 15px;
             background: #f9f9f9;
             border: 1px solid #e1e1e1;
+            page-break-inside: avoid;
         }
         
         .signature-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         
         .signature-table td {
             width: 25%;
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             border: 1px solid #e1e8f0;
         }
         
         .signature-title {
             font-weight: bold;
             color: #333;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            font-size: 13px;
         }
         
         .signature-line {
@@ -177,39 +188,40 @@
         }
         
         .signature-name {
-            font-size: 12px;
+            font-size: 11px;
             color: #4a6583;
             margin-top: 5px;
         }
         
         .footer {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             background: #f9f9f9;
             color: #666;
-            font-size: 12px;
+            font-size: 11px;
             border-top: 1px solid #ddd;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
         .footer-logo {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .contract-number {
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             color: #6b7280;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .closing-statement {
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
             font-weight: bold;
+            font-size: 13px;
         }
     </style>
 </head>
