@@ -9,6 +9,9 @@ class PaymentSeeder extends Seeder
 {
     public function run()
     {
-        Payment::factory(10)->create();
+        // إنشاء 50 دفعة مالية بملاحظات باللغة العربية
+        Payment::factory(50)->create();
+        
+        $this->command->info('✅ تم إنشاء 50 دفعة مالية بملاحظات باللغة العربية');
     }
 }

@@ -9,6 +9,9 @@ class PropertySeeder extends Seeder
 {
     public function run()
     {
-        Property::factory(10)->create();
+        // إنشاء 50 عقار بأسماء عربية ووصف باللغة العربية، كل عقار مع عنوان
+        Property::factory(50)->create();
+        
+        $this->command->info('✅ تم إنشاء 50 عقار بأسماء عربية ووصف باللغة العربية');
     }
 }

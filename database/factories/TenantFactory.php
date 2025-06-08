@@ -6,6 +6,8 @@ use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
+require_once database_path('helpers/ArabicFakerHelper.php');
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tenant>
  */
@@ -20,23 +22,27 @@ class TenantFactory extends Factory
      */
     public function definition(): array
     {
+        $firstNames = \ArabicFakerHelper::getArabicFirstNames();
+        $lastNames = \ArabicFakerHelper::getArabicLastNames();
+        
         return [
-            'firstname' => $this->faker->firstName(),
-            'midname' => $this->faker->optional()->firstName(),
-            'lastname' => $this->faker->lastName(),
+            'firstname' => $firstNames[array_rand($firstNames)],
+            'midname' => $this->faker->optional(0.6)->randomElement($firstNames),
+            'lastname' => $lastNames[array_rand($lastNames)],
             'email' => $this->faker->unique()->safeEmail(),
-            'phone' => $this->faker->phoneNumber(),
-            'address' => $this->faker->address(),
-            'birth_date' => $this->faker->date('Y-m-d', '-18 years'),
+            'email_verified_at' => $this->faker->optional(0.7)->dateTimeBetween('-1 year', 'now'), // ✅ إضافة حقل email_verified_at 
+            'phone' => \ArabicFakerHelper::generateJordanianPhone(),
+            'address' => \ArabicFakerHelper::getRandomCity(),
+            'birth_date' => \ArabicFakerHelper::getRandomBirthdate(),
             'profile_photo' => null,
             'password' => Hash::make('password'),
-            'status' => $this->faker->randomElement(['active', 'unactive']), // إصلاح القيم المتاحة
+            'status' => $this->faker->randomElement(['active', 'unactive']),
             'document_type' => $this->faker->randomElement(['passport', 'id', 'driver_license']),
-            'document_number' => $this->faker->numerify('DOC-#######'),
+            'document_number' => \ArabicFakerHelper::generateNationalId(),
             'document_photo' => null,
-            'nationality' => $this->faker->country(),
-            'hired_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
-            'hired_by' => $this->faker->name(),
+            'nationality' => 'أردني',
+            'hired_date' => now(),
+            'hired_by' => \ArabicFakerHelper::getRandomArabicName(),
         ];
     }
 }

@@ -5,30 +5,46 @@ namespace Database\Factories;
 use App\Models\Contract1;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+require_once database_path('helpers/ArabicFakerHelper.php');
+
 class Contract1Factory extends Factory
 {
     protected $model = Contract1::class;
 
     public function definition()
     {
+        $termsAndConditions = [
+            'يلتزم المستأجر بدفع الإيجار في الموعد المحدد',
+            'يحق للمالك زيارة العقار بعد إخطار مسبق',
+            'يمنع إجراء تعديلات على العقار دون موافقة المالك',
+            'المستأجر مسؤول عن فواتير الكهرباء والماء',
+            'العقد قابل للتجديد بموافقة الطرفين'
+        ];
+        
         return [
-            'landlord_name' => $this->faker->name,
-            'property_id' => \App\Models\Property::factory(),
-            'tenant_id' => \App\Models\Tenant::factory(),
-            'unit_id' => \App\Models\Unit::factory(),
-            'start_date' => $this->faker->date,
-            'end_date' => $this->faker->date,
-            'rent_amount' => $this->faker->randomFloat(2, 500, 2000),
-            'due_date' => $this->faker->date,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
-            'terms_and_conditions_extra' => $this->faker->paragraph,
-            'tenant_signature_path' => null, // Will be set when actual signatures are uploaded
-            'landlord_signature_path' => null, // Will be set when actual signatures are uploaded
-
-
-            'hired_date' => $this->faker->date,
-            'hired_by' => $this->faker->name,
-
+            'landlord_name' => \ArabicFakerHelper::getRandomArabicName(),
+            'property_id' => function() {
+                return \App\Models\Property::inRandomOrder()->first()?->id ?? \App\Models\Property::factory()->create()->id;
+            },
+            'tenant_id' => function() {
+                return \App\Models\Tenant::inRandomOrder()->first()?->id ?? \App\Models\Tenant::factory()->create()->id;
+            },
+            'unit_id' => function() {
+                return \App\Models\Unit::inRandomOrder()->first()?->id ?? \App\Models\Unit::factory()->create()->id;
+            },
+            'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'end_date' => $this->faker->dateTimeBetween('now', '+2 years'),
+            'rent_amount' => $this->faker->randomFloat(2, 300, 2000),
+            'due_date' => $this->faker->dateTimeBetween('now', '+1 month'), // تاريخ الاستحقاق
+            'status' => $this->faker->randomElement(['active', 'inactive']), // القيم المسموحة فقط
+            'terms_and_conditions_extra' => $termsAndConditions[array_rand($termsAndConditions)],
+            'tenant_signature_path' => null,
+            'landlord_signature_path' => null,
+            'pdf_path' => null,
+            'witness1_signature_path' => null,
+            'witness2_signature_path' => null,
+            'hired_date' => now(),
+            'hired_by' => \ArabicFakerHelper::getRandomArabicName(),
         ];
     }
 }

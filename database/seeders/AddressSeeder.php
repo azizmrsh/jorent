@@ -9,6 +9,9 @@ class AddressSeeder extends Seeder
 {
     public function run()
     {
-        Address::factory(10)->create();
+        // إنشاء 50 عنوان بأسماء مدن وشوارع أردنية
+        Address::factory(50)->create();
+        
+        $this->command->info('✅ تم إنشاء 50 عنوان بأسماء مدن وشوارع أردنية');
     }
 }

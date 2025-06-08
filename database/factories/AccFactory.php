@@ -6,6 +6,8 @@ use App\Models\Acc;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+require_once database_path('helpers/ArabicFakerHelper.php');
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Acc>
  */
@@ -20,23 +22,26 @@ class AccFactory extends Factory
      */
     public function definition(): array
     {
+        $firstNames = \ArabicFakerHelper::getArabicFirstNames();
+        $lastNames = \ArabicFakerHelper::getArabicLastNames();
+        
         return [
-            'firstname' => $this->faker->firstName(),
-            'midname' => $this->faker->optional()->firstName(),
-            'lastname' => $this->faker->lastName(),
+            'firstname' => $firstNames[array_rand($firstNames)],
+            'midname' => $this->faker->optional(0.6)->randomElement($firstNames),
+            'lastname' => $lastNames[array_rand($lastNames)],
             'email' => $this->faker->unique()->safeEmail(),
-            'phone' => $this->faker->phoneNumber(),
-            'address' => $this->faker->address(),
-            'birth_date' => $this->faker->date('Y-m-d', '-18 years'),
+            'phone' => \ArabicFakerHelper::generateJordanianPhone(),
+            'address' => \ArabicFakerHelper::getRandomCity(),
+            'birth_date' => \ArabicFakerHelper::getRandomBirthdate(),
             'profile_photo' => null,
             'password' => Hash::make('password'),
             'status' => $this->faker->randomElement(['active', 'inactive']),
             'document_type' => $this->faker->randomElement(['passport', 'id', 'driver_license']),
-            'document_number' => $this->faker->numerify('DOC-#######'),
+            'document_number' => \ArabicFakerHelper::generateNationalId(),
             'document_photo' => null,
-            'nationality' => $this->faker->country(),
-            'hired_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
-            'hired_by' => $this->faker->name(),
+            'nationality' => 'أردني',
+            'hired_date' => now(),
+            'hired_by' => \ArabicFakerHelper::getRandomArabicName(),
         ];
     }
 }

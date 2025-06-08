@@ -9,6 +9,9 @@ class AccSeeder extends Seeder
 {
     public function run()
     {
-        Acc::factory(10)->create();
+        // إنشاء 50 حساب مالك عقار بأسماء عربية وبيانات أردنية
+        Acc::factory(50)->create();
+        
+        $this->command->info('✅ تم إنشاء 50 حساب مالك عقار بأسماء عربية وبيانات أردنية');
     }
 }

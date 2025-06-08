@@ -13,6 +13,9 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        Unit::factory()->count(10)->create();
+        // إنشاء 100 وحدة سكنية/تجارية بأسماء عربية وملاحظات باللغة العربية (2-3 وحدات لكل عقار)
+        Unit::factory()->count(100)->create();
+        
+        $this->command->info('✅ تم إنشاء 100 وحدة سكنية/تجارية بأسماء عربية وملاحظات باللغة العربية');
     }
 }

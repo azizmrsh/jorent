@@ -9,6 +9,9 @@ class Contract1Seeder extends Seeder
 {
     public function run()
     {
-        Contract1::factory(10)->create();
+        // إنشاء 50 عقد إيجار بأسماء عربية وشروط باللغة العربية
+        Contract1::factory(50)->create();
+        
+        $this->command->info('✅ تم إنشاء 50 عقد إيجار بأسماء عربية وشروط باللغة العربية');
     }
 }

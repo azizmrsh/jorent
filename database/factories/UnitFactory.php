@@ -6,6 +6,8 @@ use App\Models\Unit;
 use App\Models\Property;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+require_once database_path('helpers/ArabicFakerHelper.php');
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Unit>
  */
@@ -36,8 +38,12 @@ class UnitFactory extends Factory
             'size' => $this->faker->numberBetween(50, 300),
         ];
         
+        $unitNames = [
+            'شقة', 'مكتب', 'محل تجاري', 'استوديو', 'مستودع'
+        ];
+        
         return [
-            'name' => 'Unit ' . $this->faker->bothify('##??'),
+            'name' => $unitNames[array_rand($unitNames)] . ' رقم ' . $this->faker->numberBetween(1, 100),
             'unit_number' => $this->faker->numberBetween(1, 100),
             'area' => $this->faker->randomFloat(2, 50, 300),
             'images' => json_encode([
@@ -54,7 +60,13 @@ class UnitFactory extends Factory
             'status' => $this->faker->randomElement(['available', 'rented', 'under_maintenance', 'unavailable', 'reserved']),
             'unit_type' => $this->faker->randomElement($unitTypes),
             'rental_price' => $this->faker->randomFloat(2, 500, 5000),
-            'notes' => $this->faker->optional()->paragraph(),
+            'notes' => $this->faker->optional(0.7)->randomElement([
+                'وحدة مميزة بإطلالة جميلة',
+                'تحتاج صيانة بسيطة',
+                'مفروشة بالكامل',
+                'موقع ممتاز قريب من الخدمات',
+                \ArabicFakerHelper::getRandomNote()
+            ]),
         ];
     }
     
