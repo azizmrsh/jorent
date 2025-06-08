@@ -12,6 +12,7 @@
         "php": "^8.2",
         "alperenersoy/filament-export": "^3.0",
         "barryvdh/laravel-dompdf": "^3.1",
+        "bezhansalleh/filament-language-switch": "^3.1",
         "dompdf/dompdf": "^3.1",
         "filament/filament": "^3.3",
         "flowframe/laravel-trend": "*",

@@ -35,24 +35,36 @@ class Contract1Resource extends Resource
     protected static ?string $model = Contract1::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Contract';
-    protected static ?string $pluralLabel = 'Contracts';
     protected static ?string $navigationGroup = 'Real Estate Management';
-    protected static ?string $navigationLabel = 'Contracts';
     protected static ?string $slug = 'contracts';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('general.Contracts');
+    }
+    
+    public static function getModelLabel(): string
+    {
+        return __('general.Contract');
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return __('general.Contracts');
+    }
 
     public static function form(Form $form): Form
     {
         return $form->schema([
 
             /// Landlord and Tenant Info
-            Forms\Components\Section::make('Landlord and Tenant Information')->schema([
+            Forms\Components\Section::make(__('general.Landlord and Tenant Information'))->schema([
                 Forms\Components\TextInput::make('landlord_name')
-                    ->label('Landlord Name')
+                    ->label(__('general.Landlord Name'))
                     ->required(),
 
               Forms\Components\Select::make('tenant_id')
-                    ->label('Tenant')
+                    ->label(__('general.Tenant'))
                     ->relationship('tenant', 'firstname')
                     ->searchable()
                     ->required(),  
@@ -61,11 +73,11 @@ class Contract1Resource extends Resource
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Property & Unit        
 
-            Forms\Components\Section::make('Property & Unit Details')->schema([
+            Forms\Components\Section::make(__('general.Property & Unit Details'))->schema([
                 Forms\Components\Select::make('property_id')
                     ->options(Property::all()->pluck('name', 'id'))
                     ->required()
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         $property = Property::with('address')->find($state);
@@ -86,35 +98,38 @@ class Contract1Resource extends Resource
                         Unit::where('property_id', $get('property_id'))->pluck('name', 'id')
                     )
                     ->required()
-                    ->label('Unit'),
+                    ->label(__('general.Unit')),
 
-                Forms\Components\TextInput::make('governorate')->label('Governorate')->readOnly(),
-                Forms\Components\TextInput::make('city')->label('City')->readOnly(),
-                Forms\Components\TextInput::make('district')->label('District')->readOnly(),
-                Forms\Components\TextInput::make('building_number')->label('Building Number')->readOnly(),
-                Forms\Components\TextInput::make('plot_number')->label('Plot Number')->readOnly(),
-                Forms\Components\TextInput::make('basin_number')->label('Basin Number')->readOnly(),
-                Forms\Components\TextInput::make('property_number')->label('Property Number')->readOnly(),
-                Forms\Components\TextInput::make('street_name')->label('Street Name')->readOnly(),
+                Forms\Components\TextInput::make('governorate')->label(__('general.Governorate'))->readOnly(),
+                Forms\Components\TextInput::make('city')->label(__('general.City'))->readOnly(),
+                Forms\Components\TextInput::make('district')->label(__('general.District'))->readOnly(),
+                Forms\Components\TextInput::make('building_number')->label(__('general.Building Number'))->readOnly(),
+                Forms\Components\TextInput::make('plot_number')->label(__('general.Plot Number'))->readOnly(),
+                Forms\Components\TextInput::make('basin_number')->label(__('general.Basin Number'))->readOnly(),
+                Forms\Components\TextInput::make('property_number')->label(__('general.Property Number'))->readOnly(),
+                Forms\Components\TextInput::make('street_name')->label(__('general.Street Name'))->readOnly(),
             ])->columns(3),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Contract Details
-            Forms\Components\Section::make('Contract Details')->schema([
+            Forms\Components\Section::make(__('general.Contract Details'))->schema([
                 Forms\Components\DatePicker::make('start_date')
-                    ->label('Start Date')
+                    ->label(__('general.Start Date'))
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
-                    ->label('End Date')
+                    ->label(__('general.End Date'))
                     ->required(),
                 Forms\Components\DatePicker::make('due_date')
-                    ->label('Due Date'),
+                    ->label(__('general.Due Date')),
                 Forms\Components\TextInput::make('rent_amount')
-                    ->label('Rent Amount')
+                    ->label(__('general.Rent Amount'))
                     ->numeric()
                     ->required(),
                 Forms\Components\Select::make('status')
-                    ->label('Contract Status')
-                    ->options(['active' => 'Active', 'inactive' => 'Inactive'])
+                    ->label(__('general.Contract Status'))
+                    ->options([
+                        'active' => __('general.Active'), 
+                        'inactive' => __('general.Inactive')
+                    ])
                     ->default('active')
                     ->reactive()
                     ->afterStateHydrated(function (callable $set, callable $get) {
@@ -133,15 +148,15 @@ class Contract1Resource extends Resource
                     }),
             ])->columns(3),
 
- Forms\Components\Section::make('Terms and Conditions')->schema([
+ Forms\Components\Section::make(__('general.Terms and Conditions'))->schema([
                 Forms\Components\Textarea::make('terms_and_conditions_extra')
-                    ->label('Additional Terms and Conditions'),
+                    ->label(__('general.Additional Terms and Conditions')),
                 Forms\Components\Actions::make([
                     Forms\Components\Actions\Action::make('show_terms')
-                        ->label('عرض الشروط الافتراضية')
+                        ->label(__('general.Show Default Terms'))
                         ->color('success')
                         ->icon('heroicon-o-eye')
-                        ->modalHeading('الشروط والأحكام الافتراضية')
+                        ->modalHeading(__('general.Default Terms and Conditions'))
                         ->modalContent(fn() => new \Illuminate\Support\HtmlString('
                             <div style="
                                 direction: rtl;
@@ -189,10 +204,10 @@ class Contract1Resource extends Resource
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// Signatures
-Forms\Components\Section::make('Digital Signatures')
+Forms\Components\Section::make(__('general.Digital Signatures'))
     ->schema([
     SignaturePad::make('tenant_signature_path')
-    ->label('Tenant Signature')
+    ->label(__('general.Tenant Signature'))
     ->required()
     ->exportPenColor('#007bff')
     ->dehydrateStateUsing(function ($state, callable $set) {
@@ -221,7 +236,7 @@ Forms\Components\Section::make('Digital Signatures')
     }),
     // Landlord signature
         SignaturePad::make('landlord_signature_path')
-            ->label('Landlord Signature')
+            ->label(__('general.Landlord Signature'))
             ->required()
             ->exportPenColor('#007bff')
             ->dehydrateStateUsing(function ($state, callable $set) {
@@ -246,7 +261,7 @@ Forms\Components\Section::make('Digital Signatures')
 
         // First Witness Signature
         SignaturePad::make('witness1_signature_path')
-            ->label('First Witness Signature')
+            ->label(__('general.First Witness Signature'))
             ->required()
             ->exportPenColor('#007bff')
             ->dehydrateStateUsing(function ($state, callable $set) {
@@ -317,88 +332,88 @@ Forms\Components\Section::make('Digital Signatures')
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('Contract ID')
+                    ->label(__('general.Contract ID'))
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('landlord_name')
-                    ->label('Landlord')
+                    ->label(__('general.Landlord'))
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->copyMessage('Landlord name copied!')
+                    ->copyMessage(__('general.Landlord name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('tenant.firstname')
-                    ->label('Tenant')
+                    ->label(__('general.Tenant'))
                     ->searchable(['firstname', 'lastname'])
                     ->sortable()
-                    ->formatStateUsing(fn ($record) => $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : 'Not specified')
+                    ->formatStateUsing(fn ($record) => $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : __('general.Not specified'))
                     ->copyable()
-                    ->copyMessage('Tenant name copied!')
+                    ->copyMessage(__('general.Tenant name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('tenant.phone')
-                    ->label('Tenant Phone')
+                    ->label(__('general.Tenant Phone'))
                     ->searchable()
                     ->copyable()
-                    ->copyMessage('Phone number copied!')
+                    ->copyMessage(__('general.Phone number copied!'))
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('property.name')
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->copyMessage('Property name copied!')
+                    ->copyMessage(__('general.Property name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit.name')
-                    ->label('Unit')
+                    ->label(__('general.Unit'))
                     ->searchable()
                     ->sortable()
                     ->badge()
                     ->color('info')
                     ->copyable()
-                    ->copyMessage('Unit name copied!')
+                    ->copyMessage(__('general.Unit name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit.rental_price')
-                    ->label('Rental Price')
+                    ->label(__('general.Rental Price'))
                     ->sortable()
                     ->money('JOD')
                     ->alignEnd()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('start_date')
-                    ->label('Start Date')
+                    ->label(__('general.Start Date'))
                     ->date('Y-m-d')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('end_date')
-                    ->label('End Date')
+                    ->label(__('general.End Date'))
                     ->date('Y-m-d')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract_duration')
-                    ->label('Contract Duration')
+                    ->label(__('general.Contract Duration'))
                     ->getStateUsing(function ($record) {
                         if ($record->start_date && $record->end_date) {
                             $start = \Carbon\Carbon::parse($record->start_date);
                             $end = \Carbon\Carbon::parse($record->end_date);
                             $months = $start->diffInMonths($end);
-                            return $months . ' months';
+                            return $months . ' ' . __('general.months');
                         }
-                        return 'Not specified';
+                        return __('general.Not specified');
                     })
                     ->badge()
                     ->color('secondary')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('general.Status'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
@@ -407,26 +422,26 @@ Forms\Components\Section::make('Digital Signatures')
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'expired' => 'Expired',
+                        'active' => __('general.Active'),
+                        'inactive' => __('general.Inactive'),
+                        'expired' => __('general.Expired'),
                         default => $state,
                     })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('days_remaining')
-                    ->label('Days Remaining')
+                    ->label(__('general.Days Remaining'))
                     ->getStateUsing(function ($record) {
                         if ($record->end_date) {
                             $end = \Carbon\Carbon::parse($record->end_date);
                             $now = \Carbon\Carbon::now();
                             if ($end->isFuture()) {
-                                return $now->diffInDays($end) . ' days';
+                                return $now->diffInDays($end) . ' ' . __('general.days');
                             }
-                            return 'Expired';
+                            return __('general.Expired');
                         }
-                        return 'Not specified';
+                        return __('general.Not specified');
                     })
                     ->badge()
                     ->color(function ($record) {
@@ -445,7 +460,7 @@ Forms\Components\Section::make('Digital Signatures')
                     ->toggleable(),
                     
                 Tables\Columns\IconColumn::make('has_signatures')
-                    ->label('Signatures')
+                    ->label(__('general.Signatures'))
                     ->boolean()
                     ->getStateUsing(fn ($record) => !empty($record->tenant_signature_path) && !empty($record->landlord_signature_path))
                     ->trueIcon('heroicon-o-check-circle')
@@ -455,7 +470,7 @@ Forms\Components\Section::make('Digital Signatures')
                     ->toggleable(),
                     
                 Tables\Columns\IconColumn::make('has_pdf')
-                    ->label('PDF')
+                    ->label(__('general.PDF'))
                     ->boolean()
                     ->getStateUsing(fn ($record) => $record->hasPdf())
                     ->trueIcon('heroicon-o-document-text')
@@ -465,18 +480,18 @@ Forms\Components\Section::make('Digital Signatures')
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('hired_by')
-                    ->label('Created By')
+                    ->label(__('general.Created By'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('hired_date')
-                    ->label('Created Date')
+                    ->label(__('general.Created Date'))
                     ->date('Y-m-d')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date Added')
+                    ->label(__('general.Date Added'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -484,43 +499,43 @@ Forms\Components\Section::make('Digital Signatures')
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('property_id')
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->relationship('property', 'name')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('unit_id')
-                    ->label('Unit')
+                    ->label(__('general.Unit'))
                     ->relationship('unit', 'name')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('tenant_id')
-                    ->label('Tenant')
+                    ->label(__('general.Tenant'))
                     ->relationship('tenant', 'firstname')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
+                    ->label(__('general.Status'))
                     ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'expired' => 'Expired',
+                        'active' => __('general.Active'),
+                        'inactive' => __('general.Inactive'),
+                        'expired' => __('general.Expired'),
                     ])
                     ->multiple(),
                     
                 Tables\Filters\Filter::make('contract_dates')
-                    ->label('Contract Dates')
+                    ->label(__('general.Contract Dates'))
                     ->form([
                         Forms\Components\DatePicker::make('start_date_from')
-                            ->label('Start Date From'),
+                            ->label(__('general.Start Date From')),
                         Forms\Components\DatePicker::make('start_date_until')
-                            ->label('Start Date Until'),
+                            ->label(__('general.Start Date Until')),
                         Forms\Components\DatePicker::make('end_date_from')
-                            ->label('End Date From'),
+                            ->label(__('general.End Date From')),
                         Forms\Components\DatePicker::make('end_date_until')
-                            ->label('End Date Until'),
+                            ->label(__('general.End Date Until')),
                     ])
                     ->query(function ($query, array $data) {
                         return $query
@@ -547,14 +562,14 @@ Forms\Components\Section::make('Digital Signatures')
                     }),
                     
                 Tables\Filters\Filter::make('rental_price_range')
-                    ->label('Rental Price Range')
+                    ->label(__('general.Rental Price Range'))
                     ->form([
                         Forms\Components\TextInput::make('min_price')
-                            ->label('Minimum Price')
+                            ->label(__('general.Minimum Price'))
                             ->numeric()
                             ->suffix('JOD'),
                         Forms\Components\TextInput::make('max_price')
-                            ->label('Maximum Price')
+                            ->label(__('general.Maximum Price'))
                             ->numeric()
                             ->suffix('JOD'),
                     ])
@@ -579,7 +594,7 @@ Forms\Components\Section::make('Digital Signatures')
                     }),
                     
                 Tables\Filters\Filter::make('expiring_soon')
-                    ->label('Contracts Expiring Soon')
+                    ->label(__('general.Contracts Expiring Soon'))
                     ->query(function ($query) {
                         return $query->where('end_date', '>=', now())
                                     ->where('end_date', '<=', now()->addDays(30));
@@ -621,15 +636,15 @@ Forms\Components\Section::make('Digital Signatures')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->label('View')
+                    ->label(__('general.View'))
                     ->color('info'),
                 Tables\Actions\EditAction::make()
-                    ->label('Edit')
+                    ->label(__('general.Edit'))
                     ->color('warning'),
                     
                 // View PDF Action
                 Tables\Actions\Action::make('view_pdf')
-                    ->label('View PDF')
+                    ->label(__('general.View PDF'))
                     ->icon('heroicon-o-document-text')
                     ->color('success')
                     ->url(fn (Contract1 $record): string => $record->pdf_url ?? '#')
@@ -638,7 +653,7 @@ Forms\Components\Section::make('Digital Signatures')
                     
                 // Generate/Regenerate PDF Action
                 Tables\Actions\Action::make('generate_pdf')
-                    ->label(fn (Contract1 $record): string => $record->hasPdf() ? 'Regenerate PDF' : 'Generate PDF')
+                    ->label(fn (Contract1 $record): string => $record->hasPdf() ? __('general.Regenerate PDF') : __('general.Generate PDF'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
                     ->action(function (Contract1 $record) {
@@ -647,35 +662,35 @@ Forms\Components\Section::make('Digital Signatures')
                         
                         if ($pdfPath) {
                             \Filament\Notifications\Notification::make()
-                                ->title('PDF Generated Successfully')
-                                ->body('Contract PDF has been generated and saved.')
+                                ->title(__('general.PDF Generated Successfully'))
+                                ->body(__('general.Contract PDF has been generated and saved.'))
                                 ->success()
                                 ->duration(5000)
                                 ->send();
                         } else {
                             \Filament\Notifications\Notification::make()
-                                ->title('PDF Generation Failed')
-                                ->body('There was an error generating the PDF. Please try again.')
+                                ->title(__('general.PDF Generation Failed'))
+                                ->body(__('general.There was an error generating the PDF. Please try again.'))
                                 ->danger()
                                 ->duration(7000)
                                 ->send();
                         }
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Generate Contract PDF')
-                    ->modalDescription('This will generate a PDF version of the contract. Are you sure?'),
+                    ->modalHeading(__('general.Generate Contract PDF'))
+                    ->modalDescription(__('general.This will generate a PDF version of the contract. Are you sure?')),
                     
                 Tables\Actions\DeleteAction::make()
-                    ->label('Delete')
+                    ->label(__('general.Delete'))
                     ->color('danger'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->label('Delete Selected')
+                        ->label(__('general.Delete Selected'))
                         ->color('danger'),
                     FilamentExportBulkAction::make('export-selected')
-                        ->label('Export Selected'),
+                        ->label(__('general.Export Selected')),
                     //    ->color('success')
                     //    ->icon('heroicon-o-arrow-down-tray')
                     //    ->fileName('selected_contracts_' . date('Y-m-d'))
