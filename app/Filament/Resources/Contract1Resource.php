@@ -202,6 +202,12 @@ Forms\Components\Section::make('Digital Signatures')
             // Generate random filename
             $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
 
+            // Ensure directory exists
+            $directory = public_path('uploads/contracts/signatures');
+            if (!is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
             // Save file to public/uploads/contracts/signatures
             $publicPath = public_path('uploads/' . $fileName);
             file_put_contents($publicPath, $imageData);
@@ -220,6 +226,13 @@ Forms\Components\Section::make('Digital Signatures')
                 if ($state) {
                     $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $state));
                     $fileName = 'contracts/signatures/' . Str::uuid() . '.png';
+                    
+                    // Ensure directory exists
+                    $directory = public_path('uploads/contracts/signatures');
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0755, true);
+                    }
+                    
                     $publicPath = public_path('uploads/' . $fileName);
                     file_put_contents($publicPath, $imageData);
                     $set('landlord_signature_path', $fileName);
