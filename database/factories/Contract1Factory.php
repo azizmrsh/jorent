@@ -43,6 +43,8 @@ class Contract1Factory extends Factory
             'pdf_path' => null,
             'witness1_signature_path' => null,
             'witness2_signature_path' => null,
+            'witness1_name' => null,
+            'witness2_name' => null,
             'hired_date' => now(),
             'hired_by' => \ArabicFakerHelper::getRandomArabicName(),
         ];

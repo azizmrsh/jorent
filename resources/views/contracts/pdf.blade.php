@@ -535,7 +535,9 @@
                             @else
                                 <div class="signature-line"></div>
                             @endif
-                            <div class="signature-name">...................................</div>
+                            <div class="signature-name">
+                                <span style="color:#1d4ed8;">{{ $contract->witness1_name ?? '...................................' }}</span>
+                            </div>
                         </td>
                         
                         <td>
@@ -545,7 +547,9 @@
                             @else
                                 <div class="signature-line"></div>
                             @endif
-                            <div class="signature-name">...................................</div>
+                            <div class="signature-name">
+                                <span style="color:#1d4ed8;">{{ $contract->witness2_name ?? '...................................' }}</span>
+                            </div>
                         </td>
                     </tr>
                 </table>

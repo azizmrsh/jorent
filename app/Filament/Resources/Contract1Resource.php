@@ -284,9 +284,14 @@ Forms\Components\Section::make(__('general.Digital Signatures'))
                 return null;
             }),
 
+        // First Witness Name
+        Forms\Components\TextInput::make('witness1_name')
+            ->label(__('general.First Witness Name'))
+            ->maxLength(255),
+
         // Second Witness Signature
         SignaturePad::make('witness2_signature_path')
-            ->label('Second Witness Signature')
+            ->label(__('general.Second Witness Signature'))
             ->required()
             ->exportPenColor('#007bff')
             ->dehydrateStateUsing(function ($state, callable $set) {
@@ -308,6 +313,11 @@ Forms\Components\Section::make(__('general.Digital Signatures'))
                 }
                 return null;
             }),
+
+        // Second Witness Name
+        Forms\Components\TextInput::make('witness2_name')
+            ->label(__('general.Second Witness Name'))
+            ->maxLength(255),
     ])->columns(4),
             
 
