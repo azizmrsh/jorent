@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Navigation\NavigationGroup;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -47,23 +48,22 @@ class TenantPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
+            ])            ->authMiddleware([
                 Authenticate::class,
             ])
             ->navigationGroups([
-                'عقودي' => [
-                    'icon' => 'heroicon-o-document-text',
-                    'collapsed' => false,
-                ],
-                'المدفوعات' => [
-                    'icon' => 'heroicon-o-credit-card', 
-                    'collapsed' => false,
-                ],
-                'الملف الشخصي' => [
-                    'icon' => 'heroicon-o-user',
-                    'collapsed' => false,
-                ],
+                NavigationGroup::make()
+                    ->label('عقودي')
+                    ->icon('heroicon-o-document-text')
+                    ->collapsed(false),
+                NavigationGroup::make()
+                    ->label('المدفوعات')
+                    ->icon('heroicon-o-credit-card')
+                    ->collapsed(false),
+                NavigationGroup::make()
+                    ->label('الملف الشخصي')
+                    ->icon('heroicon-o-user')
+                    ->collapsed(false),
             ]);
     }
 }
