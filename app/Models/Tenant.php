@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough; // إضافة هذا
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\TenantVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 
 
 class Tenant extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'firstname',
