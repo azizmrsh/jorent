@@ -9,6 +9,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\MenuItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -64,6 +65,15 @@ class TenantPanelProvider extends PanelProvider
                     ->label('الملف الشخصي')
                     ->icon('heroicon-o-user')
                     ->collapsed(false),
+            ])            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label('الملف الشخصي')
+                    ->url(fn (): string => url('/tenant/tenant-profile'))
+                    ->icon('heroicon-o-user'),
+                'logout' => MenuItem::make()
+                    ->label('تسجيل الخروج')
+                    ->url(fn (): string => route('filament.tenant.auth.logout'))
+                    ->icon('heroicon-o-arrow-right-on-rectangle'),
             ]);
     }
 }

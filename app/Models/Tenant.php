@@ -75,6 +75,30 @@ class Tenant extends Authenticatable
         return "{$this->firstname} {$this->midname} {$this->lastname}";
     }
 
+    /**
+     * Get the name that should be displayed in Filament
+     */
+    public function getFilamentName(): string
+    {
+        return $this->getFullNameAttribute();
+    }
+
+    /**
+     * Get the name for authentication purposes
+     */
+    public function getName(): string
+    {
+        return $this->getFullNameAttribute();
+    }
+
+    /**
+     * Get the avatar URL for Filament
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->profile_photo ? asset('storage/' . $this->profile_photo) : null;
+    }
+
     public function getFullAddressAttribute(): string
     {
         return $this->address?->full_address ?? 'No address';
