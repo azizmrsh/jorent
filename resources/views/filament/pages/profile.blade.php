@@ -19,14 +19,14 @@
             <x-filament::card>
                 <div class="text-center">
                     <div class="text-2xl font-bold text-info-600">{{ $this->getUserStatistics()['days_with_us'] }}</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Days With Us</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('general.Days With Us') }}</div>
                 </div>
             </x-filament::card>
             
             <x-filament::card>
                 <div class="text-center">
                     <div class="text-lg font-bold text-gray-700 dark:text-gray-300">{{ ucfirst(auth()->user()->role ?? 'User') }}</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Account Role</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('general.Account Role') }}</div>
                 </div>
             </x-filament::card>
         </div>

@@ -65,7 +65,7 @@ class Property extends Model
     // relationships with table addresses one to one //osaidhaj03
 public function address()
 {
-    return $this->hasOne(Address::class, 'property_id');
+    return $this->belongsTo(Address::class, 'address_id');
 }
 
 

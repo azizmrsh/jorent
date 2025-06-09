@@ -24,78 +24,93 @@ class UnitResource extends Resource
     protected static ?string $model = Unit::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationLabel = 'Units';
-        protected static ?string $navigationGroup = 'Real Estate ';
+    protected static ?string $navigationLabel = null;
+    protected static ?string $navigationGroup = 'Real Estate ';
 
-    protected static ?string $label = 'Unit';
-    protected static ?string $pluralLabel = 'Units';
+    protected static ?string $label = null;
+    protected static ?string $pluralLabel = null;
     protected static ?string $slug = 'units';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('general.Units');
+    }
+    
+    public static function getModelLabel(): string
+    {
+        return __('general.Unit');
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return __('general.Units');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Property Selection')
+                Forms\Components\Section::make(__('general.Property Selection'))
                     ->schema([
                         Forms\Components\Select::make('property_id')
-                            ->label('Property')
+                            ->label(__('general.Property'))
                             ->relationship('property', 'name')
                             ->required(),
                     ]),
 
-                Forms\Components\Section::make('Unit information')
+                Forms\Components\Section::make(__('general.Unit information'))
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
-                            ->label('Unit Name')
+                            ->label(__('general.Unit Name'))
                             ->maxLength(255),
                        Forms\Components\TextInput::make('unit_number')
-                            ->label('Unit Number')
+                            ->label(__('general.Unit Number'))
                             //->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('unit_type')
                             ->options([
-                                'apartment' => 'Apartment',
-                                'studio' => 'Studio',
-                                'office' => 'Office',
-                                'shop' => 'Shop',
-                                'warehouse' => 'Warehouse',
-                                'villa' => 'Villa',
-                                'house' => 'House',
-                                'building' => 'Building',
+                                'apartment' => __('general.Apartment'),
+                                'studio' => __('general.Studio'),
+                                'office' => __('general.Office'),
+                                'shop' => __('general.Shop'),
+                                'warehouse' => __('general.Warehouse'),
+                                'villa' => __('general.Villa'),
+                                'house' => __('general.House'),
+                                'building' => __('general.Building'),
                             ])
                             ->required()
-                            ->label('Unit Type'),
+                            ->label(__('general.Unit Type')),
                         Forms\Components\TextInput::make('area')
                             ->numeric()
                             ->required()
-                            ->label('Area (sqm)'),
+                            ->label(__('general.Area (sqm)')),
                         Forms\Components\TextInput::make('rental_price')
                             ->numeric()
                             ->required()
-                            ->label('Rental Price'),
+                            ->label(__('general.Rental Price')),
                      ])->columns(2),
                 /////////////
-                Forms\Components\Section::make('Unit Details')
+                Forms\Components\Section::make(__('general.Unit Details'))
                     ->schema([
 
                         Forms\Components\Repeater::make('unit_details')
-                            ->label('Unit Details')
+                            ->label(__('general.Unit Details'))
                             ->schema([
                                 Forms\Components\Select::make('detail_name')
                                     ->required()
-                                    ->label('Detail Name')
+                                    ->label(__('general.Detail Name'))
                                     ->options([
-                                        'kitchen' => 'Number of Kitchens',
-                                        'bedrooms' => 'Number of Bedrooms',
-                                        'bathrooms' => 'Number of Bathrooms',
-                                        'balconies' => 'Number of Balconies',
-                                        'parking_spaces' => 'Number of Parking Spaces',
-                                        'floor' => 'Floor Number',
+                                        'kitchen' => __('general.Number of Kitchens'),
+                                        'bedrooms' => __('general.Number of Bedrooms'),
+                                        'bathrooms' => __('general.Number of Bathrooms'),
+                                        'balconies' => __('general.Number of Balconies'),
+                                        'parking_spaces' => __('general.Number of Parking Spaces'),
+                                        'floor' => __('general.Floor Number'),
                                     ]),
                                 Forms\Components\TextInput::make('detail_value')
                                     ->required()
-                                    ->label('Detail Value')
+                                    ->label(__('general.Detail Value'))
                                     ->numeric()
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -106,67 +121,67 @@ class UnitResource extends Resource
                                     }),
                             ])
                             ->columns(2)
-                            ->createItemButtonLabel('Add Detail'),
+                            ->createItemButtonLabel(__('general.Add Detail')),
                     ]),
 
                 ////////////////////    
-                Forms\Components\Section::make('Unit Features')
+                Forms\Components\Section::make(__('general.Unit Features'))
                     ->schema([
                         Forms\Components\Repeater::make('features')
-                            ->label('Features')
+                            ->label(__('general.Features'))
                             ->schema([
                                 Forms\Components\Select::make('feature_name')
                                     ->required()
-                                    ->label('Feature Name')
+                                    ->label(__('general.Feature Name'))
                                     ->options([
-                                        'furnished' => 'Furnished',
-
-                                        'elevator' => 'Elevator',
-                                        'swimming_pool' => 'Swimming Pool',
-                                        'gym' => 'Gym',
-                                        'camera_security' => 'Camera Security',
-                                        'parking' => 'Parking',
-                                        'playground' => 'Playground',
-                                        'wifi' => 'WiFi',
-                                        'garden' => 'Garden',
-                                        'security' => 'Security',
-                                        'SMART_HOME' => 'Smart Home',
-                                        'fire_alarm' => 'Fire Alarm',
-                                        'central_air_conditioning' => 'Central Air Conditioning',
-                                        'heating' => 'Heating',
-                                        'fireplace' => 'Fireplace',
+                                        'furnished' => __('general.Furnished'),
+                                        'elevator' => __('general.Elevator'),
+                                        'swimming_pool' => __('general.Swimming Pool'),
+                                        'gym' => __('general.Gym'),
+                                        'camera_security' => __('general.Camera Security'),
+                                        'parking' => __('general.Parking'),
+                                        'playground' => __('general.Playground'),
+                                        'wifi' => __('general.WiFi'),
+                                        'garden' => __('general.Garden'),
+                                        'security' => __('general.Security'),
+                                        'SMART_HOME' => __('general.Smart Home'),
+                                        'fire_alarm' => __('general.Fire Alarm'),
+                                        'central_air_conditioning' => __('general.Central Air Conditioning'),
+                                        'heating' => __('general.Heating'),
+                                        'fireplace' => __('general.Fireplace'),
                                        
                                     ]),
                                 Forms\Components\Select::make('feature_value')
                                     ->required()
-                                    ->label('Feature Value')
+                                    ->label(__('general.Feature Value'))
                                     ->options([
-                                        'yes' => 'YES',
-                                        'no' => 'NO',
+                                        'yes' => __('general.YES'),
+                                        'no' => __('general.NO'),
                                     ]),
                             ])
                             ->columns(2)
-                            ->createItemButtonLabel('Add Feature'),
+                            ->createItemButtonLabel(__('general.Add Feature')),
                     ]),
                  ///////////////////
-                Forms\Components\Section::make('Images')
+                Forms\Components\Section::make(__('general.Images'))
                     ->schema([
                         self::unitImagesUpload(),
                     ]),
 
-                Forms\Components\Section::make('Additional Details')
+                Forms\Components\Section::make(__('general.Additional Details'))
                     ->schema([
                         Forms\Components\Textarea::make('notes')
-                            ->label('Notes')
+                            ->label(__('general.Notes'))
                             ->maxLength(65535),
                         Forms\Components\Select::make('status')
+                            ->label(__('general.Status'))
                             ->options([
-                                'available' => 'Available',
-                                'rented' => 'Rented',
-                                'under_maintenance' => 'Under Maintenance',
-                                'unavailable' => 'Unavailable',
-                                'reserved' => 'Reserved',
-                                'not_confirmed' => 'Not Confirmed',
+                                'available' => __('general.Available'),
+                                'rented' => __('general.Rented'),
+                                'under_maintenance' => __('general.Under Maintenance'),
+                                'unavailable' => __('general.Unavailable'),
+                                'reserved' => __('general.Reserved'),
+                                'not_confirmed' => __('general.Not Confirmed'),
                             ])
                             ->required(),
                     ]),
@@ -178,31 +193,31 @@ class UnitResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
+                    ->label(__('general.ID'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Unit Name')
+                    ->label(__('general.Unit Name'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit_number')
-                    ->label('Unit Number')
+                    ->label(__('general.Unit Number'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('property.name')
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('unit_type')
-                    ->label('Unit Type')
+                    ->label(__('general.Unit Type'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'apartment' => 'primary',
@@ -216,33 +231,33 @@ class UnitResource extends Resource
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'apartment' => 'Apartment',
-                        'villa' => 'Villa',
-                        'warehouse' => 'Warehouse',
-                        'house' => 'House',
-                        'building' => 'Building',
-                        'studio' => 'Studio',
-                        'office' => 'Office',
-                        'shop' => 'Shop',
+                        'apartment' => __('general.Apartment'),
+                        'villa' => __('general.Villa'),
+                        'warehouse' => __('general.Warehouse'),
+                        'house' => __('general.House'),
+                        'building' => __('general.Building'),
+                        'studio' => __('general.Studio'),
+                        'office' => __('general.Office'),
+                        'shop' => __('general.Shop'),
                         default => ucfirst($state),
                     })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('area')
-                    ->label('Area (m²)')
+                    ->label(__('general.Area (m²)'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('rental_price')
-                    ->label('Rental Price')
+                    ->label(__('general.Rental Price'))
                     ->money('JOD')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
+                    ->label(__('general.Status'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'available' => 'success',
@@ -254,73 +269,73 @@ class UnitResource extends Resource
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'available' => 'Available',
-                        'rented' => 'Rented',
-                        'under_maintenance' => 'Under Maintenance',
-                        'unavailable' => 'Unavailable',
-                        'reserved' => 'Reserved',
-                        'not_confirmed' => 'Not Confirmed',
+                        'available' => __('general.Available'),
+                        'rented' => __('general.Rented'),
+                        'under_maintenance' => __('general.Under Maintenance'),
+                        'unavailable' => __('general.Unavailable'),
+                        'reserved' => __('general.Reserved'),
+                        'not_confirmed' => __('general.Not Confirmed'),
                         default => ucfirst($state),
                     })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label(__('general.Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Updated At')
+                    ->label(__('general.Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('Notes')
+                    ->label(__('general.Notes'))
                     ->limit(50)
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('property_id')
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->relationship('property', 'name')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('unit_type')
-                    ->label('Unit Type')
+                    ->label(__('general.Unit Type'))
                     ->options([
-                        'apartment' => 'Apartment',
-                        'villa' => 'Villa',
-                        'warehouse' => 'Warehouse',
-                        'house' => 'House',
-                        'building' => 'Building',
-                        'studio' => 'Studio',
-                        'office' => 'Office',
-                        'shop' => 'Shop',
+                        'apartment' => __('general.Apartment'),
+                        'villa' => __('general.Villa'),
+                        'warehouse' => __('general.Warehouse'),
+                        'house' => __('general.House'),
+                        'building' => __('general.Building'),
+                        'studio' => __('general.Studio'),
+                        'office' => __('general.Office'),
+                        'shop' => __('general.Shop'),
                     ]),
                     
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
+                    ->label(__('general.Status'))
                     ->options([
-                        'available' => 'Available',
-                        'rented' => 'Rented',
-                        'under_maintenance' => 'Under Maintenance',
-                        'unavailable' => 'Unavailable',
-                        'reserved' => 'Reserved',
-                        'not_confirmed' => 'Not Confirmed',
+                        'available' => __('general.Available'),
+                        'rented' => __('general.Rented'),
+                        'under_maintenance' => __('general.Under Maintenance'),
+                        'unavailable' => __('general.Unavailable'),
+                        'reserved' => __('general.Reserved'),
+                        'not_confirmed' => __('general.Not Confirmed'),
                     ]),
                     
                 Tables\Filters\Filter::make('area_range')
-                    ->label('Area Range')
+                    ->label(__('general.Area Range'))
                     ->form([
                         Forms\Components\TextInput::make('area_from')
-                            ->label('From (m²)')
+                            ->label(__('general.From (m²)'))
                             ->numeric(),
                         Forms\Components\TextInput::make('area_to')
-                            ->label('To (m²)')
+                            ->label(__('general.To (m²)'))
                             ->numeric(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -330,13 +345,13 @@ class UnitResource extends Resource
                     }),
                     
                 Tables\Filters\Filter::make('price_range')
-                    ->label('Price Range')
+                    ->label(__('general.Price Range'))
                     ->form([
                         Forms\Components\TextInput::make('price_from')
-                            ->label('From (JOD)')
+                            ->label(__('general.From (JOD)'))
                             ->numeric(),
                         Forms\Components\TextInput::make('price_to')
-                            ->label('To (JOD)')
+                            ->label(__('general.To (JOD)'))
                             ->numeric(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -346,12 +361,12 @@ class UnitResource extends Resource
                     }),
                     
                 Tables\Filters\Filter::make('created_at')
-                    ->label('Creation Date')
+                    ->label(__('general.Creation Date'))
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
-                            ->label('From Date'),
+                            ->label(__('general.From Date')),
                         Forms\Components\DatePicker::make('created_until')
-                            ->label('To Date'),
+                            ->label(__('general.To Date')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -361,18 +376,22 @@ class UnitResource extends Resource
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                    ->label('Export Data')
+                    ->label(__('general.Export Data'))
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label(__('general.Edit')),
+                Tables\Actions\ViewAction::make()
+                    ->label(__('general.View')),
+                Tables\Actions\DeleteAction::make()
+                    ->label(__('general.Delete')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label(__('general.Delete Selected')),
                     FilamentExportBulkAction::make('export')
-                        ->label('Export Selected'),
+                        ->label(__('general.Export Selected')),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')

@@ -64,8 +64,22 @@ class PropertyFactory extends Factory
             },
             'image_path' => 'uploads/properties/' . $this->faker->uuid . '.jpg',
             'address_id' => function () {
+                // إنشاء عنوان جديد لكل عقار لضمان التنوع
                 return Address::factory()->create()->id;
             },
         ];
+    }
+    
+    /**
+     * Configure the model factory.
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (Property $property) {
+            // ربط العنوان بالعقار (علاقة مزدوجة للمرونة)
+            if ($property->address_id && $property->address) {
+                $property->address->update(['property_id' => $property->id]);
+            }
+        });
     }
 }

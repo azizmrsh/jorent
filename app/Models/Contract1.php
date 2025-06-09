@@ -25,6 +25,8 @@ class Contract1 extends Model
         'landlord_signature_path',
         'witness1_signature_path',
         'witness2_signature_path',
+        'witness1_name',
+        'witness2_name',
         'hired_date',
         'hired_by',
         'pdf_path',

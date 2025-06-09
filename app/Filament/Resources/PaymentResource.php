@@ -29,29 +29,39 @@ class PaymentResource extends Resource
     
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
     
-    protected static ?string $navigationLabel = 'Payments';
     protected static ?string $navigationGroup = 'Financial Management';
     protected static ?string $slug = 'payments';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('general.Payments');
+    }
     
-    protected static ?string $modelLabel = 'Payment';
+    public static function getModelLabel(): string
+    {
+        return __('general.Payment');
+    }
     
-    protected static ?string $pluralModelLabel = 'Payments';
+    public static function getPluralModelLabel(): string
+    {
+        return __('general.Payments');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Payment Information')
-                    ->description('Enter payment details')
+                Section::make(__('general.Payment Information'))
+                    ->description(__('general.Enter payment details'))
                     ->schema([
                         Grid::make(2)->schema([
                             Forms\Components\Select::make('contract_id')
-                                ->label('Contract')
+                                ->label(__('general.Contract'))
                                 ->relationship('contract', 'id')
                                 ->getOptionLabelFromRecordUsing(function ($record) {
-                                    $tenant = $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : 'No Tenant';
-                                    $property = $record->property ? $record->property->name : 'No Property';
-                                    $unit = $record->unit ? $record->unit->name : 'No Unit';
+                                    $tenant = $record->tenant ? $record->tenant->firstname . ' ' . $record->tenant->lastname : __('general.No Tenant');
+                                    $property = $record->property ? $record->property->name : __('general.No Property');
+                                    $unit = $record->unit ? $record->unit->name : __('general.No Unit');
                                     return "#{$record->id} - {$tenant} | {$property} - {$unit}";
                                 })
                                 ->searchable(['id'])
@@ -77,7 +87,7 @@ class PaymentResource extends Resource
                         
                         Grid::make(3)->schema([
                             Forms\Components\TextInput::make('amount')
-                                ->label('Payment Amount')
+                                ->label(__('general.Payment Amount'))
                                 ->required()
                                 ->numeric()
                                 ->step(0.01)
@@ -86,80 +96,80 @@ class PaymentResource extends Resource
                                 ->maxValue(999999.99),
                                 
                             Forms\Components\DatePicker::make('payment_date')
-                                ->label('Payment Date')
+                                ->label(__('general.Payment Date'))
                                 ->required()
                                 ->default(now())
                                 ->maxDate(now()),
                                 
                             Forms\Components\Select::make('payment_method')
-                                ->label('Payment Method')
+                                ->label(__('general.Payment Method'))
                                 ->required()
                                 ->options([
-                                    'cash' => '💵 Cash',
-                                    'bank_transfer' => '🏦 Bank Transfer',
-                                    'wallet' => '📱 Digital Wallet',
-                                    'cliq' => '⚡ CliQ',
+                                    'cash' => __('general.Cash'),
+                                    'bank_transfer' => __('general.Bank Transfer'),
+                                    'wallet' => __('general.Digital Wallet'),
+                                    'cliq' => __('general.CliQ'),
                                 ])
                                 ->default('cash')
                                 ->reactive(),
                         ]),
                     ])->columns(1),
                     
-                Section::make('Payer & Receiver Information')
-                    ->description('Details about who paid and who received')
+                Section::make(__('general.Payer & Receiver Information'))
+                    ->description(__('general.Details about who paid and who received'))
                     ->schema([
                         Grid::make(2)->schema([
                             Forms\Components\TextInput::make('payer_name')
-                                ->label('Payer Name')
+                                ->label(__('general.Payer Name'))
                                 ->required()
                                 ->maxLength(255)
-                                ->placeholder('Who made the payment?'),
+                                ->placeholder(__('general.Who made the payment?')),
                                 
                             Forms\Components\TextInput::make('receiver_name')
-                                ->label('Receiver Name')
+                                ->label(__('general.Receiver Name'))
                                 ->required()
                                 ->maxLength(255)
                                 ->default(fn () => Auth::user()?->name)
-                                ->placeholder('Who received the payment?'),
+                                ->placeholder(__('general.Who received the payment?')),
                         ]),
                     ])->columns(1),
                     
-                Section::make('Transfer Details')
-                    ->description('Additional information for bank transfers and digital payments')
+                Section::make(__('general.Transfer Details'))
+                    ->description(__('general.Additional information for bank transfers and digital payments'))
                     ->schema([
                         Grid::make(2)->schema([
                             Forms\Components\TextInput::make('bank_name')
-                                ->label('Bank/Wallet Name')
+                                ->label(__('general.Bank/Wallet Name'))
                                 ->maxLength(255)
                                 ->placeholder('e.g., Arab Bank, Zain Cash, Orange Money')
                                 ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
                                 
                             Forms\Components\TextInput::make('transfer_reference')
-                                ->label('Transfer Reference')
+                                ->label(__('general.Transfer Reference'))
                                 ->maxLength(255)
-                                ->placeholder('Transaction ID or Reference Number')
+                                ->placeholder(__('general.Transaction ID or Reference Number'))
                                 ->visible(fn (callable $get) => in_array($get('payment_method'), ['bank_transfer', 'wallet', 'cliq'])),
                         ]),
                         
                         Forms\Components\Textarea::make('notes')
-                            ->label('Additional Notes')
+                            ->label(__('general.Additional Notes'))
                             ->maxLength(1000)
                             ->rows(3)
-                            ->placeholder('Any additional information about this payment...'),
+                            ->placeholder(__('general.Any additional information about this payment...')),
                     ])->columns(1),
                     
-                Section::make('Meta Information')
-                    ->description('System information')
+                Section::make(__('general.Meta Information'))
+                    ->description(__('general.System information'))
                     ->schema([
                         Grid::make(2)->schema([
                             Forms\Components\TextInput::make('created_by')
-                                ->label('Created By')
+                                ->label(__('general.Created By'))
                                 ->default(fn () => Auth::user()?->name)
                                 ->disabled()
                                 ->dehydrated(false),
                                 
                             Forms\Components\DateTimePicker::make('created_at')
-                                ->label('Created At')
+                                ->label(__('general.Created At'))
                                 ->default(now())
                                 ->disabled()
                                 ->dehydrated(false),
@@ -175,13 +185,13 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('Payment ID')
+                    ->label(__('general.Payment ID'))
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.id')
-                    ->label('Contract')
+                    ->label(__('general.Contract'))
                     ->sortable()
                     ->searchable()
                     ->formatStateUsing(fn ($record) => "#{$record->contract_id}")
@@ -190,29 +200,29 @@ class PaymentResource extends Resource
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.tenant.firstname')
-                    ->label('Tenant')
+                    ->label(__('general.Tenant'))
                     ->searchable(['firstname', 'lastname'])
                     ->sortable()
                     ->formatStateUsing(function ($record) {
                         if ($record->contract && $record->contract->tenant) {
                             return $record->contract->tenant->firstname . ' ' . $record->contract->tenant->lastname;
                         }
-                        return 'No Tenant';
+                        return __('general.No Tenant');
                     })
                     ->copyable()
-                    ->copyMessage('Tenant name copied!')
+                    ->copyMessage(__('general.Tenant name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.property.name')
-                    ->label('Property')
+                    ->label(__('general.Property'))
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->copyMessage('Property name copied!')
+                    ->copyMessage(__('general.Property name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('contract.unit.name')
-                    ->label('Unit')
+                    ->label(__('general.Unit'))
                     ->searchable()
                     ->sortable()
                     ->badge()
@@ -220,22 +230,22 @@ class PaymentResource extends Resource
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('amount')
-                    ->label('Amount')
+                    ->label(__('general.Amount'))
                     ->money('JOD')
                     ->sortable()
                     ->alignEnd()
                     ->copyable()
-                    ->copyMessage('Amount copied!')
+                    ->copyMessage(__('general.Amount copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('payment_date')
-                    ->label('Payment Date')
+                    ->label(__('general.Payment Date'))
                     ->date('Y-m-d')
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Method')
+                    ->label(__('general.Method'))
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'cash' => 'success',
@@ -245,43 +255,43 @@ class PaymentResource extends Resource
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'cash' => '💵 Cash',
-                        'bank_transfer' => '🏦 Bank Transfer',
-                        'wallet' => '📱 Digital Wallet',
-                        'cliq' => '⚡ CliQ',
+                        'cash' => __('general.Cash'),
+                        'bank_transfer' => __('general.Bank Transfer'),
+                        'wallet' => __('general.Digital Wallet'),
+                        'cliq' => __('general.CliQ'),
                         default => $state,
                     })
                     ->sortable()
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('payer_name')
-                    ->label('Payer')
+                    ->label(__('general.Payer'))
                     ->searchable()
                     ->copyable()
-                    ->copyMessage('Payer name copied!')
+                    ->copyMessage(__('general.Payer name copied!'))
                     ->toggleable(),
                     
                 Tables\Columns\TextColumn::make('receiver_name')
-                    ->label('Receiver')
+                    ->label(__('general.Receiver'))
                     ->searchable()
                     ->copyable()
-                    ->copyMessage('Receiver name copied!')
+                    ->copyMessage(__('general.Receiver name copied!'))
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('bank_name')
-                    ->label('Bank/Wallet')
+                    ->label(__('general.Bank/Wallet'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('transfer_reference')
-                    ->label('Reference')
+                    ->label(__('general.Reference'))
                     ->searchable()
                     ->copyable()
-                    ->copyMessage('Reference copied!')
+                    ->copyMessage(__('general.Reference copied!'))
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('Notes')
+                    ->label(__('general.Notes'))
                     ->limit(50)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
@@ -293,7 +303,7 @@ class PaymentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                     
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Date Added')
+                    ->label(__('general.Date Added'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -301,28 +311,28 @@ class PaymentResource extends Resource
             ->defaultSort('payment_date', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('contract_id')
-                    ->label('Contract')
+                    ->label(__('general.Contract'))
                     ->relationship('contract', 'id')
                     ->searchable()
                     ->preload(),
                     
                 Tables\Filters\SelectFilter::make('payment_method')
-                    ->label('Payment Method')
+                    ->label(__('general.Payment Method'))
                     ->options([
-                        'cash' => '💵 Cash',
-                        'bank_transfer' => '🏦 Bank Transfer',
-                        'wallet' => '📱 Digital Wallet',
-                        'cliq' => '⚡ CliQ',
+                        'cash' => __('general.Cash'),
+                        'bank_transfer' => __('general.Bank Transfer'),
+                        'wallet' => __('general.Digital Wallet'),
+                        'cliq' => __('general.CliQ'),
                     ])
                     ->multiple(),
                     
                 Tables\Filters\Filter::make('payment_date_range')
-                    ->label('Payment Date Range')
+                    ->label(__('general.Payment Date Range'))
                     ->form([
                         Forms\Components\DatePicker::make('from_date')
-                            ->label('From Date'),
+                            ->label(__('general.From Date')),
                         Forms\Components\DatePicker::make('to_date')
-                            ->label('To Date'),
+                            ->label(__('general.To Date')),
                     ])
                     ->query(function ($query, array $data) {
                         return $query
@@ -332,23 +342,23 @@ class PaymentResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['from_date'] ?? null) {
-                            $indicators['from_date'] = 'From: ' . Carbon::parse($data['from_date'])->format('Y-m-d');
+                            $indicators['from_date'] = __('general.From Date') . ': ' . Carbon::parse($data['from_date'])->format('Y-m-d');
                         }
                         if ($data['to_date'] ?? null) {
-                            $indicators['to_date'] = 'To: ' . Carbon::parse($data['to_date'])->format('Y-m-d');
+                            $indicators['to_date'] = __('general.To Date') . ': ' . Carbon::parse($data['to_date'])->format('Y-m-d');
                         }
                         return $indicators;
                     }),
                     
                 Tables\Filters\Filter::make('amount_range')
-                    ->label('Amount Range')
+                    ->label(__('general.Amount Range'))
                     ->form([
                         Forms\Components\TextInput::make('min_amount')
-                            ->label('Minimum Amount')
+                            ->label(__('general.Minimum Amount'))
                             ->numeric()
                             ->suffix('JOD'),
                         Forms\Components\TextInput::make('max_amount')
-                            ->label('Maximum Amount')
+                            ->label(__('general.Maximum Amount'))
                             ->numeric()
                             ->suffix('JOD'),
                     ])
@@ -360,16 +370,16 @@ class PaymentResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['min_amount'] ?? null) {
-                            $indicators['min_amount'] = 'Min: ' . number_format($data['min_amount']) . ' JOD';
+                            $indicators['min_amount'] = __('general.Minimum Amount') . ': ' . number_format($data['min_amount']) . ' JOD';
                         }
                         if ($data['max_amount'] ?? null) {
-                            $indicators['max_amount'] = 'Max: ' . number_format($data['max_amount']) . ' JOD';
+                            $indicators['max_amount'] = __('general.Maximum Amount') . ': ' . number_format($data['max_amount']) . ' JOD';
                         }
                         return $indicators;
                     }),
                     
                 Tables\Filters\Filter::make('this_month')
-                    ->label('This Month Payments')
+                    ->label(__('general.This Month Payments'))
                     ->query(function ($query) {
                         return $query->whereBetween('payment_date', [
                             now()->startOfMonth(),
@@ -379,14 +389,14 @@ class PaymentResource extends Resource
                     ->toggle(),
                     
                 Tables\Filters\Filter::make('today')
-                    ->label('Today\'s Payments')
+                    ->label(__('general.Today\'s Payments'))
                     ->query(function ($query) {
                         return $query->whereDate('payment_date', today());
                     })
                     ->toggle(),
                     
                 Tables\Filters\Filter::make('has_reference')
-                    ->label('Has Transfer Reference')
+                    ->label(__('general.Has Transfer Reference'))
                     ->query(function ($query) {
                         return $query->whereNotNull('transfer_reference')
                                    ->where('transfer_reference', '!=', '');
@@ -395,34 +405,34 @@ class PaymentResource extends Resource
             ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
-                    ->label('Export Payments')
+                    ->label(__('general.Export Payments'))
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->label('View')
+                    ->label(__('general.View'))
                     ->color('info'),
                 Tables\Actions\EditAction::make()
-                    ->label('Edit')
+                    ->label(__('general.Edit'))
                     ->color('warning'),
                 Tables\Actions\DeleteAction::make()
-                    ->label('Delete')
+                    ->label(__('general.Delete'))
                     ->color('danger'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->label('Delete Selected')
+                        ->label(__('general.Delete Selected'))
                         ->color('danger'),
                     FilamentExportBulkAction::make('export-selected')
-                        ->label('Export Selected')
+                        ->label(__('general.Export Selected'))
                         ->color('success')
                         ->icon('heroicon-o-arrow-down-tray'),
                 ]),
             ])
-            ->emptyStateHeading('No Payments Found')
-            ->emptyStateDescription('Start by creating a new payment record.')
+            ->emptyStateHeading(__('general.No Payments Found'))
+            ->emptyStateDescription(__('general.Start by creating a new payment record.'))
             ->emptyStateIcon('heroicon-o-credit-card');
     }
 
