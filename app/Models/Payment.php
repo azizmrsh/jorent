@@ -16,6 +16,7 @@ class Payment extends Model
         'amount',
         'payment_date',
         'payment_method',
+        'status',
         'payer_name',         // اسم الدافع
         'receiver_name',      // اسم المستلم
         'bank_name',          // اسم البنك/المحفظة
